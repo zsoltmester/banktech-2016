@@ -1,0 +1,4 @@
+A - nem, túlcsordulásnál elromlik, lásd IntergerSorter
+B - nem
+C - igen, a Set miatt
+C - igen
