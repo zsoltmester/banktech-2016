@@ -1,0 +1,6 @@
+A - ?igen
+B - nem, lásd ThreadSleeper.java
+C - ?nem, ha két különböző thread-et ugyanazon néven adunk hozzá, akkor a leállításnál nem állítja le mindkettőt. de kérdés, hogy most az implementáció a rossz, vagy tényleg így kéne működnie
+D - igen
+E - nem
+F - nem
