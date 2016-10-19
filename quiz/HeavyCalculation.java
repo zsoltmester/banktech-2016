@@ -1,0 +1,3 @@
+public class HeavyCalculation implements Calculation {
+	//... other functions ...
+}

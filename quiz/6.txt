@@ -1,0 +1,5 @@
+lásd Calculation.java, így fordul és működik:
+
+zsmester@thinkpad:~/banktech-2016/quiz$ javac Calculation.java HeavyCalculation.java DoCalculation.java
+zsmester@thinkpad:~/banktech-2016/quiz$ java DoCalculation
+Calculation result
