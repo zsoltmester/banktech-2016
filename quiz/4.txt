@@ -1,0 +1,2 @@
+Object a paramétere:
+public boolean equals(Object obj)
