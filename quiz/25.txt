@@ -1,0 +1,7 @@
+A, B, C - hamis, lsd D
+D - hashCode : elírás a függvénynévben, kis C-vel van írva; 
+    equals : if (hashCode() == other.hashCode()) 
+                    return true; 
+    --> ha a hashcode-ok megegyeznek true, ami rossz design, 
+        hisz két különböző stringnek megegyezhet a hashcode-ja.
+E - hamis - primitív típus, nem lehet null
