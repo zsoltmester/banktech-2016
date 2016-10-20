@@ -1,0 +1,11 @@
+Több megjelölhető válasz van, több megoldással kellene rendelkeznie.
+
+A - Nem, a java állomány ott lesz, így 1 mindenképpen lesz
+B - ?? Nem sikerült még rávennem. Ha a compiler nem a saját mappájába teszi vissza a class-okat, vagy ha "fake" fordítást csinál, akkor lehetséges
+C - ?? Nem sikerült még rávennem. Próbálkoztam azzal, hogy mikor nem hoz létre külön .class fájlokat, de nem jutottam előrébb
+D - Igen, ez a default.
+Task21/X.java :
+
+public class X {
+    private enum Y{ }
+}
