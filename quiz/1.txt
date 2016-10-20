@@ -1,6 +1,6 @@
-A - ?igen
+A - nem, lsd C
 B - nem, lásd ThreadSleeper.java
-C - ?nem, ha két különböző thread-et ugyanazon néven adunk hozzá, akkor a leállításnál nem állítja le mindkettőt. de kérdés, hogy most az implementáció a rossz, vagy tényleg így kéne működnie
+C - igen, mert a sleep() az egy statikus függvény, így bármely objektumon meghívható, de nem az adott threadet, hanem a hívó szálat fogja sleepeltetni
 D - igen
 E - nem
 F - nem

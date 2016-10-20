@@ -7,11 +7,14 @@ public class ThreadSleeper {
 
     public synchronized void registerThread(String name, Thread thread){
         if (name==null) throw new IllegalArgumentException();
+        System.out.println(name + " registered");
         registeredThreads.put(name, thread);
     }
 
     public synchronized void sleepThread(String name, int duration) throws InterruptedException {
+        System.out.println(name + " contains: " + registeredThreads.containsKey(name));
         if (registeredThreads.containsKey(name)){
+            System.out.println(name + " value is null?  " + (null == registeredThreads.get(name)));
             registeredThreads.get(name).sleep(duration);
         }
     }
