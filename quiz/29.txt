@@ -1,0 +1,6 @@
+Lion.java kimenet: roar roar!!!
+
+-->
+B - igaz - A String inmutable és a StringBuilder mutable
+A, C, D, E - hamis
+F, G - hamis
