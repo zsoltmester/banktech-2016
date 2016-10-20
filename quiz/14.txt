@@ -1,0 +1,3 @@
+http://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
+
+Az nem igaz, hogy nem történik semmi. Szóval igazából egyik sem igaz. De a C áll a legközelebb az igazsághoz.
