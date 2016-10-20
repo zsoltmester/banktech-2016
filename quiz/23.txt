@@ -1,0 +1,5 @@
+A - igaz, Serializable-ből származik. Tudunk egy másik példányt kreálni serializált objektumként.
+B - hamis, lsd A
+C - ?? szerintem nem. Gondolom long-á castolódik
+D - nem, lsd E
+E - szerintem azért igaz, mert rossz helyen van a synchronized blokk. 
