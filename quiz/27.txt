@@ -1,0 +1,6 @@
+lsd Task27.java
+
+B hiányzik a return,
+D nem kompatibilis a Predicate<Integer>-rel
+E nincs változó
+G nem lehet 2 zárójelbe rakni
