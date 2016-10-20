@@ -1,0 +1,7 @@
+A - ezt én sem értem
+B - b() és f() metódus futhat párhuzamosan.
+Szerintem erre gondol - http://stackoverflow.com/questions/15329731/java-synchronizing-static-methods
+C - nope
+D - nope
+E - yes
+F - yes

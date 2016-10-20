@@ -1,4 +1,6 @@
 A, B, C, D - lásd MyObjectMain
-E - igaz
-F - nem
+E - igaz ??
+F - nem ??
 G - nem
+
+E, F -  Nem fog létrehozni egy új anonym class-t a {} miatt, és az lesz az obj -nek a dinamikus típusa?
