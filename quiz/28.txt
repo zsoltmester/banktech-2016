@@ -1,0 +1,5 @@
+A - nope, rendezettség szükséges
+B - nope, rendezettség szükséges
+C - igaz, lsd Task28.java
+D - nope, exception, lsd Task28.java
+E - van igaz, szóval hamis.
