@@ -1,0 +1,6 @@
+Egy megoldás a jó.
+
+A - nem, lsd B
+B - igen - mivel double-ket használ (és paraméterül megadható neki double), egy idő után nagyobb eltérés lehet a lebegőpontos számábrázolás miatt. (Inflation.java)
+C - nem - használható..
+D - nem - RuntimeException, nem kell
