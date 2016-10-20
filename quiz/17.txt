@@ -1,0 +1,3 @@
+A, B - Nem, lásd Lazy.java
+C - Igen, hisz a Lazy változója mindenképpen csak egyszer jöhet létre, és csak a függvényből, synchronized blokkban módosítható.
+D, E - Nem.
