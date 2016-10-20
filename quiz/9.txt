@@ -1,0 +1,8 @@
+A - nem
+B - nem sikerült eddig ilyet csinálni
+C, D, H - igen. Bármilyen sorrendben lefuthatnak
+E - nem, mindhárom thread "not daemon", így kénytelen a JVM megvárni a befejezésüket.
+F - nem, nekem nem sikerült. A főszálat tudnánk kilőni, ami mivel nem várakozik a thread-ekre, ezért semmilyen exception nem kapódik el, se dobódik. (és ha igen, akkor is 3x írná ki)
+G - nem sikerült ilyet sem csinálni 
+
+(Threads.java)
