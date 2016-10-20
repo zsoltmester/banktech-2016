@@ -1,0 +1,3 @@
+A - igen. java int az 4 byte-os, ezért 2^32 darab van belőlük.
+B - nem. Nincs unsigned int a java nyelvben.
+C - nem. WTF? 
