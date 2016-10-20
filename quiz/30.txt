@@ -1,0 +1,9 @@
+Task30.java
+
+Futtatókörnyezettől függ.
+> java Task30
+true false
+> java -Dtrue=true Task30
+true true
+> java "-Dtrue =true" Task30
+false false
