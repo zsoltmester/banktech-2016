@@ -1,0 +1,5 @@
+Egy jó válasz van.
+
+A - nem, attól hogy valami final, attól még más használhatja. Nincs is értelme ennek
+B - Ez biztos, hisz final, nem felülírható.
+C - nem, http://stackoverflow.com/questions/4279420/does-use-of-final-keyword-in-java-improve-the-performance
