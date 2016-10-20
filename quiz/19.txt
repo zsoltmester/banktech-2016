@@ -1,0 +1,1 @@
+A mellékelt Task19 -ben látszik, hogy bármilyen értéket felvehet a c változó.
