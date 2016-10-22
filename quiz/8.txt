@@ -1,6 +1,7 @@
 A, B, C, D - lásd MyObjectMain
-E - igaz ??
-F - nem ??
+E - nem
+F - igaz
 G - nem
 
 E, F -  Nem fog létrehozni egy új anonym class-t a {} miatt, és az lesz az obj -nek a dinamikus típusa?
+De, igazad van. Így már úgy gondolom a dinamukus típus mindig az anonym class lesz. Betettem pár tesztet a MyObjectMain-be.
