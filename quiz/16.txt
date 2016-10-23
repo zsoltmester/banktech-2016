@@ -2,4 +2,6 @@ Egy jó válasz van.
 
 A - nem, attól hogy valami final, attól még más használhatja. Nincs is értelme ennek
 B - Ez biztos, hisz final, nem felülírható.
-C - nem, http://stackoverflow.com/questions/4279420/does-use-of-final-keyword-in-java-improve-the-performance
+zsolt: Annyira ködös ez a megfogalmazás. Ha mondjuk azt írják, hogy nem lehet egy objektumot dereferálni vagy egy primitív értéket megváltoztatni, akkor úgy okés lenne. De ha mutable az objektum, akkor a final se segít rajta.
+C - nem, http://stackoverflow.com/questions/4279420/does-use-of-final-keyword-in-java-improve-the-performance.
+zsolt: Ez a munkahelyünkön is előkerült. Akkor abban maradtunk, hogy a final miatti teljesítménynövekedés Android esetén elhanyagolható, de attól még van. Amit linkeltél, ott nézd meg ezt a választ: http://stackoverflow.com/a/21485260. Azt se felejtsd el, hogy nem a final metódusra, hanem a final lokális változóra kérdez rá a feladat.
