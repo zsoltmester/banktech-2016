@@ -1,14 +1,18 @@
-Nem teljesen értem. 
+Nem teljesen értem.
 
 Task18.java
 EgyOsztaly.java
 
 hátha segít megérteni
 
+Ezek is segíthetnek:
+https://plumbr.eu/blog/memory-leaks/what-is-a-permgen-leak
+http://tutorials.jenkov.com/java-reflection/dynamic-class-loading-reloading.html
+
 Több megoldás is jó.
 
-A - ??
-B - ??
-C - ??
-D - ??
-E - ??
+A - igen, a fent linkelt első cikk szerint betelhet a sok class loadolás miatt.
+B - igen, mivel a permgen is memória: "Almost every JVM nowadays uses a separate region of memory, called the Permanent Generation (or PermGen for short), to hold internal representations of java classes."
+C - igen, soha nem is voltak benne, lásd Task18.java
+D - nem, mert a memóriába tölt be, a cpu-nak ehhez semmi köze. (meg amúgy miért csak egy cpu mag szolgálna ki egy threadet?)
+E - nem, a stack != heap és nincsenek itt lokális változók
