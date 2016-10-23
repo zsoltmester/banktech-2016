@@ -1,7 +1,7 @@
 A - nem, 7-et ír ki.
-B - Hamis, mert kötött. 
-C - Igen.
-D - Nem.
+B - Hamis, mert kötött.
+C - Nem, mert balról jobbra.
+D - A fentiek miatt igen.
 
 http://stackoverflow.com/questions/2201688/order-of-execution-of-parameters-guarantees-in-java
-
+http://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.7.4
