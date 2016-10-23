@@ -1,3 +1,5 @@
 A, B - Nem, lásd Lazy.java
 C - Igen, hisz a Lazy változója mindenképpen csak egyszer jöhet létre, és csak a függvényből, synchronized blokkban módosítható.
 D, E - Nem.
+
+zsolt: https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html. Az atomiság a volatile kulcsszóval érhető el objektumok esetén. Enélkül nem biztos, hogy a többi thread látja tögötn a változásokat, amit egy thread csinált. Pontosan ezmiatt kell nekünk a volatile: "Using volatile variables reduces the risk of memory consistency errors, because any write to a volatile variable establishes a happens-before relationship with subsequent reads of that same variable. ".

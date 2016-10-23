@@ -9,7 +9,7 @@
 
 ### TODO
 
-- 12, 16: Béla ezeket nézd meg, mert módosítottam a megoldásod
+- 12, 16, 17: Béla ezeket nézd meg, mert módosítottam a megoldásod
 - 18
 - 20
 - 24
