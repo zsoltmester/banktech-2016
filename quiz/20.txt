@@ -1,0 +1,10 @@
+Tesztek:
+openjdk 8: IllegalStateException
+oracle jdk 8: IllegalStateException
+oracle jdk 7: IllegalStateException
+oracle jdk 6: Vege
+
+A, B: igen, a fentiek miatt
+C - ?, nem hiszem, előhozni se sikerült meg rákeresve is csak azt tudtam meg, hogy subsetnél tud ilyet dobni, de itt meg olyan nincs
+D - nem, mert a generikus tipusok a java 5 feature-ei: http://docs.oracle.com/javase/1.5.0/docs/guide/language/generics.html, azaz előtte nem is voltak, amit supportálnia kell minden JVM-nek.
+E - nem, "ClassCastException - if the specified object cannot be compared with the elements currently in this set" (treeset.add javadoc)
