@@ -9,6 +9,5 @@
 
 ### TODO
 
-- 16: Zsolt ezt nézd meg, mert módosítottam a módosításod :D
 - 18
 - 20
