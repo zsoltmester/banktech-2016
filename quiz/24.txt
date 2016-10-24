@@ -3,8 +3,7 @@ Egy jó válaszlehetőséges!
 A - hamis. Publikus defaultból az interfészek metódusai
 B - én nem látom sehol, hogy deadlock alakulhatna ki. A két lock egymástól független, és nincs kettő egyszerre lefoglalva egy szálon.
     Persze lehet, hogy a Random bele tud szólni, de nem tudom jelenleg elképzelni
-C - Ezt sem látom. Szerintem mindkét osztály megfelelően implementálja a singletont.
-    Esetleg lehet, hogy az a baj, hogy az egyikben interfészt tárolunk, és nem a konkrét osztályt? Bár nem látom miért lenne baj
+C - Igaz, 
+http://stackoverflow.com/questions/11639746/what-is-the-point-of-making-the-singleton-instance-volatile-while-using-double-l
 D, E - Én úgy látom, hogy minden definiált. Nem tudom jelenleg elképzelni a NPE helyét.
 
-Összegezve, eddig nincs jó válasz :(
