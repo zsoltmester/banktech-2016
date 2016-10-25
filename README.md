@@ -10,4 +10,4 @@
 ### TODO
 
 - 18
-- 20 C
+- 21: Bejelöljük-e a C-t?
