@@ -2,7 +2,8 @@ Több megjelölhető válasz van, több megoldással kellene rendelkeznie.
 
 A - Nem, a java állomány ott lesz, így 1 mindenképpen lesz
 B - ?? Nem sikerült még rávennem. Ha a compiler nem a saját mappájába teszi vissza a class-okat, vagy ha "fake" fordítást csinál, akkor lehetséges
-C - ?? Nem sikerült még rávennem. Próbálkoztam azzal, hogy mikor nem hoz létre külön .class fájlokat, de nem jutottam előrébb
+C - ?? Nem sikerült még rávennem. Próbálkoztam azzal, hogy mikor nem hoz létre külön .class fájlokat, de nem jutottam előrébb.
+Talán a Two.java jó lehet. Az a kérdés, hogy ilyenkor is keyword-e a class. Az Objectnek nincs ilyen field-je: https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html. A doksi nem említi, hogy ez keyword lenne: http://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.8.2. Eszerint inkább nem az: http://stackoverflow.com/questions/8545253/difference-between-keyword-and-literal-in-java
 D - Igen, ez a default.
 Task21/X.java :
 
