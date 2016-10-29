@@ -1,5 +1,7 @@
 # Infinite Ringbuffer - BankTech Java Challange 2016
 
+2\. forduló vége: **november 9. éjfél**
+
 ## Maven project fordítása és futtatása
 
 1. Legyen feltelepítve egy *Java 8* és a *JAVA_HOME* környezeti változótok annak rootjába mutasson.
