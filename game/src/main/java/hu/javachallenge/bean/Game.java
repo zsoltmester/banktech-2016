@@ -1,5 +1,7 @@
 package hu.javachallenge.bean;
 
+import java.util.Date;
+
 public class Game {
 
     private Long id;
@@ -8,7 +10,7 @@ public class Game {
     private ConnectionStatus connectionStatus;
     private MapConfiguration mapConfiguration;
     private String status;
-    private String createdTime;
+    private Date createdTime;
 
     public Long getId() {
         return id;
@@ -58,11 +60,11 @@ public class Game {
         this.status = status;
     }
 
-    public String getCreatedTime() {
+    public Date getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(String createdTime) {
+    public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
