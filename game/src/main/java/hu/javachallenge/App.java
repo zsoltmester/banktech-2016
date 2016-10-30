@@ -2,6 +2,7 @@ package hu.javachallenge;
 
 import hu.javachallenge.bean.CreateGameResponse;
 import hu.javachallenge.bean.GameListResponse;
+import hu.javachallenge.bean.GetGameInfoResponse;
 import hu.javachallenge.bean.JoinGameResponse;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
@@ -18,5 +19,8 @@ public class App {
 
         JoinGameResponse joinGameResponse = communicator.joinGame(createGameResponse.getId());
         System.out.println(joinGameResponse.toString());
+
+        GetGameInfoResponse getGameInfoResponse = communicator.getGameInfo(createGameResponse.getId());
+        System.out.println(getGameInfoResponse.toString());
     }
 }
