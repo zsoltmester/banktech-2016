@@ -3,6 +3,7 @@ package hu.javachallenge.communication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.javachallenge.bean.CreateGameResponse;
 import hu.javachallenge.bean.GameListResponse;
+import hu.javachallenge.bean.JoinGameResponse;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -67,6 +68,33 @@ public class CommunicatorImpl implements Communicator {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(response, CreateGameResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO logger
+        }
+
+        return null;
+    }
+
+    @Override
+    public JoinGameResponse joinGame(Long id) {
+        Request request = new Request.Builder()
+                .addHeader("TEAMTOKEN", "3120A9456D1FD8706C223980245717B7")
+                .url(BASE_URL + "game/" + id)
+                .post(RequestBody.create(JSON, ""))
+                .build();
+
+        String response = null;
+        try {
+            response = client.newCall(request).execute().body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO logger
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(response, JoinGameResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO logger
