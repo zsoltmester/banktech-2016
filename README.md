@@ -15,3 +15,7 @@
 2. Importáljátok a projektet: *Import project*, majd válasszátok ki a *pom.xml*-t. A megjelenő ablakban alul van egy *Environment settings...*, itt válasszátok ki, hogy az előre csomagolt helyett a saját 3.3.9-es Maven-eteket használja. Utána tovább addig, amíg az SDK kiválasztó ablakhoz nem kerültök. Itt adjátok hozzá / válasszátok ki a 8-as JDK-t. A végén még egy next és egy finish.
 3. Ha betöltötte a projektet, a jobb alsó sarokban kiírja, hogy *Unregistered VCS root detected*. Válasszátok azt, hogy *Add root*.
 4. Zárjátok be az IDEA-t, másoljátok be a *runConfigurations* mappát a *.idea* mappába, majd indítsátok el az IDEA-t. Ezután lesz egy *clean package* nevű conf, ami futtat egy `mvn clean package`-t és egy *compile and run*, ami lefuttatja az előző confot majd elindítja a jar-t.
+
+## Code Style
+
+Használjuk az IDEA default kódformázóját, amit a következővel lehet futtatni: **ctrl + alt + l**.
