@@ -1,19 +1,17 @@
 package hu.javachallenge.bean;
 
-import java.util.List;
+public class CreateGameResponse {
 
-public class GameListResponse {
-
-    private List<Long> games;
+    private Long id;
     private String message;
     private Integer code;
 
-    public List<Long> getGames() {
-        return games;
+    public Long getId() {
+        return id;
     }
 
-    public void setGames(List<Long> games) {
-        this.games = games;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMessage() {
@@ -34,8 +32,8 @@ public class GameListResponse {
 
     @Override
     public String toString() {
-        return "GameListResponse{" +
-                "games=" + games +
+        return "CreateGameResponse{" +
+                "id=" + id +
                 ", message='" + message + '\'' +
                 ", code=" + code +
                 '}';
