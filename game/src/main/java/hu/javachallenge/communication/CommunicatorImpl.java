@@ -115,4 +115,29 @@ public class CommunicatorImpl implements Communicator {
             return null;
         }
     }
+
+    @Override
+    public ShootResponse shoot(Long gameId, Long submarineId, ShootRequest shootRequest) {
+        Request request = null;
+        try {
+            request = new Request.Builder()
+                    .addHeader("TEAMTOKEN", TEAM_TOKEN)
+                    .url(BASE_URL + "game/" + gameId + "/submarine/" + submarineId + "/shoot")
+                    .post(RequestBody.create(JSON, new ObjectMapper().writeValueAsString(shootRequest)))
+                    .build();
+        } catch (JsonProcessingException e) {
+            // TODO logger
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return new ObjectMapper().readValue(response, ShootResponse.class);
+        } catch (IOException e) {
+            // TODO logger
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
