@@ -2,7 +2,7 @@ package hu.javachallenge.bean;
 
 import java.util.List;
 
-public class GameListResponse {
+public class GamesResponse {
 
     private List<Long> games;
     private String message;
@@ -34,7 +34,7 @@ public class GameListResponse {
 
     @Override
     public String toString() {
-        return "GameListResponse{" +
+        return "GamesResponse{" +
                 "games=" + games +
                 ", message='" + message + '\'' +
                 ", code=" + code +

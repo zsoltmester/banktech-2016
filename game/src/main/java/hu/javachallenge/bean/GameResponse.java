@@ -1,6 +1,6 @@
 package hu.javachallenge.bean;
 
-public class GetGameInfoResponse {
+public class GameResponse {
 
     private Game game;
     private String message;
@@ -32,7 +32,7 @@ public class GetGameInfoResponse {
 
     @Override
     public String toString() {
-        return "GetGameInfoResponse{" +
+        return "GameResponse{" +
                 "game=" + game +
                 ", message='" + message + '\'' +
                 ", code=" + code +
