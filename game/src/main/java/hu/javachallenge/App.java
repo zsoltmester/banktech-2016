@@ -17,10 +17,43 @@ public class App {
         JoinGameResponse joinGameResponse = communicator.joinGame(createGameResponse.getId());
         System.out.println(joinGameResponse.toString());
 
-        GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
-        System.out.println(gameResponse.toString());
+        String status;
+        Integer round;
 
-        SubmarinesResponse submarinesResponse = communicator.getSubmarines(createGameResponse.getId());
-        System.out.println(submarinesResponse.toString());
+        do {
+            GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
+            System.out.println(gameResponse.toString());
+
+            status = gameResponse.getGame().getStatus();
+            round = gameResponse.getGame().getRound();
+
+            try {
+                Thread.sleep(333);
+            } catch (InterruptedException e) {
+            }
+
+        } while ("WAITING".equals(status));
+
+        while ("RUNNING".equals(status)) {
+
+            SubmarinesResponse submarinesResponse = communicator.getSubmarines(createGameResponse.getId());
+            System.out.println(submarinesResponse.toString());
+
+            Integer prevRound;
+            do {
+                GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
+                System.out.println(gameResponse.toString());
+
+                status = gameResponse.getGame().getStatus();
+                prevRound = round;
+                round = gameResponse.getGame().getRound();
+
+                try {
+                    Thread.sleep(333);
+                } catch (InterruptedException e) {
+                }
+
+            } while (prevRound.equals(round));
+        }
     }
 }
