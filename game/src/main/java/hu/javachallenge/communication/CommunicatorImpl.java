@@ -8,8 +8,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class CommunicatorImpl implements Communicator {
+
+    private static final Logger LOGGER = Logger.getLogger(CommunicatorImpl.class.getName());
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -31,25 +34,29 @@ public class CommunicatorImpl implements Communicator {
 
         try {
             String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, responseClass);
+            T responseBean = new ObjectMapper().readValue(response, responseClass);
+            LOGGER.info("Response for GET request to '" + relativeUrl + "\': " + responseBean);
+            return responseBean;
         } catch (IOException e) {
-            // TODO logger
+            LOGGER.severe("Failed to execute GET request with URL: '" + relativeUrl + '\'');
             e.printStackTrace();
             return null;
         }
     }
 
-    private <T> T executePostRequest(String relativeUrl, Object requestBody, Class<T> responseClass) {
+    private <T> T executePostRequest(String relativeUrl, Object requestBean, Class<T> responseClass) {
         try {
             Request request = new Request.Builder()
                     .addHeader("TEAMTOKEN", TEAM_TOKEN)
                     .url(BASE_URL + relativeUrl)
-                    .post(RequestBody.create(JSON, requestBody == null ? "" : new ObjectMapper().writeValueAsString(requestBody)))
+                    .post(RequestBody.create(JSON, requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)))
                     .build();
             String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, responseClass);
+            T responseBean = new ObjectMapper().readValue(response, responseClass);
+            LOGGER.info("Response for POST request to '" + relativeUrl + "\': " + responseBean);
+            return responseBean;
         } catch (IOException e) {
-            // TODO logger
+            LOGGER.severe("Failed to execute POST request with URL: '" + relativeUrl + '\'');
             e.printStackTrace();
             return null;
         }

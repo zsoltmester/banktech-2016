@@ -7,17 +7,18 @@ import hu.javachallenge.communication.CommunicatorImpl;
 import java.util.Random;
 
 public class App {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws ClassNotFoundException {
+
+        Class.forName(LoggerConfig.class.getName());
+
         Communicator communicator = new CommunicatorImpl("195.228.45.100", "8080");
 
         CreateGameResponse createGameResponse = communicator.createGame();
-        System.out.println(createGameResponse.toString());
 
-        GamesResponse gamesResponse = communicator.getGames();
-        System.out.println(gamesResponse.toString());
+        communicator.getGames();
 
-        JoinGameResponse joinGameResponse = communicator.joinGame(createGameResponse.getId());
-        System.out.println(joinGameResponse.toString());
+        communicator.joinGame(createGameResponse.getId());
 
         GameResponse gameResponse;
         String status;
@@ -25,7 +26,6 @@ public class App {
 
         do {
             gameResponse = communicator.getGame(createGameResponse.getId());
-            System.out.println(gameResponse.toString());
 
             status = gameResponse.getGame().getStatus();
             round = gameResponse.getGame().getRound();
@@ -40,7 +40,6 @@ public class App {
         while ("RUNNING".equals(status)) {
 
             SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameResponse.getGame().getId());
-            System.out.println(submarinesResponse.toString());
 
             Random randomGenerator = new Random();
 
@@ -49,26 +48,21 @@ public class App {
             Double speed = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxAccelerationPerRound();
             Double turn = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxSteeringPerRound();
             MoveRequest moveRequest = new MoveRequest(speed, turn);
-            MoveResponse moveResponse = communicator.move(gameResponse.getGame().getId(), submarine.getId(), moveRequest);
-            System.out.println(moveResponse.toString());
+            communicator.move(gameResponse.getGame().getId(), submarine.getId(), moveRequest);
 
-            Double angle = randomGenerator.nextDouble() *  360;
+            Double angle = randomGenerator.nextDouble() * 360;
             ShootRequest shootRequest = new ShootRequest(angle);
-            ShootResponse shootResponse = communicator.shoot(gameResponse.getGame().getId(), submarine.getId(), shootRequest);
-            System.out.println(shootResponse.toString());
+            communicator.shoot(gameResponse.getGame().getId(), submarine.getId(), shootRequest);
 
             submarine = submarinesResponse.getSubmarines().get(1 - (round % 2));
 
-            SonarResponse sonarResponse = communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
-            System.out.println(sonarResponse.toString());
+            communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
 
-            ExtendSonarResponse extendSonarResponse = communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());
-            System.out.println(extendSonarResponse.toString());
+            communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());
 
             Integer prevRound;
             do {
                 gameResponse = communicator.getGame(createGameResponse.getId());
-                System.out.println(gameResponse.toString());
 
                 status = gameResponse.getGame().getStatus();
                 prevRound = round;
