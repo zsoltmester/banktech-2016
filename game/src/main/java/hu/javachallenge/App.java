@@ -5,14 +5,32 @@ import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class App {
 
-    public static void main(String[] args) throws ClassNotFoundException {
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
-        Class.forName(LoggerConfig.class.getName());
+    public static void main(String[] args) {
 
-        Communicator communicator = new CommunicatorImpl("195.228.45.100", "8080");
+        try {
+            Class.forName(LoggerConfig.class.getName());
+        } catch (ClassNotFoundException e) {
+            LOGGER.warning("Cannot load logger configuration. Default configuration will be used.");
+            e.printStackTrace();
+        }
+
+        String serverAddress;
+        if (args.length == 0) {
+            serverAddress = "195.228.45.100:8080";
+            LOGGER.warning("No server address given, using the default: " + serverAddress);
+        } else {
+            serverAddress = args[0];
+        }
+
+        ///// TEST communication
+
+        Communicator communicator = new CommunicatorImpl(serverAddress);
 
         CreateGameResponse createGameResponse = communicator.createGame();
 

@@ -22,8 +22,8 @@ public class CommunicatorImpl implements Communicator {
 
     private OkHttpClient client = new OkHttpClient();
 
-    public CommunicatorImpl(String host, String port) {
-        BASE_URL = "http://" + host + ":" + port + "/jc16-srv/";
+    public CommunicatorImpl(String serverAddress) {
+        BASE_URL = "http://" + serverAddress + "/jc16-srv/";
     }
 
     private <T> T executeGetRequest(String relativeUrl, Class<T> responseClass) {
