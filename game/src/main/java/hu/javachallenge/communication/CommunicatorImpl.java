@@ -1,6 +1,5 @@
 package hu.javachallenge.communication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.javachallenge.bean.*;
 import okhttp3.MediaType;
@@ -40,6 +39,22 @@ public class CommunicatorImpl implements Communicator {
         }
     }
 
+    private <T> T executePostRequest(String relativeUrl, Object requestBody, Class<T> responseClass) {
+        try {
+            Request request = new Request.Builder()
+                    .addHeader("TEAMTOKEN", TEAM_TOKEN)
+                    .url(BASE_URL + relativeUrl)
+                    .post(RequestBody.create(JSON, requestBody == null ? "" : new ObjectMapper().writeValueAsString(requestBody)))
+                    .build();
+            String response = client.newCall(request).execute().body().string();
+            return new ObjectMapper().readValue(response, responseClass);
+        } catch (IOException e) {
+            // TODO logger
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public GamesResponse getGames() {
         return executeGetRequest("game", GamesResponse.class);
@@ -47,38 +62,12 @@ public class CommunicatorImpl implements Communicator {
 
     @Override
     public CreateGameResponse createGame() {
-        Request request = new Request.Builder()
-                .addHeader("TEAMTOKEN", TEAM_TOKEN)
-                .url(BASE_URL + "game")
-                .post(RequestBody.create(JSON, ""))
-                .build();
-
-        try {
-            String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, CreateGameResponse.class);
-        } catch (IOException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
+        return executePostRequest("game", null, CreateGameResponse.class);
     }
 
     @Override
     public JoinGameResponse joinGame(Long id) {
-        Request request = new Request.Builder()
-                .addHeader("TEAMTOKEN", TEAM_TOKEN)
-                .url(BASE_URL + "game/" + id)
-                .post(RequestBody.create(JSON, ""))
-                .build();
-
-        try {
-            String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, JoinGameResponse.class);
-        } catch (IOException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
+        return executePostRequest("game/" + id, null, JoinGameResponse.class);
     }
 
     @Override
@@ -93,51 +82,11 @@ public class CommunicatorImpl implements Communicator {
 
     @Override
     public MoveResponse move(Long gameId, Long submarineId, MoveRequest moveRequest) {
-        Request request = null;
-        try {
-            request = new Request.Builder()
-                    .addHeader("TEAMTOKEN", TEAM_TOKEN)
-                    .url(BASE_URL + "game/" + gameId + "/submarine/" + submarineId + "/move")
-                    .post(RequestBody.create(JSON, new ObjectMapper().writeValueAsString(moveRequest)))
-                    .build();
-        } catch (JsonProcessingException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
-
-        try {
-            String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, MoveResponse.class);
-        } catch (IOException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
+        return executePostRequest("game/" + gameId + "/submarine/" + submarineId + "/move", moveRequest, MoveResponse.class);
     }
 
     @Override
     public ShootResponse shoot(Long gameId, Long submarineId, ShootRequest shootRequest) {
-        Request request = null;
-        try {
-            request = new Request.Builder()
-                    .addHeader("TEAMTOKEN", TEAM_TOKEN)
-                    .url(BASE_URL + "game/" + gameId + "/submarine/" + submarineId + "/shoot")
-                    .post(RequestBody.create(JSON, new ObjectMapper().writeValueAsString(shootRequest)))
-                    .build();
-        } catch (JsonProcessingException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
-
-        try {
-            String response = client.newCall(request).execute().body().string();
-            return new ObjectMapper().readValue(response, ShootResponse.class);
-        } catch (IOException e) {
-            // TODO logger
-            e.printStackTrace();
-            return null;
-        }
+        return executePostRequest("game/" + gameId + "/submarine/" + submarineId + "/shoot", shootRequest, ShootResponse.class);
     }
 }
