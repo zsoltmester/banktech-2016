@@ -18,6 +18,6 @@ public class SubmarinesResponse extends StatusResponse {
     public String toString() {
         return "SubmarinesResponse{" +
                 "submarines=" + submarines +
-                '}';
+                "} " + super.toString();
     }
 }

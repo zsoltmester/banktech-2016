@@ -4,6 +4,8 @@ import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
 
+import java.util.Random;
+
 public class App {
     public static void main(String[] args) {
         Communicator communicator = new CommunicatorImpl("195.228.45.100", "8080");
@@ -17,11 +19,12 @@ public class App {
         JoinGameResponse joinGameResponse = communicator.joinGame(createGameResponse.getId());
         System.out.println(joinGameResponse.toString());
 
+        GameResponse gameResponse;
         String status;
         Integer round;
 
         do {
-            GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
+            gameResponse = communicator.getGame(createGameResponse.getId());
             System.out.println(gameResponse.toString());
 
             status = gameResponse.getGame().getStatus();
@@ -36,12 +39,23 @@ public class App {
 
         while ("RUNNING".equals(status)) {
 
-            SubmarinesResponse submarinesResponse = communicator.getSubmarines(createGameResponse.getId());
+            SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameResponse.getGame().getId());
             System.out.println(submarinesResponse.toString());
+
+            Random randomGenerator = new Random();
+
+            Integer submarineIndex = randomGenerator.nextInt(submarinesResponse.getSubmarines().size());
+            Submarine submarine = submarinesResponse.getSubmarines().get(submarineIndex);
+
+            Double speed = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxAccelerationPerRound();
+            Double turn = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxSteeringPerRound();
+            MoveRequest moveRequest = new MoveRequest(speed, turn);
+            MoveResponse moveResponse = communicator.move(createGameResponse.getId(), submarine.getId(), moveRequest);
+            System.out.println(moveResponse.toString());
 
             Integer prevRound;
             do {
-                GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
+                gameResponse = communicator.getGame(createGameResponse.getId());
                 System.out.println(gameResponse.toString());
 
                 status = gameResponse.getGame().getStatus();

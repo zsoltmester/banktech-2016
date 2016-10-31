@@ -16,6 +16,6 @@ public class CreateGameResponse extends StatusResponse {
     public String toString() {
         return "CreateGameResponse{" +
                 "id=" + id +
-                '}';
+                "} " + super.toString();
     }
 }

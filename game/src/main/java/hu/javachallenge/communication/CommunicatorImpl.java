@@ -1,5 +1,6 @@
 package hu.javachallenge.communication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.javachallenge.bean.*;
 import okhttp3.MediaType;
@@ -88,5 +89,30 @@ public class CommunicatorImpl implements Communicator {
     @Override
     public SubmarinesResponse getSubmarines(Long id) {
         return executeGetRequest("game/" + id + "/submarine", SubmarinesResponse.class);
+    }
+
+    @Override
+    public MoveResponse move(Long gameId, Long submarineId, MoveRequest moveRequest) {
+        Request request = null;
+        try {
+            request = new Request.Builder()
+                    .addHeader("TEAMTOKEN", TEAM_TOKEN)
+                    .url(BASE_URL + "game/" + gameId + "/submarine/" + submarineId + "/move")
+                    .post(RequestBody.create(JSON, new ObjectMapper().writeValueAsString(moveRequest)))
+                    .build();
+        } catch (JsonProcessingException e) {
+            // TODO logger
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return new ObjectMapper().readValue(response, MoveResponse.class);
+        } catch (IOException e) {
+            // TODO logger
+            e.printStackTrace();
+            return null;
+        }
     }
 }

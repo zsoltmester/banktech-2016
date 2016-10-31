@@ -13,4 +13,6 @@ public interface Communicator {
     GameResponse getGame(Long id);
 
     SubmarinesResponse getSubmarines(Long id);
+
+    MoveResponse move(Long gameId, Long submarineId, MoveRequest request);
 }

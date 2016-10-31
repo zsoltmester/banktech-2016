@@ -18,6 +18,6 @@ public class GamesResponse extends StatusResponse {
     public String toString() {
         return "GamesResponse{" +
                 "games=" + games +
-                '}';
+                "} " + super.toString();
     }
 }
