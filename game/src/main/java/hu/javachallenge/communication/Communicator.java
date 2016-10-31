@@ -19,4 +19,6 @@ public interface Communicator {
     ShootResponse shoot(Long gameId, Long submarineId, ShootRequest request);
 
     SonarResponse sonar(Long gameId, Long submarineId);
+
+    ExtendSonarResponse extendSonar(Long gameId, Long submarineId);
 }

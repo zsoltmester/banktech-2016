@@ -94,4 +94,9 @@ public class CommunicatorImpl implements Communicator {
     public SonarResponse sonar(Long gameId, Long submarineId) {
         return executeGetRequest("game/" + gameId + "/submarine/" + submarineId + "/sonar", SonarResponse.class);
     }
+
+    @Override
+    public ExtendSonarResponse extendSonar(Long gameId, Long submarineId) {
+        return executePostRequest("game/" + gameId + "/submarine/" + submarineId + "/sonar", null, ExtendSonarResponse.class);
+    }
 }

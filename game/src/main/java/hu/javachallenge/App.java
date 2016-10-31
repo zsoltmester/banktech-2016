@@ -62,6 +62,9 @@ public class App {
             SonarResponse sonarResponse = communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
             System.out.println(sonarResponse.toString());
 
+            ExtendSonarResponse extendSonarResponse = communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());
+            System.out.println(extendSonarResponse.toString());
+
             Integer prevRound;
             do {
                 gameResponse = communicator.getGame(createGameResponse.getId());
