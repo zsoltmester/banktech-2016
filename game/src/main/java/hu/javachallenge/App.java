@@ -1,9 +1,6 @@
 package hu.javachallenge;
 
-import hu.javachallenge.bean.CreateGameResponse;
-import hu.javachallenge.bean.GameResponse;
-import hu.javachallenge.bean.GamesResponse;
-import hu.javachallenge.bean.JoinGameResponse;
+import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
 
@@ -22,5 +19,8 @@ public class App {
 
         GameResponse gameResponse = communicator.getGame(createGameResponse.getId());
         System.out.println(gameResponse.toString());
+
+        SubmarinesResponse submarinesResponse = communicator.getSubmarines(createGameResponse.getId());
+        System.out.println(submarinesResponse.toString());
     }
 }

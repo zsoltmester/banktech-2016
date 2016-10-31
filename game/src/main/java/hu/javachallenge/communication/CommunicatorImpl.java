@@ -1,10 +1,7 @@
 package hu.javachallenge.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.javachallenge.bean.CreateGameResponse;
-import hu.javachallenge.bean.GameResponse;
-import hu.javachallenge.bean.GamesResponse;
-import hu.javachallenge.bean.JoinGameResponse;
+import hu.javachallenge.bean.*;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -86,5 +83,10 @@ public class CommunicatorImpl implements Communicator {
     @Override
     public GameResponse getGame(Long id) {
         return executeGetRequest("game/" + id, GameResponse.class);
+    }
+
+    @Override
+    public SubmarinesResponse getSubmarines(Long id) {
+        return executeGetRequest("game/" + id + "/submarine", SubmarinesResponse.class);
     }
 }

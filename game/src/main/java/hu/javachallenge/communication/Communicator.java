@@ -1,9 +1,6 @@
 package hu.javachallenge.communication;
 
-import hu.javachallenge.bean.CreateGameResponse;
-import hu.javachallenge.bean.GameResponse;
-import hu.javachallenge.bean.GamesResponse;
-import hu.javachallenge.bean.JoinGameResponse;
+import hu.javachallenge.bean.*;
 
 public interface Communicator {
 
@@ -14,4 +11,6 @@ public interface Communicator {
     JoinGameResponse joinGame(Long id);
 
     GameResponse getGame(Long id);
+
+    SubmarinesResponse getSubmarines(Long id);
 }
