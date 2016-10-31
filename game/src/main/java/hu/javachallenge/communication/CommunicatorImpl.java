@@ -89,4 +89,9 @@ public class CommunicatorImpl implements Communicator {
     public ShootResponse shoot(Long gameId, Long submarineId, ShootRequest shootRequest) {
         return executePostRequest("game/" + gameId + "/submarine/" + submarineId + "/shoot", shootRequest, ShootResponse.class);
     }
+
+    @Override
+    public SonarResponse sonar(Long gameId, Long submarineId) {
+        return executeGetRequest("game/" + gameId + "/submarine/" + submarineId + "/sonar", SonarResponse.class);
+    }
 }

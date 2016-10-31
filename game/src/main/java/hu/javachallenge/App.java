@@ -44,7 +44,7 @@ public class App {
 
             Random randomGenerator = new Random();
 
-            Submarine submarine = submarinesResponse.getSubmarines().get(0);
+            Submarine submarine = submarinesResponse.getSubmarines().get(round % 2);
 
             Double speed = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxAccelerationPerRound();
             Double turn = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxSteeringPerRound();
@@ -56,6 +56,11 @@ public class App {
             ShootRequest shootRequest = new ShootRequest(angle);
             ShootResponse shootResponse = communicator.shoot(gameResponse.getGame().getId(), submarine.getId(), shootRequest);
             System.out.println(shootResponse.toString());
+
+            submarine = submarinesResponse.getSubmarines().get(1 - (round % 2));
+
+            SonarResponse sonarResponse = communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
+            System.out.println(sonarResponse.toString());
 
             Integer prevRound;
             do {

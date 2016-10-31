@@ -17,4 +17,6 @@ public interface Communicator {
     MoveResponse move(Long gameId, Long submarineId, MoveRequest request);
 
     ShootResponse shoot(Long gameId, Long submarineId, ShootRequest request);
+
+    SonarResponse sonar(Long gameId, Long submarineId);
 }
