@@ -35,7 +35,7 @@ public class CommunicatorImpl implements Communicator {
         try {
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
-            LOGGER.info("Response for GET request to '" + relativeUrl + "\': " + responseBean);
+            LOGGER.fine("Response for GET request to '" + relativeUrl + "\': " + responseBean);
             return responseBean;
         } catch (IOException e) {
             LOGGER.severe("Failed to execute GET request with URL: '" + relativeUrl + '\'');
@@ -53,7 +53,7 @@ public class CommunicatorImpl implements Communicator {
                     .build();
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
-            LOGGER.info("Response for POST request to '" + relativeUrl + "\': " + responseBean);
+            LOGGER.fine("Response for POST request to '" + relativeUrl + "\': " + responseBean);
             return responseBean;
         } catch (IOException e) {
             LOGGER.severe("Failed to execute POST request with URL: '" + relativeUrl + '\'');
