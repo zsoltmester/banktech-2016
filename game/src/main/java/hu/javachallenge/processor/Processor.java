@@ -1,5 +1,9 @@
 package hu.javachallenge.processor;
 
+import hu.javachallenge.bean.Submarine;
+
+import java.util.List;
+
 public interface Processor {
 
     /**

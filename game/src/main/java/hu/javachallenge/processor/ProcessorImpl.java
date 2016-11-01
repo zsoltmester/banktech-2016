@@ -1,13 +1,11 @@
 package hu.javachallenge.processor;
 
 import hu.javachallenge.App;
-import hu.javachallenge.bean.CreateGameResponse;
-import hu.javachallenge.bean.GameResponse;
-import hu.javachallenge.bean.GamesResponse;
-import hu.javachallenge.bean.JoinGameResponse;
+import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ProcessorImpl implements Processor {
@@ -34,7 +32,7 @@ public class ProcessorImpl implements Processor {
 
         GamesResponse gamesResponse = communicator.getGames();
         if (!gamesResponse.getGames().stream().anyMatch(id -> id.equals(gameId))) {
-            LOGGER.warning("Created a game, but the created game id is missing from the available games list.");
+            LOGGER.warning("Created a game, but the created game id is missing from the available games list. Maybe we already joined to it.");
         }
 
         JoinGameResponse joinGameResponse = communicator.joinGame(gameId);
@@ -79,6 +77,8 @@ public class ProcessorImpl implements Processor {
             lastKnownRound = gameResponse.getGame().getRound();
         } while (gameStatus == GAME_STATUS.WAITING);
 
+        LOGGER.info("Game is started.");
+
         // TODO game started, initialize the map, the stats, etc based on the gameResponse
     }
 
@@ -108,6 +108,8 @@ public class ProcessorImpl implements Processor {
         } while (round.equals(lastKnownRound));
 
         lastKnownRound = round;
+
+        LOGGER.info("Next round started: " + lastKnownRound);
     }
 
     @Override

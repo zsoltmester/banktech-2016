@@ -17,8 +17,6 @@ public class Player {
 
             /*///// TEST communication
 
-            SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameResponse.getGame().getId());
-
             Random randomGenerator = new Random();
 
             Submarine submarine = submarinesResponse.getSubmarines().get(round % 2);
