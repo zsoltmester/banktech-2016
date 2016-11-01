@@ -18,4 +18,9 @@ public interface Processor {
      * Wait for the next round.
      */
     void waitForNextRound();
+
+    /**
+     * @return is the game is running or not.
+     */
+    boolean isGameRunning();
 }

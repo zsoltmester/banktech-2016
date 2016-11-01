@@ -13,13 +13,9 @@ public class Player {
 
         processor.waitForStart();
 
-        /*///// TEST communication
+        while (processor.isGameRunning()) {
 
-        GameResponse gameResponse;
-        String status;
-        Integer round;
-
-        while ("RUNNING".equals(status)) {
+            /*///// TEST communication
 
             SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameResponse.getGame().getId());
 
@@ -40,7 +36,9 @@ public class Player {
 
             communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
 
-            communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());
-        }*/
+            communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());*/
+
+            processor.waitForNextRound();
+        }
     }
 }

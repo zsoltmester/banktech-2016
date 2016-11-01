@@ -59,6 +59,7 @@ public class ProcessorImpl implements Processor {
 
     @Override
     public void waitForStart() {
+        GameResponse gameResponse;
         do {
             try {
                 Thread.sleep(SLEEP_TIME_AT_WAITING_FOR_START);
@@ -67,7 +68,7 @@ public class ProcessorImpl implements Processor {
                 e.printStackTrace();
             }
 
-            GameResponse gameResponse = communicator.getGame(gameId);
+            gameResponse = communicator.getGame(gameId);
 
             if (gameResponse.getCode() == 3) {
                 LOGGER.severe("We get back from to server, that the game id doesn't exists.");
@@ -77,6 +78,8 @@ public class ProcessorImpl implements Processor {
             gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
             lastKnownRound = gameResponse.getGame().getRound();
         } while (gameStatus == GAME_STATUS.WAITING);
+
+        // TODO game started, initialize the map, the stats, etc based on the gameResponse
     }
 
     @Override
@@ -100,7 +103,28 @@ public class ProcessorImpl implements Processor {
             gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
             round = gameResponse.getGame().getRound();
 
+            // TODO update the map, the stats, etc based on the gameResponse
+
         } while (round.equals(lastKnownRound));
+
         lastKnownRound = round;
+    }
+
+    @Override
+    public boolean isGameRunning() {
+        switch (gameStatus) {
+            case WAITING:
+                LOGGER.warning("The game is in waiting status, but it is already started once.");
+                return false;
+            case ENDED:
+                LOGGER.info("The game is ended.");
+                return false;
+            case RUNNING:
+                return true;
+            default:
+                LOGGER.severe("Invalid game status: " + gameStatus);
+                System.exit(1);
+        }
+        return false; // unreachable code
     }
 }
