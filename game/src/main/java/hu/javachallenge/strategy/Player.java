@@ -9,11 +9,12 @@ public class Player {
 
     public void play() {
 
-        processor.joinToGame();
-
+        processor.joinGame();
         processor.waitForStart();
 
         while (processor.isGameRunning()) {
+
+            processor.updateSubmarines();
 
             /*///// TEST communication
 

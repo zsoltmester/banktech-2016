@@ -1,9 +1,5 @@
 package hu.javachallenge.processor;
 
-import hu.javachallenge.bean.Submarine;
-
-import java.util.List;
-
 public interface Processor {
 
     /**
@@ -11,7 +7,7 @@ public interface Processor {
      * <p>
      * TODO at the finals, it's logic should be more sophisticated. There maybe we don't have to create a game, just join to one with a given game id.
      */
-    void joinToGame();
+    void joinGame();
 
     /**
      * Wait until the game is not ready.
@@ -27,4 +23,9 @@ public interface Processor {
      * @return is the game is running or not.
      */
     boolean isGameRunning();
+
+    /**
+     * Updates our submarines' status.
+     */
+    void updateSubmarines();
 }

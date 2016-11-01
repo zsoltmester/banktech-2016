@@ -26,7 +26,7 @@ public class ProcessorImpl implements Processor {
     private Integer lastKnownRound;
 
     @Override
-    public void joinToGame() {
+    public void joinGame() {
         CreateGameResponse createGameResponse = communicator.createGame();
         gameId = createGameResponse.getId();
 
@@ -44,7 +44,7 @@ public class ProcessorImpl implements Processor {
                 LOGGER.severe("Cannot join to game, because we not invited.");
                 System.exit(1);
             case 2:
-                LOGGER.warning("Game is in progress.");
+                LOGGER.warning("Game is already in progress.");
                 break;
             case 3:
                 LOGGER.severe("Cannot join to game, the game id doesn't exists.");
@@ -128,5 +128,21 @@ public class ProcessorImpl implements Processor {
                 System.exit(1);
         }
         return false; // unreachable code
+    }
+
+    @Override
+    public void updateSubmarines() {
+        SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameId);
+
+        if (submarinesResponse.getCode() == 3) {
+            LOGGER.severe("We get back from to server, that the game id doesn't exists.");
+            System.exit(1);
+        }
+
+        List<Submarine> submarines = submarinesResponse.getSubmarines();
+
+        // TODO update the map, the stats, etc based on the submarines
+
+        LOGGER.info("Submarines' status updated.");
     }
 }
