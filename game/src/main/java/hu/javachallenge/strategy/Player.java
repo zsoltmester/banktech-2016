@@ -1,20 +1,17 @@
 package hu.javachallenge.strategy;
 
 import hu.javachallenge.processor.Processor;
-import hu.javachallenge.processor.ProcessorImpl;
 
 public class Player {
 
-    private Processor processor = new ProcessorImpl();
-
     public void play() {
 
-        processor.joinGame();
-        processor.waitForStart();
+        Processor.joinGame();
+        Processor.waitForStart();
 
-        while (processor.isGameRunning()) {
+        while (Processor.isGameRunning()) {
 
-            processor.updateSubmarines();
+            Processor.updateSubmarines();
 
             /*///// TEST communication
 
@@ -37,7 +34,7 @@ public class Player {
 
             communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());*/
 
-            processor.waitForNextRound();
+            Processor.waitForNextRound();
         }
     }
 }
