@@ -9,28 +9,15 @@ public class Player {
 
     public void play() {
 
-        if (!processor.joinGame()) {
-            return;
-        }
+        processor.joinToGame();
+
+        processor.waitForStart();
 
         /*///// TEST communication
 
         GameResponse gameResponse;
         String status;
         Integer round;
-
-        do {
-            gameResponse = communicator.getGame(createGameResponse.getId());
-
-            status = gameResponse.getGame().getStatus();
-            round = gameResponse.getGame().getRound();
-
-            try {
-                Thread.sleep(333);
-            } catch (InterruptedException e) {
-            }
-
-        } while ("WAITING".equals(status));
 
         while ("RUNNING".equals(status)) {
 
