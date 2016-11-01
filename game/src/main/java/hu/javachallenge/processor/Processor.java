@@ -215,7 +215,7 @@ public class Processor {
                 LOGGER.warning("The cannot use the following submarine: " + submarine);
                 break;
             case 7:
-                LOGGER.warning("Torpedo cooldown limit not exceeded.");
+                LOGGER.warning("Torpedo is on cooldown.");
                 break;
             case 9:
                 LOGGER.severe("The game is not in progress.");
@@ -227,6 +227,67 @@ public class Processor {
             default:
                 LOGGER.info(submarine + " submarine shoot successfully with angle: " + angle);
                 // TODO update the map based on the shoot action
+        }
+    }
+
+    /**
+     * Use the sonar of the given submarine.
+     */
+    public static void sonar(Long submarine) {
+        // TODO safe check that the action is valid
+
+        SonarResponse sonarResponse = communicator.sonar(gameId, submarine);
+
+        switch (sonarResponse.getCode()) {
+            case 3:
+                LOGGER.severe("The game id doesn't exists.");
+                System.exit(1);
+                break;
+            case 4:
+                LOGGER.warning("The cannot use the following submarine: " + submarine);
+                break;
+            case 9:
+                LOGGER.severe("The game is not in progress.");
+                System.exit(1);
+                break;
+            case 50:
+                LOGGER.warning("Too many action with this submarine this turn.");
+                break;
+            default:
+                LOGGER.info(submarine + " submarine used sonar successfully.");
+                // TODO update the map based on the sonar data
+        }
+    }
+
+    /**
+     * Extend the sonar of the given submarine.
+     */
+    public static void extendSonar(Long submarine) {
+        // TODO safe check that the action is valid
+
+        ExtendSonarResponse extendSonarResponse = communicator.extendSonar(gameId, submarine);
+
+        switch (extendSonarResponse.getCode()) {
+            case 3:
+                LOGGER.severe("The game id doesn't exists.");
+                System.exit(1);
+                break;
+            case 4:
+                LOGGER.warning("The cannot use the following submarine: " + submarine);
+                break;
+            case 8:
+                LOGGER.warning("Extended sonar is on cooldown.");
+                break;
+            case 9:
+                LOGGER.severe("The game is not in progress.");
+                System.exit(1);
+                break;
+            case 50:
+                LOGGER.warning("Too many action with this submarine this turn.");
+                break;
+            default:
+                LOGGER.info(submarine + " submarine extended it's sonar successfully.");
+                // TODO update the map based on the sonar data
         }
     }
 }
