@@ -28,6 +28,6 @@ public class App {
             serverAddress = args[0];
         }
 
-        new Player().play();
+        Player.play();
     }
 }

@@ -4,7 +4,7 @@ import hu.javachallenge.processor.Processor;
 
 public class Player {
 
-    public void play() {
+    public static void play() {
 
         Processor.joinGame();
         Processor.waitForStart();
