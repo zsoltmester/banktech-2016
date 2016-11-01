@@ -27,12 +27,53 @@ public class Processor {
     public static Game game;
     private static Integer lastKnownRound;
 
-    private static void preprocessGameResponse(GameResponse gameResponse) {
-        if (gameResponse.getCode() == 3) {
-            LOGGER.severe("The game id doesn't exists.");
-            System.exit(1);
+    private static boolean isValidResponse(Integer code, String message) {
+        switch (code) {
+            case 1:
+                LOGGER.severe("Cannot join to game, because we not invited. Server message: " + message);
+                System.exit(1);
+            case 2:
+                LOGGER.warning("Game is already in progress. Server message: " + message);
+                break;
+            case 3:
+                LOGGER.severe("The game id doesn't exists. Server message: " + message);
+                System.exit(1);
+                break;
+            case 4:
+                LOGGER.warning("Cannot use the submarine. Server message: " + message);
+                break;
+            case 7:
+                LOGGER.warning("Torpedo is on cooldown. Server message: " + message);
+                break;
+            case 8:
+                LOGGER.warning("Extended sonar is on cooldown. Server message: " + message);
+                break;
+            case 9:
+                LOGGER.severe("The game is not in progress. Server message: " + message);
+                System.exit(1);
+                break;
+            case 10:
+                LOGGER.warning("The submarine already moved. Server message: " + message);
+                break;
+            case 11:
+                LOGGER.warning("Too big acceleration. Server message: " + message);
+                break;
+            case 12:
+                LOGGER.warning("Too big turn. Server message: " + message);
+                break;
+            case 50:
+                LOGGER.warning("Too many action with this submarine this turn. Server message: " + message);
+                break;
+            default:
+                return true;
         }
+        return false;
+    }
 
+    private static void preprocessGameResponse(GameResponse gameResponse) {
+        if (!isValidResponse(gameResponse.getCode(), gameResponse.getMessage())) {
+            return;
+        }
         game = gameResponse.getGame();
     }
 
@@ -51,23 +92,7 @@ public class Processor {
         }
 
         JoinGameResponse joinGameResponse = communicator.joinGame(gameId);
-        switch (joinGameResponse.getCode()) {
-            case 0:
-                LOGGER.info("Successfully joined to the created game.");
-                break;
-            case 1:
-                LOGGER.severe("Cannot join to game, because we not invited.");
-                System.exit(1);
-            case 2:
-                LOGGER.warning("Game is already in progress.");
-                break;
-            case 3:
-                LOGGER.severe("Cannot join to game, the game id doesn't exists.");
-                System.exit(1);
-            default:
-                LOGGER.warning("Unspecified response code: " + joinGameResponse.getCode() + ", with message: " + joinGameResponse.getMessage());
-                break;
-        }
+        isValidResponse(joinGameResponse.getCode(), joinGameResponse.getMessage());
     }
 
     /**
@@ -145,10 +170,8 @@ public class Processor {
      */
     public static void updateSubmarines() {
         SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameId);
-
-        if (submarinesResponse.getCode() == 3) {
-            LOGGER.severe("We get back from to server, that the game id doesn't exists.");
-            System.exit(1);
+        if (!isValidResponse(submarinesResponse.getCode(), submarinesResponse.getMessage())) {
+            return;
         }
 
         List<Submarine> submarines = submarinesResponse.getSubmarines();
@@ -166,35 +189,12 @@ public class Processor {
 
         MoveRequest moveRequest = new MoveRequest(speed, turn);
         MoveResponse moveResponse = communicator.move(gameId, submarine, moveRequest);
-
-        switch (moveResponse.getCode()) {
-            case 3:
-                LOGGER.severe("The game id doesn't exists.");
-                System.exit(1);
-                break;
-            case 4:
-                LOGGER.warning("The cannot use the following submarine: " + submarine);
-                break;
-            case 9:
-                LOGGER.severe("The game is not in progress.");
-                System.exit(1);
-                break;
-            case 10:
-                LOGGER.warning("The submarine already moved: " + submarine);
-                break;
-            case 11:
-                LOGGER.warning("Too big acceleration.");
-                break;
-            case 12:
-                LOGGER.warning("Too big turn.");
-                break;
-            case 50:
-                LOGGER.warning("Too many action with this submarine this turn.");
-                break;
-            default:
-                LOGGER.info(submarine + " submarine moved successfully with speed: " + speed + " and turn: " + turn);
-                // TODO update the map based on the move action
+        if (!isValidResponse(moveResponse.getCode(), moveResponse.getMessage())) {
+            return;
         }
+
+        LOGGER.info(submarine + " submarine moved successfully with speed: " + speed + " and turn: " + turn);
+        // TODO update the map based on the move action
     }
 
     /**
@@ -205,29 +205,12 @@ public class Processor {
 
         ShootRequest shootRequest = new ShootRequest(angle);
         ShootResponse shootResponse = communicator.shoot(gameId, submarine, shootRequest);
-
-        switch (shootResponse.getCode()) {
-            case 3:
-                LOGGER.severe("The game id doesn't exists.");
-                System.exit(1);
-                break;
-            case 4:
-                LOGGER.warning("The cannot use the following submarine: " + submarine);
-                break;
-            case 7:
-                LOGGER.warning("Torpedo is on cooldown.");
-                break;
-            case 9:
-                LOGGER.severe("The game is not in progress.");
-                System.exit(1);
-                break;
-            case 50:
-                LOGGER.warning("Too many action with this submarine this turn.");
-                break;
-            default:
-                LOGGER.info(submarine + " submarine shoot successfully with angle: " + angle);
-                // TODO update the map based on the shoot action
+        if (!isValidResponse(shootResponse.getCode(), shootResponse.getMessage())) {
+            return;
         }
+
+        LOGGER.info(submarine + " submarine shoot successfully with angle: " + angle);
+        // TODO update the map based on the shoot action
     }
 
     /**
@@ -237,26 +220,12 @@ public class Processor {
         // TODO safe check that the action is valid
 
         SonarResponse sonarResponse = communicator.sonar(gameId, submarine);
-
-        switch (sonarResponse.getCode()) {
-            case 3:
-                LOGGER.severe("The game id doesn't exists.");
-                System.exit(1);
-                break;
-            case 4:
-                LOGGER.warning("The cannot use the following submarine: " + submarine);
-                break;
-            case 9:
-                LOGGER.severe("The game is not in progress.");
-                System.exit(1);
-                break;
-            case 50:
-                LOGGER.warning("Too many action with this submarine this turn.");
-                break;
-            default:
-                LOGGER.info(submarine + " submarine used sonar successfully.");
-                // TODO update the map based on the sonar data
+        if (!isValidResponse(sonarResponse.getCode(), sonarResponse.getMessage())) {
+            return;
         }
+
+        LOGGER.info(submarine + " submarine used sonar successfully.");
+        // TODO update the map based on the sonar data
     }
 
     /**
@@ -266,28 +235,11 @@ public class Processor {
         // TODO safe check that the action is valid
 
         ExtendSonarResponse extendSonarResponse = communicator.extendSonar(gameId, submarine);
-
-        switch (extendSonarResponse.getCode()) {
-            case 3:
-                LOGGER.severe("The game id doesn't exists.");
-                System.exit(1);
-                break;
-            case 4:
-                LOGGER.warning("The cannot use the following submarine: " + submarine);
-                break;
-            case 8:
-                LOGGER.warning("Extended sonar is on cooldown.");
-                break;
-            case 9:
-                LOGGER.severe("The game is not in progress.");
-                System.exit(1);
-                break;
-            case 50:
-                LOGGER.warning("Too many action with this submarine this turn.");
-                break;
-            default:
-                LOGGER.info(submarine + " submarine extended it's sonar successfully.");
-                // TODO update the map based on the sonar data
+        if (!isValidResponse(extendSonarResponse.getCode(), extendSonarResponse.getMessage())) {
+            return;
         }
+
+        LOGGER.info(submarine + " submarine extended it's sonar successfully.");
+        // TODO update the map based on the sonar data
     }
 }
