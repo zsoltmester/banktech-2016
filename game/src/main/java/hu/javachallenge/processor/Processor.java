@@ -24,12 +24,12 @@ public class Processor {
     }
 
     private static Long gameId;
-    private static Game game;
+    public static Game game;
     private static Integer lastKnownRound;
 
     private static void preprocessGameResponse(GameResponse gameResponse) {
         if (gameResponse.getCode() == 3) {
-            LOGGER.severe("We get back from to server, that the game id doesn't exists.");
+            LOGGER.severe("The game id doesn't exists.");
             System.exit(1);
         }
 
@@ -156,5 +156,44 @@ public class Processor {
         // TODO update the map based on the 'submarines' instance
 
         LOGGER.info("Submarines' status updated.");
+    }
+
+    /**
+     * Moves the given submarine with the given speed and turn.
+     */
+    public static void move(Long submarine, Double speed, Double turn) {
+        // TODO safe check that the action is valid
+
+        MoveRequest moveRequest = new MoveRequest(speed, turn);
+        MoveResponse moveResponse = communicator.move(gameId, submarine, moveRequest);
+
+        switch (moveResponse.getCode()) {
+            case 3:
+                LOGGER.severe("The game id doesn't exists.");
+                System.exit(1);
+                break;
+            case 4:
+                LOGGER.warning("The cannot use the following submarine: " + submarine);
+                break;
+            case 9:
+                LOGGER.severe("The game is not in progress.");
+                System.exit(1);
+                break;
+            case 10:
+                LOGGER.warning("The submarine already moved: " + submarine);
+                break;
+            case 11:
+                LOGGER.warning("Too big acceleration.");
+                break;
+            case 12:
+                LOGGER.warning("Too big turn.");
+                break;
+            case 50:
+                LOGGER.warning("Too many action with this submarine this turn.");
+                break;
+            default:
+                LOGGER.info(submarine + " submarine moved successfully with speed: " + speed + " and turn: " + turn);
+                // TODO update the map based on the move action
+        }
     }
 }

@@ -1,6 +1,10 @@
 package hu.javachallenge.strategy;
 
+import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.Map;
+import hu.javachallenge.processor.Processor;
+
+import java.util.Random;
 
 /**
  * Just for test.
@@ -11,16 +15,15 @@ public class DummyStrategy implements Strategy {
 
     @Override
     public void onNewRound() {
+        Random randomGenerator = new Random();
+
+        Submarine submarine = map.getSubmarines().get(Processor.game.getRound() % 2);
+
+        Double speed = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxAccelerationPerRound();
+        Double turn = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxSteeringPerRound();
+        Processor.move(submarine.getId(), speed, turn);
+
         /*///// TEST communication
-
-            Random randomGenerator = new Random();
-
-            Submarine submarine = submarinesResponse.getSubmarines().get(round % 2);
-
-            Double speed = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxAccelerationPerRound();
-            Double turn = (randomGenerator.nextDouble() * 2 - 1) * gameResponse.getGame().getMapConfiguration().getMaxSteeringPerRound();
-            MoveRequest moveRequest = new MoveRequest(speed, turn);
-            communicator.move(gameResponse.getGame().getId(), submarine.getId(), moveRequest);
 
             Double angle = randomGenerator.nextDouble() * 360;
             ShootRequest shootRequest = new ShootRequest(angle);
