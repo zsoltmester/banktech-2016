@@ -77,7 +77,7 @@ public class ProcessorImpl implements Processor {
             lastKnownRound = gameResponse.getGame().getRound();
         } while (gameStatus == GAME_STATUS.WAITING);
 
-        LOGGER.info("Game is started.");
+        LOGGER.info("Game is stating now.");
 
         // TODO game started, initialize the map, the stats, etc based on the gameResponse
     }
@@ -102,6 +102,9 @@ public class ProcessorImpl implements Processor {
 
             gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
             round = gameResponse.getGame().getRound();
+            if (gameStatus != GAME_STATUS.RUNNING) {
+                break;
+            }
 
             // TODO update the map, the stats, etc based on the gameResponse
 
@@ -109,7 +112,9 @@ public class ProcessorImpl implements Processor {
 
         lastKnownRound = round;
 
-        LOGGER.info("Next round started: " + lastKnownRound);
+        if (gameStatus != GAME_STATUS.RUNNING) {
+            LOGGER.info("Next round started: " + lastKnownRound);
+        }
     }
 
     @Override
