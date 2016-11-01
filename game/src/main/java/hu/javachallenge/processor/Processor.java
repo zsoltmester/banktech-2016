@@ -196,4 +196,37 @@ public class Processor {
                 // TODO update the map based on the move action
         }
     }
+
+    /**
+     * Shoot with the given submarine and angle.
+     */
+    public static void shoot(Long submarine, Double angle) {
+        // TODO safe check that the action is valid
+
+        ShootRequest shootRequest = new ShootRequest(angle);
+        ShootResponse shootResponse = communicator.shoot(gameId, submarine, shootRequest);
+
+        switch (shootResponse.getCode()) {
+            case 3:
+                LOGGER.severe("The game id doesn't exists.");
+                System.exit(1);
+                break;
+            case 4:
+                LOGGER.warning("The cannot use the following submarine: " + submarine);
+                break;
+            case 7:
+                LOGGER.warning("Torpedo cooldown limit not exceeded.");
+                break;
+            case 9:
+                LOGGER.severe("The game is not in progress.");
+                System.exit(1);
+                break;
+            case 50:
+                LOGGER.warning("Too many action with this submarine this turn.");
+                break;
+            default:
+                LOGGER.info(submarine + " submarine shoot successfully with angle: " + angle);
+                // TODO update the map based on the shoot action
+        }
+    }
 }

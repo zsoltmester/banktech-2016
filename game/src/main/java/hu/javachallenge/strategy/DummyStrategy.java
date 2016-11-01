@@ -23,12 +23,10 @@ public class DummyStrategy implements Strategy {
         Double turn = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxSteeringPerRound();
         Processor.move(submarine.getId(), speed, turn);
 
+        Double angle = randomGenerator.nextDouble() * 360;
+        Processor.shoot(submarine.getId(), angle);
+
         /*///// TEST communication
-
-            Double angle = randomGenerator.nextDouble() * 360;
-            ShootRequest shootRequest = new ShootRequest(angle);
-            communicator.shoot(gameResponse.getGame().getId(), submarine.getId(), shootRequest);
-
             submarine = submarinesResponse.getSubmarines().get(1 - (round % 2));
 
             communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
