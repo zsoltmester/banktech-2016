@@ -27,6 +27,15 @@ public class Processor {
     private static Game game;
     private static Integer lastKnownRound;
 
+    private static void preprocessGameResponse(GameResponse gameResponse) {
+        if (gameResponse.getCode() == 3) {
+            LOGGER.severe("We get back from to server, that the game id doesn't exists.");
+            System.exit(1);
+        }
+
+        game = gameResponse.getGame();
+    }
+
     /**
      * It creates a game, validates that the server created it and then joins to it.
      * <p>
@@ -65,7 +74,6 @@ public class Processor {
      * Wait until the game is not ready.
      */
     public static void waitForStart() {
-        GameResponse gameResponse;
         do {
             try {
                 Thread.sleep(SLEEP_TIME_AT_WAITING_FOR_START);
@@ -74,15 +82,10 @@ public class Processor {
                 e.printStackTrace();
             }
 
-            gameResponse = communicator.getGame(gameId);
+            GameResponse gameResponse = communicator.getGame(gameId);
+            preprocessGameResponse(gameResponse);
 
-            if (gameResponse.getCode() == 3) {
-                LOGGER.severe("We get back from to server, that the game id doesn't exists.");
-                System.exit(1);
-            }
-
-            game = gameResponse.getGame();
-            lastKnownRound = gameResponse.getGame().getRound();
+            lastKnownRound = game.getRound();
 
         } while (game.getStatus().equals(GAME_STATUS.WAITING.name()));
 
@@ -104,13 +107,8 @@ public class Processor {
             }
 
             GameResponse gameResponse = communicator.getGame(gameId);
+            preprocessGameResponse(gameResponse);
 
-            if (gameResponse.getCode() == 3) {
-                LOGGER.severe("We get back from to server, that the game id doesn't exists.");
-                System.exit(1);
-            }
-
-            game = gameResponse.getGame();
             // TODO update the map based on the 'game' instance
 
         } while (game.getStatus().equals(GAME_STATUS.RUNNING.name()) && game.getRound().equals(lastKnownRound));
