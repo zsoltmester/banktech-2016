@@ -14,7 +14,8 @@ public class ProcessorImpl implements Processor {
 
     private static final Logger LOGGER = Logger.getLogger(ProcessorImpl.class.getName());
 
-    private static final Integer SLEEP_TIME_AT_WAITING = 100;
+    private static final Integer SLEEP_TIME_AT_WAITING_FOR_START = 100;
+    private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
     private Communicator communicator = new CommunicatorImpl(App.serverAddress);
 
@@ -23,6 +24,8 @@ public class ProcessorImpl implements Processor {
     }
 
     private Long gameId;
+    private GAME_STATUS gameStatus;
+    private Integer lastKnownRound;
 
     @Override
     public void joinToGame() {
@@ -56,9 +59,14 @@ public class ProcessorImpl implements Processor {
 
     @Override
     public void waitForStart() {
-        String status;
-
         do {
+            try {
+                Thread.sleep(SLEEP_TIME_AT_WAITING_FOR_START);
+            } catch (InterruptedException e) {
+                LOGGER.warning("Exception at Thread.sleep...");
+                e.printStackTrace();
+            }
+
             GameResponse gameResponse = communicator.getGame(gameId);
 
             if (gameResponse.getCode() == 3) {
@@ -66,15 +74,33 @@ public class ProcessorImpl implements Processor {
                 System.exit(1);
             }
 
-            status = gameResponse.getGame().getStatus();
+            gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
+            lastKnownRound = gameResponse.getGame().getRound();
+        } while (gameStatus == GAME_STATUS.WAITING);
+    }
 
+    @Override
+    public void waitForNextRound() {
+        Integer round;
+        do {
             try {
-                Thread.sleep(SLEEP_TIME_AT_WAITING);
+                Thread.sleep(SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND);
             } catch (InterruptedException e) {
                 LOGGER.warning("Exception at Thread.sleep...");
                 e.printStackTrace();
             }
-        } while (GAME_STATUS.WAITING.toString().equals(status));
-    }
 
+            GameResponse gameResponse = communicator.getGame(gameId);
+
+            if (gameResponse.getCode() == 3) {
+                LOGGER.severe("We get back from to server, that the game id doesn't exists.");
+                System.exit(1);
+            }
+
+            gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
+            round = gameResponse.getGame().getRound();
+
+        } while (round.equals(lastKnownRound));
+        lastKnownRound = round;
+    }
 }

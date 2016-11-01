@@ -41,21 +41,6 @@ public class Player {
             communicator.sonar(gameResponse.getGame().getId(), submarine.getId());
 
             communicator.extendSonar(gameResponse.getGame().getId(), submarine.getId());
-
-            Integer prevRound;
-            do {
-                gameResponse = communicator.getGame(createGameResponse.getId());
-
-                status = gameResponse.getGame().getStatus();
-                prevRound = round;
-                round = gameResponse.getGame().getRound();
-
-                try {
-                    Thread.sleep(333);
-                } catch (InterruptedException e) {
-                }
-
-            } while (prevRound.equals(round));
         }*/
     }
 }

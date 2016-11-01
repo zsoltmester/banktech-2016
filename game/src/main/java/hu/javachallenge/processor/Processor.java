@@ -13,4 +13,9 @@ public interface Processor {
      * Wait until the game is not ready.
      */
     void waitForStart();
+
+    /**
+     * Wait for the next round.
+     */
+    void waitForNextRound();
 }
