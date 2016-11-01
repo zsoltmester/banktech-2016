@@ -4,6 +4,7 @@ import hu.javachallenge.App;
 import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
+import hu.javachallenge.map.Map;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,13 +17,14 @@ public class Processor {
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
     private static Communicator communicator = new CommunicatorImpl(App.serverAddress);
+    private static Map map = Map.get();
 
     private enum GAME_STATUS {
         WAITING, RUNNING, ENDED
     }
 
     private static Long gameId;
-    private static GAME_STATUS gameStatus;
+    private static Game game;
     private static Integer lastKnownRound;
 
     /**
@@ -79,20 +81,20 @@ public class Processor {
                 System.exit(1);
             }
 
-            gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
+            game = gameResponse.getGame();
             lastKnownRound = gameResponse.getGame().getRound();
-        } while (gameStatus == GAME_STATUS.WAITING);
+
+        } while (game.getStatus().equals(GAME_STATUS.WAITING.name()));
 
         LOGGER.info("Game is stating now.");
 
-        // TODO game started, initialize the map, the stats, etc based on the gameResponse
+        // TODO game started, initialize the map based on the 'game' instance
     }
 
     /**
      * Wait for the next round.
      */
     public static void waitForNextRound() {
-        Integer round;
         do {
             try {
                 Thread.sleep(SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND);
@@ -108,19 +110,14 @@ public class Processor {
                 System.exit(1);
             }
 
-            gameStatus = GAME_STATUS.valueOf(gameResponse.getGame().getStatus());
-            round = gameResponse.getGame().getRound();
-            if (gameStatus != GAME_STATUS.RUNNING) {
-                break;
-            }
+            game = gameResponse.getGame();
+            // TODO update the map based on the 'game' instance
 
-            // TODO update the map, the stats, etc based on the gameResponse
+        } while (game.getStatus().equals(GAME_STATUS.RUNNING.name()) && game.getRound().equals(lastKnownRound));
 
-        } while (round.equals(lastKnownRound));
+        lastKnownRound = game.getRound();
 
-        lastKnownRound = round;
-
-        if (gameStatus != GAME_STATUS.RUNNING) {
+        if (!game.getStatus().equals(GAME_STATUS.RUNNING.name())) {
             LOGGER.info("Next round started: " + lastKnownRound);
         }
     }
@@ -129,7 +126,7 @@ public class Processor {
      * @return is the game is running or not.
      */
     public static boolean isGameRunning() {
-        switch (gameStatus) {
+        switch (GAME_STATUS.valueOf(game.getStatus())) {
             case WAITING:
                 LOGGER.warning("The game is in waiting status, but it is already started once.");
                 return false;
@@ -139,7 +136,7 @@ public class Processor {
             case RUNNING:
                 return true;
             default:
-                LOGGER.severe("Invalid game status: " + gameStatus);
+                LOGGER.severe("Invalid game status: " + game.getStatus());
                 System.exit(1);
         }
         return false; // unreachable code
@@ -157,8 +154,8 @@ public class Processor {
         }
 
         List<Submarine> submarines = submarinesResponse.getSubmarines();
-
-        // TODO update the map, the stats, etc based on the submarines
+        map.setSubmarines(submarines);
+        // TODO update the map based on the 'submarines' instance
 
         LOGGER.info("Submarines' status updated.");
     }

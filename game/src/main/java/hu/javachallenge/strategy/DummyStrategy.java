@@ -1,9 +1,13 @@
 package hu.javachallenge.strategy;
 
+import hu.javachallenge.map.Map;
+
 /**
  * Just for test.
  */
 public class DummyStrategy implements Strategy {
+
+    private Map map = Map.get();
 
     @Override
     public void onNewRound() {
