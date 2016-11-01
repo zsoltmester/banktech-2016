@@ -4,6 +4,8 @@ import java.util.logging.*;
 
 public class LoggerConfig {
 
+    private static final Level LOG_LEVEL = Level.INFO;
+
     static {
         Logger logger = Logger.getLogger(App.class.getPackage().getName());
 
@@ -18,6 +20,8 @@ public class LoggerConfig {
                         + record.getMessage() + "\n";
             }
         });
+        consoleHandler.setLevel(LOG_LEVEL);
         logger.addHandler(consoleHandler);
+        logger.setLevel(LOG_LEVEL);
     }
 }
