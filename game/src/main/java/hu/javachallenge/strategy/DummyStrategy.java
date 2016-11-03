@@ -11,13 +11,13 @@ import java.util.Random;
  */
 public class DummyStrategy implements Strategy {
 
-    private Map map = Map.get();
+    private Map map = Map.MapConfig.getMap();
 
     @Override
     public void onNewRound() {
         Random randomGenerator = new Random();
 
-        Submarine submarine = map.getSubmarines().get(Processor.game.getRound() % 2);
+        Submarine submarine = map.getOurSubmarines().get(Processor.game.getRound() % 2);
 
         Double speed = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxAccelerationPerRound();
         Double turn = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxSteeringPerRound();
@@ -26,7 +26,7 @@ public class DummyStrategy implements Strategy {
         Double angle = randomGenerator.nextDouble() * 360;
         Processor.shoot(submarine.getId(), angle);
 
-        submarine = map.getSubmarines().get(1 - (Processor.game.getRound() % 2));
+        submarine = map.getOurSubmarines().get(1 - (Processor.game.getRound() % 2));
         Processor.sonar(submarine.getId());
         Processor.extendSonar(submarine.getId());
     }

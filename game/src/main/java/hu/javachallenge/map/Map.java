@@ -4,24 +4,21 @@ import hu.javachallenge.bean.Submarine;
 
 import java.util.List;
 
-public class Map {
+public interface Map {
 
-    private static final Map INSTANCE = new Map();
+    List<Submarine> getOurSubmarines();
 
-    private Map() {
-    }
+    void updateOurSubmarines(List<Submarine> submarines);
 
-    public static Map get() {
-        return INSTANCE;
-    }
+    void print();
 
-    private List<Submarine> submarines;
+    class MapConfig {
 
-    public void setSubmarines(List<Submarine> submarines) {
-        this.submarines = submarines;
-    }
+        private MapConfig() {
+        }
 
-    public List<Submarine> getSubmarines() {
-        return submarines;
+        public static Map getMap() {
+            return SimpleMap.get();
+        }
     }
 }

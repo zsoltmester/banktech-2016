@@ -17,7 +17,7 @@ public class Processor {
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
     private static Communicator communicator = new CommunicatorImpl(App.serverAddress);
-    private static Map map = Map.get();
+    private static Map map = Map.MapConfig.getMap();
 
     private enum GAME_STATUS {
         WAITING, RUNNING, ENDED
@@ -175,7 +175,7 @@ public class Processor {
         }
 
         List<Submarine> submarines = submarinesResponse.getSubmarines();
-        map.setSubmarines(submarines);
+        map.updateOurSubmarines(submarines);
         // TODO update the map based on the 'submarines' instance
 
         LOGGER.info("Submarines' status updated.");
