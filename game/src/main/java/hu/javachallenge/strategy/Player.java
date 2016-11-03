@@ -12,7 +12,7 @@ public class Player {
         Processor.waitForStart();
 
         while (Processor.isGameRunning()) {
-            Processor.updateSubmarines();
+            Processor.updateOurSubmarines();
             STRATEGY.onNewRound();
             Processor.waitForNextRound();
         }

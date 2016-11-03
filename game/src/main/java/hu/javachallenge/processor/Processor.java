@@ -116,7 +116,7 @@ public class Processor {
 
         LOGGER.info("Game is stating now.");
 
-        // TODO game started, initialize the map based on the 'game' instance
+        map.initialize(game);
     }
 
     /**
@@ -133,8 +133,6 @@ public class Processor {
 
             GameResponse gameResponse = communicator.getGame(gameId);
             preprocessGameResponse(gameResponse);
-
-            // TODO update the map based on the 'game' instance
 
         } while (game.getStatus().equals(GAME_STATUS.RUNNING.name()) && game.getRound().equals(lastKnownRound));
 
@@ -168,7 +166,7 @@ public class Processor {
     /**
      * Updates our submarines' status.
      */
-    public static void updateSubmarines() {
+    public static void updateOurSubmarines() {
         SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameId);
         if (!isValidResponse(submarinesResponse.getCode(), submarinesResponse.getMessage())) {
             return;
@@ -176,9 +174,8 @@ public class Processor {
 
         List<Submarine> submarines = submarinesResponse.getSubmarines();
         map.updateOurSubmarines(submarines);
-        // TODO update the map based on the 'submarines' instance
 
-        LOGGER.info("Submarines' status updated.");
+        LOGGER.info("Our submarines' status updated.");
     }
 
     /**
@@ -194,7 +191,9 @@ public class Processor {
         }
 
         LOGGER.info(submarine + " submarine moved successfully with speed: " + speed + " and turn: " + turn);
-        // TODO update the map based on the move action
+
+        // updates our submarines after the move action
+        updateOurSubmarines();
     }
 
     /**
@@ -210,7 +209,8 @@ public class Processor {
         }
 
         LOGGER.info(submarine + " submarine shoot successfully with angle: " + angle);
-        // TODO update the map based on the shoot action
+
+        map.submarineShoot(submarine, angle);
     }
 
     /**
@@ -225,7 +225,8 @@ public class Processor {
         }
 
         LOGGER.info(submarine + " submarine used sonar successfully.");
-        // TODO update the map based on the sonar data
+
+        map.processSonarResult(sonarResponse.getEntities());
     }
 
     /**
@@ -240,6 +241,5 @@ public class Processor {
         }
 
         LOGGER.info(submarine + " submarine extended it's sonar successfully.");
-        // TODO update the map based on the sonar data
     }
 }
