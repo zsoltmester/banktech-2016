@@ -2,6 +2,7 @@ package hu.javachallenge.map;
 
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Game;
+import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Submarine;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public interface Map {
 
     void initialize(Game game);
+
+    MapConfiguration getConfiguration();
 
     List<Submarine> getOurSubmarines();
 
@@ -26,7 +29,7 @@ public interface Map {
         }
 
         public static Map getMap() {
-            return SimpleMap.get();
+            return MapGui.get();
         }
     }
 }

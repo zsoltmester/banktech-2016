@@ -179,21 +179,39 @@ public class Processor {
     }
 
     /**
-     * Moves the given submarine with the given speed and turn.
+     * Moves the given submarine with the given acceleration and turn.
      */
-    public static void move(Long submarine, Double speed, Double turn) {
-        // TODO safe check that the action is valid
+    public static void move(Long submarineId, double acceleration, double turn) {
+        Submarine submarine = map.getOurSubmarines().stream()
+                .filter(otherSubmarine -> otherSubmarine.getId().equals(submarineId)).findAny().orElseGet(() -> null);
+        if (submarine == null) {
+            LOGGER.warning("Safe check triggered: invalid submarine ID.");
+            return;
+        }
+        int maxAccelerationPerRound = map.getConfiguration().getMaxAccelerationPerRound();
+        if (Math.abs(acceleration) > maxAccelerationPerRound) {
+            acceleration = acceleration > 0 ? maxAccelerationPerRound : -maxAccelerationPerRound;
+            LOGGER.warning("Safe check triggered: decreased the acceleration to the maximum per round.");
+        }
+        double currentSpeed = submarine.getVelocity();
+        int maxSpeed = map.getConfiguration().getMaxSpeed();
+        if (acceleration + currentSpeed > maxSpeed) {
+            acceleration = maxSpeed - currentSpeed;
+            LOGGER.warning("Safe check triggered: decreased the acceleration to not to exceed the max speed.");
+        }
+        int maxSteeringPerRound = map.getConfiguration().getMaxSteeringPerRound();
+        if (Math.abs(turn) > maxSteeringPerRound) {
+            turn = turn > 0 ? maxSteeringPerRound : -maxSteeringPerRound;
+            LOGGER.warning("Safe check triggered: decreased the turn to the maximum per round.");
+        }
 
-        MoveRequest moveRequest = new MoveRequest(speed, turn);
-        MoveResponse moveResponse = communicator.move(gameId, submarine, moveRequest);
+        MoveRequest moveRequest = new MoveRequest(acceleration, turn);
+        MoveResponse moveResponse = communicator.move(gameId, submarineId, moveRequest);
         if (!isValidResponse(moveResponse.getCode(), moveResponse.getMessage())) {
             return;
         }
 
-        LOGGER.info(submarine + " submarine moved successfully with speed: " + speed + " and turn: " + turn);
-
-        // updates our submarines after the move action
-        updateOurSubmarines();
+        LOGGER.info(submarineId + " submarine moved successfully with acceleration: " + acceleration + " and turn: " + turn);
     }
 
     /**

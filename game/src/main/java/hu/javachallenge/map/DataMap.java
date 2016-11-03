@@ -2,36 +2,44 @@ package hu.javachallenge.map;
 
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Game;
+import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Submarine;
 
 import java.util.List;
 
-public class SimpleMap implements Map {
+class DataMap implements Map {
 
-    private static final SimpleMap INSTANCE = new SimpleMap();
+    private static final DataMap INSTANCE = new DataMap();
 
-    SimpleMap() {
+    DataMap() {
     }
 
-    static SimpleMap get() {
+    static DataMap get() {
         return INSTANCE;
     }
 
-    private List<Submarine> submarines;
+    protected MapConfiguration configuration;
+
+    protected List<Submarine> ourSubmarines;
 
     @Override
     public void initialize(Game game) {
-        // TODO
+        this.configuration = game.getMapConfiguration();
+    }
+
+    @Override
+    public MapConfiguration getConfiguration() {
+        return configuration;
     }
 
     @Override
     public List<Submarine> getOurSubmarines() {
-        return submarines;
+        return ourSubmarines;
     }
 
     @Override
     public void updateOurSubmarines(List<Submarine> submarines) {
-        this.submarines = submarines;
+        this.ourSubmarines = submarines;
     }
 
     @Override

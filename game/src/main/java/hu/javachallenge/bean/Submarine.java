@@ -6,8 +6,8 @@ public class Submarine {
     private Long id;
     private Position position;
     private Owner owner;
-    private Integer velocity;
-    private Integer angle;
+    private Double velocity;
+    private Double angle;
     private Integer hp;
     private Integer sonarCooldown;
     private Integer torpedoCooldown;
@@ -45,19 +45,19 @@ public class Submarine {
         this.owner = owner;
     }
 
-    public Integer getVelocity() {
+    public Double getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Integer velocity) {
+    public void setVelocity(Double velocity) {
         this.velocity = velocity;
     }
 
-    public Integer getAngle() {
+    public Double getAngle() {
         return angle;
     }
 
-    public void setAngle(Integer angle) {
+    public void setAngle(Double angle) {
         this.angle = angle;
     }
 
