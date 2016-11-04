@@ -27,8 +27,9 @@ public class Processor {
     public static Game game;
     private static Integer lastKnownRound;
 
-    private static boolean isValidResponse(Integer code, String message) {
-        switch (code) {
+    private static boolean isValidResponse(StatusResponse response) {
+        String message = response.getMessage();
+        switch (response.getCode()) {
             case 1:
                 LOGGER.severe("Cannot join to game, because we not invited. Server message: " + message);
                 System.exit(1);
@@ -71,7 +72,7 @@ public class Processor {
     }
 
     private static void preprocessGameResponse(GameResponse gameResponse) {
-        if (!isValidResponse(gameResponse.getCode(), gameResponse.getMessage())) {
+        if (!isValidResponse(gameResponse)) {
             return;
         }
         game = gameResponse.getGame();
@@ -92,7 +93,7 @@ public class Processor {
         }
 
         JoinGameResponse joinGameResponse = communicator.joinGame(gameId);
-        isValidResponse(joinGameResponse.getCode(), joinGameResponse.getMessage());
+        isValidResponse(joinGameResponse);
     }
 
     /**
@@ -168,7 +169,7 @@ public class Processor {
      */
     public static void updateOurSubmarines() {
         SubmarinesResponse submarinesResponse = communicator.getSubmarines(gameId);
-        if (!isValidResponse(submarinesResponse.getCode(), submarinesResponse.getMessage())) {
+        if (!isValidResponse(submarinesResponse)) {
             return;
         }
 
@@ -207,7 +208,7 @@ public class Processor {
 
         MoveRequest moveRequest = new MoveRequest(acceleration, turn);
         MoveResponse moveResponse = communicator.move(gameId, submarineId, moveRequest);
-        if (!isValidResponse(moveResponse.getCode(), moveResponse.getMessage())) {
+        if (!isValidResponse(moveResponse)) {
             return;
         }
 
@@ -222,7 +223,7 @@ public class Processor {
 
         ShootRequest shootRequest = new ShootRequest(angle);
         ShootResponse shootResponse = communicator.shoot(gameId, submarine, shootRequest);
-        if (!isValidResponse(shootResponse.getCode(), shootResponse.getMessage())) {
+        if (!isValidResponse(shootResponse)) {
             return;
         }
 
@@ -238,7 +239,7 @@ public class Processor {
         // TODO safe check that the action is valid
 
         SonarResponse sonarResponse = communicator.sonar(gameId, submarine);
-        if (!isValidResponse(sonarResponse.getCode(), sonarResponse.getMessage())) {
+        if (!isValidResponse(sonarResponse)) {
             return;
         }
 
@@ -254,7 +255,7 @@ public class Processor {
         // TODO safe check that the action is valid
 
         ExtendSonarResponse extendSonarResponse = communicator.extendSonar(gameId, submarine);
-        if (!isValidResponse(extendSonarResponse.getCode(), extendSonarResponse.getMessage())) {
+        if (!isValidResponse(extendSonarResponse)) {
             return;
         }
 

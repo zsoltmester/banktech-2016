@@ -70,11 +70,12 @@ class MapGui extends DataMap {
 
             // paint our submarines
             graphics.setColor(Color.GREEN); // TODO calculate color from name
-            ourSubmarines.forEach(submarine -> {
-                graphics.fillOval(submarine.getPosition().getX(), submarine.getPosition().getY(),
-                        configuration.getSubmarineSize() / 2, configuration.getSubmarineSize() / 2);
-            });
-
+            if(ourSubmarines != null) {
+                ourSubmarines.forEach(submarine -> {
+                    graphics.fillOval(submarine.getPosition().getX(), submarine.getPosition().getY(),
+                            configuration.getSubmarineSize() / 2, configuration.getSubmarineSize() / 2);
+                });
+            }
             // TODO paint the other objects
         }
     }
