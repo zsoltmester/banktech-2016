@@ -42,6 +42,8 @@ class MapGui extends DataMap {
 
     private class MapPanel extends JPanel {
 
+        private static final float SIZE_MULTIPLIER = 0.5f;
+
         private MapConfiguration configuration;
 
         private MapPanel(MapConfiguration configuration) {
@@ -50,7 +52,7 @@ class MapGui extends DataMap {
 
         @Override
         public Dimension getPreferredSize() {
-            return new Dimension(configuration.getWidth(), configuration.getHeight());
+            return new Dimension((int) (configuration.getWidth() * SIZE_MULTIPLIER), (int) (configuration.getHeight() * SIZE_MULTIPLIER));
         }
 
         @Override
@@ -59,21 +61,21 @@ class MapGui extends DataMap {
 
             // paint the background
             graphics.setColor(Color.BLUE);
-            graphics.fillRect(0, 0, configuration.getWidth(), configuration.getHeight());
+            graphics.fillRect(0, 0, (int) (configuration.getWidth() * SIZE_MULTIPLIER), (int) (configuration.getHeight() * SIZE_MULTIPLIER));
 
             // paint the islands
             graphics.setColor(Color.BLACK);
             configuration.getIslandPositions().forEach(islandPosition -> {
-                graphics.fillOval(islandPosition.getX(), islandPosition.getY(),
-                        configuration.getIslandSize() / 2, configuration.getIslandSize() / 2);
+                graphics.fillOval((int) (islandPosition.getX() * SIZE_MULTIPLIER), (int) (islandPosition.getY() * SIZE_MULTIPLIER),
+                        (int) ((configuration.getIslandSize() * SIZE_MULTIPLIER) / 2), (int) (configuration.getIslandSize() * SIZE_MULTIPLIER) / 2);
             });
 
             // paint our submarines
             graphics.setColor(Color.GREEN); // TODO calculate color from name
-            if(ourSubmarines != null) {
+            if (ourSubmarines != null) {
                 ourSubmarines.forEach(submarine -> {
-                    graphics.fillOval(submarine.getPosition().getX(), submarine.getPosition().getY(),
-                            configuration.getSubmarineSize() / 2, configuration.getSubmarineSize() / 2);
+                    graphics.fillOval((int) (submarine.getPosition().getX() * SIZE_MULTIPLIER), (int) (submarine.getPosition().getY() * SIZE_MULTIPLIER),
+                            (int) (configuration.getSubmarineSize() * SIZE_MULTIPLIER / 2), (int) (configuration.getSubmarineSize() * SIZE_MULTIPLIER / 2));
                 });
             }
             // TODO paint the other objects
