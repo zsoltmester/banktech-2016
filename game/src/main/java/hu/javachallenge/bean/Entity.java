@@ -2,12 +2,15 @@ package hu.javachallenge.bean;
 
 public class Entity {
 
+    public static final String SUBMARINE = "Submarine";
+    public static final String TORPEDO = "Torpedo";
+
     private String type;
     private Long id;
     private Position position;
     private Owner owner;
-    private Integer velocity;
-    private Integer angle;
+    private Double velocity;
+    private Double angle;
     private Integer roundsMoved;
 
     public String getType() {
@@ -42,19 +45,19 @@ public class Entity {
         this.owner = owner;
     }
 
-    public Integer getVelocity() {
+    public Double getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Integer velocity) {
+    public void setVelocity(Double velocity) {
         this.velocity = velocity;
     }
 
-    public Integer getAngle() {
+    public Double getAngle() {
         return angle;
     }
 
-    public void setAngle(Integer angle) {
+    public void setAngle(Double angle) {
         this.angle = angle;
     }
 

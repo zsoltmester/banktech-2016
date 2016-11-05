@@ -16,8 +16,8 @@ public class Player {
 
         while (Processor.isGameRunning()) {
             Processor.updateOurSubmarines();
-            MAP.print();
             STRATEGY.onNewRound();
+            MAP.print();
             Processor.waitForNextRound();
         }
     }

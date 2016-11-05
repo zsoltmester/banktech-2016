@@ -1,5 +1,6 @@
 package hu.javachallenge.strategy;
 
+import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.Map;
@@ -24,7 +25,7 @@ public class MoveUtil {
         return targetAcceleration;
     }
 
-    public static double getTurnForTargetPosition(Submarine submarine, Position targetPosition) {
+    public static double getAngleForTargetPosition(Submarine submarine, Position targetPosition) {
         Position submarinePosition = submarine.getPosition();
         double currentDirection = submarine.getAngle();
         double sx = submarinePosition.getX();
@@ -41,6 +42,13 @@ public class MoveUtil {
         if(toAngleInDegree < 0) // positive correction -> 0 - 360
             toAngleInDegree = 360.0 + toAngleInDegree;
 
+        return toAngleInDegree;
+    }
+
+    public static double getTurnForTargetPosition(Submarine submarine, Position targetPosition) {
+        double currentDirection = submarine.getAngle();
+        double toAngleInDegree = getAngleForTargetPosition(submarine, targetPosition);
+
         Integer maxSteering = map.getConfiguration().getMaxSteeringPerRound();
 
         double targetTurn = toAngleInDegree - currentDirection;
@@ -55,5 +63,11 @@ public class MoveUtil {
         }
 
         return targetTurn;
+    }
+
+    public static double getAngleForShootTarget(Submarine submarine, Entity target) {
+        // TODO
+
+        return 0.0;
     }
 }

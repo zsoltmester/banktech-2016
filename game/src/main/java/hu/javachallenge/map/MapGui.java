@@ -1,11 +1,13 @@
 package hu.javachallenge.map;
 
+import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Game;
 import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Position;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 class MapGui extends DataMap {
 
@@ -24,7 +26,7 @@ class MapGui extends DataMap {
     public void initialize(Game game) {
         super.initialize(game);
         mapPanel = new MapPanel(super.configuration);
-        JFrame frame = new JFrame("Infinite Ringbuffer");
+        JFrame frame = new JFrame(ourName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(mapPanel);
@@ -64,11 +66,28 @@ class MapGui extends DataMap {
             graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
+            if(entities != null) {
+                // paint entities
+                getEntities().forEach(entity -> {
+                    if(entity.getType().equals(Entity.SUBMARINE)) {
+                        if(!entity.getOwner().getName().equals(ourName)) {
+                            graphics.setColor(Color.RED);
+                            fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
+                        }
+                    }
+                    else if(entity.getType().equals(Entity.TORPEDO)) {
+                        graphics.setColor(Color.ORANGE);
+                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
+                        graphics.setColor(Color.CYAN);
+                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange());
+                    }
+                });
+            }
 
             // paint our submarines
             if (ourSubmarines != null) {
                 // paint sonars
-                graphics.setColor(Color.YELLOW); // TODO calculate color from name
+                graphics.setColor(Color.YELLOW);
                 ourSubmarines.forEach(submarine -> {
 
                     boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
@@ -80,12 +99,11 @@ class MapGui extends DataMap {
                 // paint submarine
                 graphics.setColor(Color.GREEN); // TODO calculate color from name
                 ourSubmarines.forEach(submarine -> {
-
                     fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize());
                 });
             }
-            // TODO paint the other objects
 
+            // TODO paint the other objects
 
             // paint the islands
             graphics.setColor(Color.BLACK);

@@ -18,7 +18,7 @@ public class MapConfiguration {
     private Integer extendedSonarRange;
     private Integer extendedSonarRounds;
     private Integer extendedSonarCooldown;
-    private Integer torpedoSpeed;
+    private Double torpedoSpeed;
     private Integer torpedoExplosionRadius;
     private Integer roundLength;
     private Integer islandSize;
@@ -142,11 +142,11 @@ public class MapConfiguration {
         this.extendedSonarCooldown = extendedSonarCooldown;
     }
 
-    public Integer getTorpedoSpeed() {
+    public Double getTorpedoSpeed() {
         return torpedoSpeed;
     }
 
-    public void setTorpedoSpeed(Integer torpedoSpeed) {
+    public void setTorpedoSpeed(Double torpedoSpeed) {
         this.torpedoSpeed = torpedoSpeed;
     }
 

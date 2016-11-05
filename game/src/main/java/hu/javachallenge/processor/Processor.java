@@ -245,7 +245,7 @@ public class Processor {
 
         LOGGER.info(submarine + " submarine used sonar successfully.");
 
-        map.processSonarResult(sonarResponse.getEntities());
+        map.processSonarResult(submarine, sonarResponse.getEntities());
     }
 
     /**

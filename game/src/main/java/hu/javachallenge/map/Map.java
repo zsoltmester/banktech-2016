@@ -6,8 +6,10 @@ import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Submarine;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface Map {
+    String ourName = "Infinite Ringbuffer";
 
     void initialize(Game game);
 
@@ -15,11 +17,14 @@ public interface Map {
 
     List<Submarine> getOurSubmarines();
 
+    Stream<Entity> getEntities();
+    List<Entity> getEntities(Long submarine);
+
     void updateOurSubmarines(List<Submarine> submarines);
 
     void submarineShoot(Long submarine, Double angle);
 
-    void processSonarResult(List<Entity> entities);
+    void processSonarResult(Long submarine, List<Entity> entities);
 
     void print();
 

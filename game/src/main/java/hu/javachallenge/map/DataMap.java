@@ -1,11 +1,9 @@
 package hu.javachallenge.map;
 
-import hu.javachallenge.bean.Entity;
-import hu.javachallenge.bean.Game;
-import hu.javachallenge.bean.MapConfiguration;
-import hu.javachallenge.bean.Submarine;
+import hu.javachallenge.bean.*;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 class DataMap implements Map {
 
@@ -21,6 +19,8 @@ class DataMap implements Map {
     protected MapConfiguration configuration;
 
     protected List<Submarine> ourSubmarines;
+
+    protected HashMap<Long, List<Entity>> entities = new HashMap<>();
 
     @Override
     public void initialize(Game game) {
@@ -38,18 +38,41 @@ class DataMap implements Map {
     }
 
     @Override
+    public Stream<Entity> getEntities() {
+        return entities.values().stream().flatMap(Collection::stream);
+    }
+
+    @Override
+    public List<Entity> getEntities(Long submarine) {
+        return entities.get(submarine);
+    }
+
+    @Override
     public void updateOurSubmarines(List<Submarine> submarines) {
         this.ourSubmarines = submarines;
     }
 
     @Override
     public void submarineShoot(Long submarine, Double angle) {
+        /*
+        Entity entity = new Entity();
+        entity.setPosition(ourSubmarines.stream().filter(s -> s.getId().equals(submarine)).findFirst().orElse(null)
+            .getPosition());
+        entity.setAngle(angle);
+        entity.setOwner(new Owner(ourName));
+        entity.setRoundsMoved(0);
+        entity.setVelocity(configuration.getTorpedoSpeed());
+        entity.setType("Torpedo");
+
+        this.entities.put(-1L, Collections.singletonList(entity));
+        */
         // TODO
+        // but nothing to do
     }
 
     @Override
-    public void processSonarResult(List<Entity> entities) {
-        // TODO
+    public void processSonarResult(Long submarine, List<Entity> entities) {
+        this.entities.put(submarine, entities);
     }
 
     @Override
