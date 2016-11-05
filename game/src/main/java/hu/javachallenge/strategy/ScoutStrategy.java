@@ -1,6 +1,5 @@
 package hu.javachallenge.strategy;
 
-import hu.javachallenge.bean.Entity;
 import hu.javachallenge.map.Map;
 import hu.javachallenge.processor.Processor;
 
@@ -21,17 +20,19 @@ public class ScoutStrategy implements Strategy {
                     MoveUtil.getAccelerationForTargetSpeed(submarine, map.getConfiguration().getMaxSpeed()),
                     MoveUtil.getTurnForTargetPosition(submarine, map.getConfiguration().getIslandPositions().get(0)));
 
-            if(submarine.getTorpedoCooldown() == 0) {
-                Entity entity = map.getEntities().filter(e -> !e.getOwner().getName().equals(Map.ourName))
+            if(submarine.getTorpedoCooldown() == 0) {/*
+                map.getEntities().filter(e -> !e.getOwner().getName().equals(Map.ourName))
                         .filter(e -> e.getType().equals(Entity.SUBMARINE))
+                        .map(e -> MoveUtil.getPositionWhereShootTarget(submarine, e))
+                        .sorted((p1, p2) -> p1)
                         .findFirst().orElse(null);
 
                 Double direction = 270.0;
 
                 if(entity != null) {
-                    direction = MoveUtil.getAngleForTargetPosition(submarine, entity.getPosition());
+                    direction = MoveUtil.getAngleForShootTarget(submarine, entity);
                 }
-                Processor.shoot(submarine.getId(), direction);
+                Processor.shoot(submarine.getId(), direction);*/
             }
             if(submarine.getSonarCooldown() == 0) {
                 Processor.sonar(submarine.getId());

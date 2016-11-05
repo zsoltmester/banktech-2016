@@ -2,30 +2,35 @@ package hu.javachallenge.bean;
 
 public class Position {
 
-    private Integer x;
-    private Integer y;
+    private Double x;
+    private Double y;
 
-    public Integer getX() {
+    public Double getX() {
         return x;
     }
 
-    public void setX(Integer x) {
+    public void setX(Double x) {
         this.x = x;
     }
 
-    public Integer getY() {
+    public Double getY() {
         return y;
     }
 
-    public void setY(Integer y) {
+    public void setY(Double y) {
         this.y = y;
     }
 
     public Position() {}
 
-    public Position(Integer x, Integer y) {
-        this.x = x;
-        this.y = y;
+    public Position(Number x, Number y) {
+        this.x = x.doubleValue();
+        this.y = y.doubleValue();
+    }
+
+    public double distance(Position other) {
+        return Math.sqrt((other.getX() - getX()) * (other.getX() - getX()) +
+                (other.getY() - getY()) * (other.getY() - getY()));
     }
 
     @Override

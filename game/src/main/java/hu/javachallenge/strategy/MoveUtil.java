@@ -5,6 +5,9 @@ import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.Map;
 
+import java.util.OptionalDouble;
+import java.util.stream.DoubleStream;
+
 public class MoveUtil {
 
     private static Map map = Map.MapConfig.getMap();
@@ -27,7 +30,7 @@ public class MoveUtil {
 
     public static double getAngleForTargetPosition(Submarine submarine, Position targetPosition) {
         Position submarinePosition = submarine.getPosition();
-        double currentDirection = submarine.getAngle();
+
         double sx = submarinePosition.getX();
         double sy = submarinePosition.getY();
         double tx = targetPosition.getX();
@@ -71,9 +74,51 @@ public class MoveUtil {
         return 0.0;
     }
 
-    public static double getAngleForShootTarget(Submarine submarine, Entity targetEntity) {
-        // TODO
+    public static Position getPositionWhereShootTarget(Submarine submarine, Entity targetEntity) {
+        // http://stackoverflow.com/a/2249237
 
-        return 0.0;
+        Position from = submarine.getPosition();
+        Position target = targetEntity.getPosition();
+        Position targetVelocity =
+                new Position(targetEntity.getVelocity() * Math.cos(Math.toRadians(targetEntity.getAngle())),
+                        targetEntity.getVelocity() * Math.sin(Math.toRadians(targetEntity.getAngle())));
+
+        double speed = map.getConfiguration().getTorpedoSpeed();
+
+        // a * x^2 + b * x + c = 0
+
+        double a = targetVelocity.getX() * targetVelocity.getX() +
+                targetVelocity.getY() * targetVelocity.getY() -
+                speed * speed;
+
+        double b = 2 * (targetVelocity.getX() * (target.getX() - from.getX()) +
+                targetVelocity.getY() * (target.getY() - from.getY()));
+
+        double c = (target.getX() - from.getX()) * (target.getX() - from.getX()) +
+                (target.getY() - from.getY()) * (target.getY() - from.getY());
+
+        double discriminant = b * b - 4 * a * c;
+
+        if(discriminant < 0) return null;
+
+        double t1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+        double t2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+        System.out.println(t1 + " " + t2);
+        OptionalDouble first = DoubleStream.of(t1, t2)
+                .filter(d -> d > 0)
+                .sorted().findFirst();
+
+        if(first.isPresent()) {
+            double time = first.getAsDouble();
+
+            Position toTarget = new Position(time * targetVelocity.getX() + target.getX(),
+                    time * targetVelocity.getY() + target.getY());
+
+            System.out.println(toTarget);
+
+            return toTarget;
+        }
+
+        return null;
     }
 }
