@@ -50,6 +50,12 @@ class DataMap implements Map {
     @Override
     public void updateOurSubmarines(List<Submarine> submarines) {
         this.ourSubmarines = submarines;
+
+        for(Long key : entities.keySet().stream()
+                .filter(id -> !submarines.stream().anyMatch(s -> s.getId().equals(id)))
+                .toArray(Long[]::new)) {
+            entities.remove(key);
+        }
     }
 
     @Override

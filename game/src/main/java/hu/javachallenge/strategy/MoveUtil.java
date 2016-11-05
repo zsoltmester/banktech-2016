@@ -65,7 +65,13 @@ public class MoveUtil {
         return targetTurn;
     }
 
-    public static double getAngleForShootTarget(Submarine submarine, Entity target) {
+    public static double getAccelerationToGoThere(Submarine submarine, Position targetPosition) {
+        // TODO
+
+        return 0.0;
+    }
+
+    public static double getAngleForShootTarget(Submarine submarine, Entity targetEntity) {
         // TODO
 
         return 0.0;

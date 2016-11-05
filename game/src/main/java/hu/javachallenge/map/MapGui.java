@@ -1,9 +1,6 @@
 package hu.javachallenge.map;
 
-import hu.javachallenge.bean.Entity;
-import hu.javachallenge.bean.Game;
-import hu.javachallenge.bean.MapConfiguration;
-import hu.javachallenge.bean.Position;
+import hu.javachallenge.bean.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,6 +63,18 @@ class MapGui extends DataMap {
             graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
+            if (ourSubmarines != null) {
+                // paint sonars
+                graphics.setColor(Color.YELLOW);
+                ourSubmarines.forEach(submarine -> {
+
+                    boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
+                    int sonarRange = hasExtendedSonar ? configuration.getExtendedSonarRange() : configuration.getSonarRange();
+
+                    fillCircle(graphics, submarine.getPosition(), sonarRange);
+                });
+            }
+
             if(entities != null) {
                 // paint entities
                 getEntities().forEach(entity -> {
@@ -86,17 +95,6 @@ class MapGui extends DataMap {
 
             // paint our submarines
             if (ourSubmarines != null) {
-                // paint sonars
-                graphics.setColor(Color.YELLOW);
-                ourSubmarines.forEach(submarine -> {
-
-                    boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
-                    int sonarRange = (int)( (hasExtendedSonar ? configuration.getExtendedSonarRange() : configuration.getSonarRange()) * SIZE_MULTIPLIER / 2 );
-
-                    fillCircle(graphics, submarine.getPosition(), sonarRange);
-                });
-
-                // paint submarine
                 graphics.setColor(Color.GREEN); // TODO calculate color from name
                 ourSubmarines.forEach(submarine -> {
                     fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize());
@@ -104,6 +102,25 @@ class MapGui extends DataMap {
             }
 
             // TODO paint the other objects
+
+            // paint the HP-s
+            if (ourSubmarines != null) {
+                for(int i = 0; i < ourSubmarines.size(); ++i) {
+                    Submarine submarine = ourSubmarines.get(i);
+
+                    int hp = submarine.getHp();
+
+                    graphics.setColor(Color.GREEN);
+                    graphics.fillRect(0, i*5, hp*2, 5);
+                    if(hp != 100) {
+                        graphics.setColor(Color.RED);
+                        graphics.fillRect(hp * 2, i * 5, (100 - hp) * 2, 5);
+                    }
+                }
+                ourSubmarines.forEach(submarine -> {
+                    int hp = submarine.getHp();
+                });
+            }
 
             // paint the islands
             graphics.setColor(Color.BLACK);
