@@ -62,7 +62,7 @@ class MapGui extends DataMap {
 
             // paint the background
             graphics.setColor(Color.BLUE);
-            graphics.fillRect(0, 0, (int) (configuration.getWidth() * SIZE_MULTIPLIER), (int) (configuration.getHeight() * SIZE_MULTIPLIER));
+            graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
 
             // paint our submarines
@@ -71,12 +71,12 @@ class MapGui extends DataMap {
                 graphics.setColor(Color.YELLOW); // TODO calculate color from name
                 ourSubmarines.forEach(submarine -> {
 
-                    boolean hasExtendedSonar = submarine.getSonarExtended() == 0;
+                    boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
                     int sonarRange = (int)( (hasExtendedSonar ? configuration.getExtendedSonarRange() : configuration.getSonarRange()) * SIZE_MULTIPLIER / 2 );
 
                     fillCircle(graphics, submarine.getPosition(), sonarRange);
                 });
-                
+
                 // paint submarine
                 graphics.setColor(Color.GREEN); // TODO calculate color from name
                 ourSubmarines.forEach(submarine -> {
