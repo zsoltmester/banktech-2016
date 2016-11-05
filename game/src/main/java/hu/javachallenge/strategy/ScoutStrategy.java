@@ -17,7 +17,8 @@ public class ScoutStrategy implements Strategy {
     public void onNewRound() {
         map.getOurSubmarines().forEach(submarine -> {
             Processor.move(submarine.getId(),
-                    MoveUtil.getAccelerationForTargetSpeed(submarine, map.getConfiguration().getMaxSpeed()), 10d);
+                    MoveUtil.getAccelerationForTargetSpeed(submarine, map.getConfiguration().getMaxSpeed()),
+                    MoveUtil.getTurnForTargetPosition(submarine, map.getConfiguration().getIslandPositions().get(0)));
         });
     }
 }

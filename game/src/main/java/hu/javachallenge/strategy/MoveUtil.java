@@ -43,21 +43,17 @@ public class MoveUtil {
 
         Integer maxSteering = map.getConfiguration().getMaxSteeringPerRound();
 
-        double steering = Math.abs(toAngleInDegree - currentDirection);
-        if(steering > 180.0) steering = 360 - steering;
+        double targetTurn = toAngleInDegree - currentDirection;
+        if(targetTurn > 180.0) targetTurn = targetTurn - 360;
+        if(targetTurn < -180.0) targetTurn = targetTurn + 360;
 
-        if(steering > maxSteering) {
-            // + or - direction?
-            double diff = toAngleInDegree - currentDirection;
-            if(diff < 0) diff = 360.0 + diff;
-
-            if(diff > 180.0) {
-                toAngleInDegree = currentDirection - maxSteering;
-            } else {
-                toAngleInDegree = currentDirection + maxSteering;
-            }
+        if(Math.abs(targetTurn) > maxSteering) {
+            if(targetTurn > 0)
+                targetTurn = maxSteering;
+            if(targetTurn < 0)
+                targetTurn = -maxSteering;
         }
 
-        return toAngleInDegree;
+        return targetTurn;
     }
 }

@@ -1,31 +1,12 @@
 package hu.javachallenge.bean;
 
-public class IslandPosition {
-
-    private Integer x;
-    private Integer y;
-
-    public Integer getX() {
-        return x;
-    }
-
-    public void setX(Integer x) {
-        this.x = x;
-    }
-
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
+public class IslandPosition extends Position {
 
     @Override
     public String toString() {
         return "IslandPosition{" +
-                "x=" + x +
-                ", y=" + y +
+                "x=" + getX() +
+                ", y=" + getY() +
                 '}';
     }
 }

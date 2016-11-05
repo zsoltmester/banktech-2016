@@ -42,8 +42,8 @@ public class MoveUtilTest {
         TestCase.assertEquals(0.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(3, 2)), 0.00000001);
         TestCase.assertEquals(90.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(2, 3)), 0.00000001);
         TestCase.assertEquals(0.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(2, 2)), 0.00000001);
-        TestCase.assertEquals(225.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(1, 1)), 0.00000001);
-        TestCase.assertEquals(315.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(3, 1)), 0.00000001);
+        TestCase.assertEquals(-135.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(1, 1)), 0.00000001);
+        TestCase.assertEquals(-45.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(3, 1)), 0.00000001);
     }
 
     @org.junit.Test
@@ -52,10 +52,13 @@ public class MoveUtilTest {
         submarine.setAngle(36.0);
         Mockito.when(mockedMapConfiguration.getMaxSteeringPerRound()).thenReturn(10);
 
-        TestCase.assertEquals(26.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(3, 3)), 0.00000001);
-        TestCase.assertEquals(45.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(11, 11)), 0.00000001);
-        TestCase.assertEquals(46.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(10, 20)), 0.00000001);
+        TestCase.assertEquals(-10.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(3, 3)), 0.00000001);
+        TestCase.assertEquals(9.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(11, 11)), 0.00000001);
+        TestCase.assertEquals(10.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(10, 20)), 0.00000001);
 
+        submarine.setAngle(355.0);
+
+        TestCase.assertEquals(10.0, MoveUtil.getTurnForTargetPosition(submarine, new Position(11, 11)), 0.00000001);
     }
 
 }
