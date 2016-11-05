@@ -26,13 +26,38 @@ public class MoveUtil {
 
     public static double getTurnForTargetPosition(Submarine submarine, Position targetPosition) {
         Position submarinePosition = submarine.getPosition();
+        double currentDirection = submarine.getAngle();
         double sx = submarinePosition.getX();
         double sy = submarinePosition.getY();
         double tx = targetPosition.getX();
         double ty = targetPosition.getY();
 
-        // TODO
+        double vecX = tx - sx;
+        double vecY = ty - sy;
 
-        return 0d;
+        double angleRad = Math.atan2(vecY, vecX);
+        double toAngleInDegree = Math.toDegrees(angleRad);
+
+        if(toAngleInDegree < 0) // positive correction -> 0 - 360
+            toAngleInDegree = 360.0 + toAngleInDegree;
+
+        Integer maxSteering = map.getConfiguration().getMaxSteeringPerRound();
+
+        double steering = Math.abs(toAngleInDegree - currentDirection);
+        if(steering > 180.0) steering = 360 - steering;
+
+        if(steering > maxSteering) {
+            // + or - direction?
+            double diff = toAngleInDegree - currentDirection;
+            if(diff < 0) diff = 360.0 + diff;
+
+            if(diff > 180.0) {
+                toAngleInDegree = currentDirection - maxSteering;
+            } else {
+                toAngleInDegree = currentDirection + maxSteering;
+            }
+        }
+
+        return toAngleInDegree;
     }
 }
