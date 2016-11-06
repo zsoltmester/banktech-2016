@@ -14,6 +14,8 @@ public class Player {
         Processor.joinGame();
         Processor.waitForStart();
 
+        STRATEGY.init();
+
         while (Processor.isGameRunning()) {
             Processor.updateOurSubmarines();
             STRATEGY.onNewRound();

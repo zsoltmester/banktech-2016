@@ -1,9 +1,6 @@
 package hu.javachallenge.map;
 
-import hu.javachallenge.bean.Entity;
-import hu.javachallenge.bean.Game;
-import hu.javachallenge.bean.MapConfiguration;
-import hu.javachallenge.bean.Submarine;
+import hu.javachallenge.bean.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,6 +16,8 @@ public interface Map {
 
     Stream<Entity> getEntities();
     List<Entity> getEntities(Long submarine);
+
+    boolean isValidPosition(Position position);
 
     void updateOurSubmarines(List<Submarine> submarines);
 

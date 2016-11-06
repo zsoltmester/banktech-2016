@@ -68,8 +68,8 @@ public class MoveUtil {
         return targetTurn;
     }
 
-    public static double getAccelerationToGoThere(Submarine submarine, Position targetPosition) {
-        // TODO
+    public static double getAccelerationToCloseThere(Submarine submarine, Position targetPosition) {
+
 
         return 0.0;
     }
@@ -103,7 +103,7 @@ public class MoveUtil {
 
         double t1 = (-b + Math.sqrt(discriminant)) / (2 * a);
         double t2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-        System.out.println(t1 + " " + t2);
+
         OptionalDouble first = DoubleStream.of(t1, t2)
                 .filter(d -> d > 0)
                 .sorted().findFirst();
@@ -113,8 +113,6 @@ public class MoveUtil {
 
             Position toTarget = new Position(time * targetVelocity.getX() + target.getX(),
                     time * targetVelocity.getY() + target.getY());
-
-            System.out.println(toTarget);
 
             return toTarget;
         }

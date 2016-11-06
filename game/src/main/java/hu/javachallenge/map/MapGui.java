@@ -76,6 +76,13 @@ class MapGui extends DataMap {
             }
 
             if(entities != null) {
+                // paint Torpedos explosionRanges
+                getEntities().forEach(entity -> {
+                    if (entity.getType().equals(Entity.TORPEDO)) {
+                        graphics.setColor(Color.ORANGE);
+                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
+                    }
+                });
                 // paint entities
                 getEntities().forEach(entity -> {
                     if(entity.getType().equals(Entity.SUBMARINE)) {
@@ -85,8 +92,6 @@ class MapGui extends DataMap {
                         }
                     }
                     else if(entity.getType().equals(Entity.TORPEDO)) {
-                        graphics.setColor(Color.ORANGE);
-                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
                         graphics.setColor(Color.CYAN);
                         fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange());
                     }

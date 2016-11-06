@@ -48,6 +48,13 @@ class DataMap implements Map {
     }
 
     @Override
+    public boolean isValidPosition(Position position) {
+        return position != null &&
+                0 <= position.getX() && position.getX() < configuration.getWidth() &&
+                0 <= position.getY() && position.getY() < configuration.getHeight();
+    }
+
+    @Override
     public void updateOurSubmarines(List<Submarine> submarines) {
         this.ourSubmarines = submarines;
 
