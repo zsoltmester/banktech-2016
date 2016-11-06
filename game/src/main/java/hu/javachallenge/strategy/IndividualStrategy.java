@@ -1,5 +1,7 @@
 package hu.javachallenge.strategy;
 
+import hu.javachallenge.bean.Position;
+import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
@@ -15,11 +17,25 @@ public class IndividualStrategy implements Strategy {
     @Override
     public void init() {
         Processor.updateOurSubmarines();
-        map.getOurSubmarines().forEach(submarine -> {
-            Strategy strategy = new ScoutStrategy();
+
+        int submarinesCount = map.getConfiguration().getSubmarinesPerTeam();
+        double part = map.getConfiguration().getWidth() / submarinesCount;
+        double radarDistance = map.getConfiguration().getSonarRange();
+
+        int i = 0;
+        for(Submarine submarine : map.getOurSubmarines()) {
+            Position[] positions = new Position[] {
+                    new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance),
+                    new Position((i + 1) * part - radarDistance, map.getConfiguration().getHeight() - radarDistance),
+                    new Position((i + 1) * part - radarDistance, radarDistance),
+                    new Position(i * part + radarDistance, radarDistance),
+            };
+
+            Strategy strategy = new ScoutStrategy(submarine.getId(), positions);
             strategy.init();
             strategies.put(submarine.getId(), strategy);
-        });
+            ++i;
+        }
     }
 
     @Override
@@ -41,6 +57,8 @@ public class IndividualStrategy implements Strategy {
                 strategies.put(submarine.getId(), newStrategy);
             }
         });
+
+        // TODO if we want to switch the global state
         return null;
     }
 }

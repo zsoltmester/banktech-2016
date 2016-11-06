@@ -1,8 +1,8 @@
 package hu.javachallenge;
 
 import hu.javachallenge.map.IMap;
+import hu.javachallenge.strategy.IndividualStrategy;
 import hu.javachallenge.strategy.Player;
-import hu.javachallenge.strategy.ScoutStrategy;
 
 import java.util.logging.Logger;
 
@@ -31,7 +31,7 @@ public class App {
         }
 
         try(IMap map = IMap.MapConfig.getMap()) {
-            Player.play(new ScoutStrategy(), map);
+            Player.play(new IndividualStrategy(), map);
         } catch (Exception e) {
             LOGGER.warning("Exception while play. " + e);
         }
