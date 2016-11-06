@@ -170,7 +170,8 @@ class MapGui extends DataMap {
             Font usedFont = new Font("Dialog", Font.BOLD, 16);
             graphics.setFont(usedFont);
             graphics.setColor(Color.WHITE);
-            graphics.drawString("Round " + Processor.game.getRound(),
+            graphics.drawString("Round " + Processor.game.getRound() +
+                            ", Score: " + Processor.game.getScores().getScores().get(OUR_NAME),
                     2, (int) getPreferredSize().getHeight() - 12);
         }
 
