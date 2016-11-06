@@ -6,7 +6,7 @@ public class MapConfiguration {
 
     private Integer width;
     private Integer height;
-    private List<IslandPosition> islandPositions;
+    private List<Position> islandPositions;
     private Integer teamCount;
     private Integer submarinesPerTeam;
     private Integer torpedoDamage;
@@ -46,11 +46,11 @@ public class MapConfiguration {
         this.height = height;
     }
 
-    public List<IslandPosition> getIslandPositions() {
+    public List<Position> getIslandPositions() {
         return islandPositions;
     }
 
-    public void setIslandPositions(List<IslandPosition> islandPositions) {
+    public void setIslandPositions(List<Position> islandPositions) {
         this.islandPositions = islandPositions;
     }
 

@@ -21,7 +21,8 @@ public class Position {
         this.y = y;
     }
 
-    public Position() {}
+    public Position() {
+    }
 
     public Position(Number x, Number y) {
         this.x = x.doubleValue();
