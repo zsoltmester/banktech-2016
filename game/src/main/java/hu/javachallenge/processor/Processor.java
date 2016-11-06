@@ -4,7 +4,7 @@ import hu.javachallenge.App;
 import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
 import hu.javachallenge.communication.CommunicatorImpl;
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +17,7 @@ public class Processor {
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
     private static Communicator communicator = new CommunicatorImpl(App.serverAddress);
-    private static Map map = Map.MapConfig.getMap();
+    private static IMap map = IMap.MapConfig.getMap();
 
     private enum GAME_STATUS {
         WAITING, RUNNING, ENDED

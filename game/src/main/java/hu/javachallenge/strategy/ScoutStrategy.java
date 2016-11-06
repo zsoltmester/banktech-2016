@@ -3,7 +3,7 @@ package hu.javachallenge.strategy;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
 import java.util.ArrayDeque;
@@ -12,7 +12,7 @@ import java.util.Deque;
 
 public class ScoutStrategy implements Strategy {
 
-    private Map map = Map.MapConfig.getMap();
+    private IMap map = IMap.MapConfig.getMap();
 
     private ArrayList<Deque<Position>> submarinesDestinations = new ArrayList<>();
 
@@ -60,7 +60,7 @@ public class ScoutStrategy implements Strategy {
 
             // shooting
             if(submarine.getTorpedoCooldown() == 0) {
-                Position toShoot = map.getEntities().stream().filter(e -> !e.getOwner().getName().equals(Map.OUR_NAME))
+                Position toShoot = map.getEntities().stream().filter(e -> !e.getOwner().getName().equals(IMap.OUR_NAME))
                         .filter(e -> e.getType().equals(Entity.SUBMARINE))
                         .map(e -> MoveUtil.getPositionWhereShootTarget(submarine, e))
                         .filter(map::isValidPosition)
