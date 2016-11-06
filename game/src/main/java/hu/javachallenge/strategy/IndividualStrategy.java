@@ -24,18 +24,18 @@ public class IndividualStrategy implements Strategy {
 
     @Override
     public void onStartRound() {
-        map.getOurSubmarines().forEach(submarine -> strategies.get(submarine).onStartRound());
+        map.getOurSubmarines().forEach(submarine -> strategies.get(submarine.getId()).onStartRound());
     }
 
     @Override
     public void onRound() {
-        map.getOurSubmarines().forEach(submarine -> strategies.get(submarine).onRound());
+        map.getOurSubmarines().forEach(submarine -> strategies.get(submarine.getId()).onRound());
     }
 
     @Override
     public Strategy onChangeStrategy() {
         map.getOurSubmarines().forEach(submarine -> {
-            Strategy newStrategy = strategies.get(submarine).onChangeStrategy();
+            Strategy newStrategy = strategies.get(submarine.getId()).onChangeStrategy();
             if (newStrategy != null) {
                 newStrategy.init();
                 strategies.put(submarine.getId(), newStrategy);

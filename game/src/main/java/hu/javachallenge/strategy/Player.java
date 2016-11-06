@@ -24,12 +24,15 @@ public class Player {
         while (Processor.isGameRunning()) {
             Processor.updateOurSubmarines();
             strategy.onStartRound();
-            strategy.onRound();
+
             Strategy newStrategy = strategy.onChangeStrategy();
             if (newStrategy != null) {
                 newStrategy.init();
                 strategy = newStrategy;
             }
+
+            strategy.onRound();
+
             map.print();
             Processor.waitForNextRound();
         }
