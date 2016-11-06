@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
+import java.util.Map;
 
 class MapGui extends DataMap {
 
@@ -170,9 +171,15 @@ class MapGui extends DataMap {
             Font usedFont = new Font("Dialog", Font.BOLD, 16);
             graphics.setFont(usedFont);
             graphics.setColor(Color.WHITE);
-            graphics.drawString("Round " + Processor.game.getRound() +
-                            ", Score: " + Processor.game.getScores().getScores().get(OUR_NAME),
+            graphics.drawString("Round " + Processor.game.getRound(),
                     2, (int) getPreferredSize().getHeight() - 12);
+            int i = 0;
+            for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
+                String key = entry.getKey();
+                graphics.drawString(key.substring(0, Math.min(10, key.length())) + ": " + entry.getValue(),
+                        (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
+                ++i;
+            }
         }
 
         private void fillCircle(Graphics graphics, Position position, int radius) {
