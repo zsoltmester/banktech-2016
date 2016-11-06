@@ -2,6 +2,19 @@
 
 2\. forduló vége: **november 9. éjfél**
 
+## TODO
+
+- Több féle mozgást felismerni. Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz
+- Mozgáz fix: sziget és lövedékelkerülős móka
+- getTurnAndSpeedForTargetPosition
+- Támadó stratégia. Figyeljünk, hogy ne menjünk túl közel hozzájuk, hogy kissebb eséllyel sebződjünk. Extended sonarnál lőhetünk random
+- Kereső stratégia
+- Több hajót formációba mozgassunk
+- Pánik stratégia
+- Stratégia, hogy random módon keressünk
+- History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását
+- Acceleration fix
+
 ## Maven project fordítása és futtatása
 
 1. Legyen feltelepítve egy *Java 8* és a *JAVA_HOME* környezeti változótok annak rootjába mutasson.
