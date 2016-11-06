@@ -7,7 +7,7 @@
 *1, 2*: Második forduló előtt 
 *3, 4*: Elég csak a döntőre
 
-- (1) Acceleration fix
+- (1) Acceleration fix - Béla
 - (3) Több féle mozgást felismerni. Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. Machine learning-el is lehetne ezt
 - (1) Mozgás fix: szigetelkürölős móka
 - (3) Mozgás fix: torpedóelkerülős móka
@@ -18,6 +18,7 @@
 - (3) Pánik stratégia
 - (3) Stratégia, hogy random módon keressünk
 - (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását
+- (2) Ne lőjjük át a szigeten
 
 ## Maven project fordítása és futtatása
 
