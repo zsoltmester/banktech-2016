@@ -2,13 +2,11 @@ package hu.javachallenge.strategy;
 
 public interface Strategy {
 
-    /**
-     * Called when a new round is started.
-     */
-    void onNewRound();
+    void init();
 
-    /**
-     * Called when starts a game
-     */
-    default void init() {}
+    void onStartRound();
+
+    void onRound();
+
+    Strategy onChangeStrategy();
 }

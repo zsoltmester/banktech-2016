@@ -18,15 +18,15 @@ public class ScoutStrategy implements Strategy {
 
     @Override
     public void init() {
-        int submarinesCount= map.getConfiguration().getSubmarinesPerTeam();
+        int submarinesCount = map.getConfiguration().getSubmarinesPerTeam();
         double part = map.getConfiguration().getWidth() / submarinesCount;
         double radarDistance = map.getConfiguration().getSonarRange();
-        for(int i = 0; i < submarinesCount; ++i) {
+        for (int i = 0; i < submarinesCount; ++i) {
             Deque<Position> positions = new ArrayDeque<>();
 
             positions.push(new Position(i * part + radarDistance, radarDistance));
-            positions.push(new Position((i+1) * part - radarDistance, radarDistance));
-            positions.push(new Position((i+1) * part - radarDistance, map.getConfiguration().getHeight() - radarDistance));
+            positions.push(new Position((i + 1) * part - radarDistance, radarDistance));
+            positions.push(new Position((i + 1) * part - radarDistance, map.getConfiguration().getHeight() - radarDistance));
             positions.push(new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance));
 
             submarinesDestinations.add(positions);
@@ -34,8 +34,12 @@ public class ScoutStrategy implements Strategy {
     }
 
     @Override
-    public void onNewRound() {
-        for(Submarine submarine : map.getOurSubmarines()) {
+    public void onStartRound() {
+    }
+
+    @Override
+    public void onRound() {
+        for (Submarine submarine : map.getOurSubmarines()) {
             if (submarine.getSonarCooldown() == 0) {
                 Processor.extendSonar(submarine.getId());
                 submarine.setSonarExtended(map.getConfiguration().getExtendedSonarRounds());
@@ -45,12 +49,12 @@ public class ScoutStrategy implements Strategy {
         }
 
         int submarineIndex = 0;
-        for(Submarine submarine : map.getOurSubmarines()) {
+        for (Submarine submarine : map.getOurSubmarines()) {
             // TODO calculate position
             // move
             Deque<Position> targets = submarinesDestinations.get(submarineIndex);
 
-            if(submarine.getPosition().distance(targets.peek()) < 10) {
+            if (submarine.getPosition().distance(targets.peek()) < 10) {
                 targets.add(targets.pop());
             }
 
@@ -59,7 +63,7 @@ public class ScoutStrategy implements Strategy {
                     MoveUtil.getTurnForTargetPosition(submarine, targets.peek()));
 
             // shooting
-            if(submarine.getTorpedoCooldown() == 0) {
+            if (submarine.getTorpedoCooldown() == 0) {
                 Position toShoot = map.getEntities().stream().filter(e -> !e.getOwner().getName().equals(IMap.OUR_NAME))
                         .filter(e -> e.getType().equals(Entity.SUBMARINE))
                         .map(e -> MoveUtil.getPositionWhereShootTarget(submarine, e))
@@ -68,15 +72,20 @@ public class ScoutStrategy implements Strategy {
                                 map.getConfiguration().getTorpedoExplosionRadius())
                         .sorted((p1, p2) ->
                                 Double.compare(p1.distance(submarine.getPosition()),
-                                        p2.distance(submarine.getPosition()) ))
+                                        p2.distance(submarine.getPosition())))
                         .findFirst().orElse(null);
 
-                if(toShoot != null) {
+                if (toShoot != null) {
                     double direction = MoveUtil.getAngleForTargetPosition(submarine, toShoot);
                     Processor.shoot(submarine.getId(), direction);
                 }
             }
             ++submarineIndex;
         }
+    }
+
+    @Override
+    public Strategy onChangeStrategy() {
+        return null;
     }
 }

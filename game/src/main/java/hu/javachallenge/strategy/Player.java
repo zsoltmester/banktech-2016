@@ -10,8 +10,9 @@ public class Player {
         this.map = map;
     }
 
-    private final Strategy strategy;
     private final IMap map;
+
+    private Strategy strategy;
 
     private void play() {
 
@@ -22,7 +23,10 @@ public class Player {
 
         while (Processor.isGameRunning()) {
             Processor.updateOurSubmarines();
-            strategy.onNewRound();
+            strategy.onStartRound();
+            strategy.onRound();
+            Strategy newStrategy = strategy.onChangeStrategy();
+            if (newStrategy != null) strategy = newStrategy;
             map.print();
             Processor.waitForNextRound();
         }

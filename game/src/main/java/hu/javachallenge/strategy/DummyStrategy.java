@@ -14,7 +14,15 @@ public class DummyStrategy implements Strategy {
     private IMap map = IMap.MapConfig.getMap();
 
     @Override
-    public void onNewRound() {
+    public void init() {
+    }
+
+    @Override
+    public void onStartRound() {
+    }
+
+    @Override
+    public void onRound() {
         Random randomGenerator = new Random();
 
         Submarine submarine = map.getOurSubmarines().get(Processor.game.getRound() % 2);
@@ -29,5 +37,10 @@ public class DummyStrategy implements Strategy {
         submarine = map.getOurSubmarines().get(1 - (Processor.game.getRound() % 2));
         Processor.sonar(submarine.getId());
         Processor.extendSonar(submarine.getId());
+    }
+
+    @Override
+    public Strategy onChangeStrategy() {
+        return null;
     }
 }
