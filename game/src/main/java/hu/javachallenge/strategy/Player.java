@@ -26,7 +26,10 @@ public class Player {
             strategy.onStartRound();
             strategy.onRound();
             Strategy newStrategy = strategy.onChangeStrategy();
-            if (newStrategy != null) strategy = newStrategy;
+            if (newStrategy != null) {
+                newStrategy.init();
+                strategy = newStrategy;
+            }
             map.print();
             Processor.waitForNextRound();
         }

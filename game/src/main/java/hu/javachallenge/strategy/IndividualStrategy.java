@@ -37,6 +37,7 @@ public class IndividualStrategy implements Strategy {
         map.getOurSubmarines().forEach(submarine -> {
             Strategy newStrategy = strategies.get(submarine).onChangeStrategy();
             if (newStrategy != null) {
+                newStrategy.init();
                 strategies.put(submarine.getId(), newStrategy);
             }
         });
