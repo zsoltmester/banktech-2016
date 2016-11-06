@@ -115,4 +115,9 @@ class DataMap implements Map {
     public void print() {
         // no need for console map
     }
+
+    @Override
+    public void close() {
+
+    }
 }

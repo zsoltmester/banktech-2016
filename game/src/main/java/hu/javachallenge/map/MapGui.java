@@ -17,6 +17,7 @@ class MapGui extends DataMap {
         return INSTANCE;
     }
 
+    private JFrame frame;
     private MapPanel mapPanel;
 
     MapGui() {
@@ -42,6 +43,14 @@ class MapGui extends DataMap {
             mapPanel.invalidate();
             mapPanel.repaint();
         }).start();
+    }
+
+    @Override
+    public void close() {
+        if(frame != null) {
+            frame.dispose();
+            frame = null;
+        }
     }
 
     private class MapPanel extends JPanel implements KeyListener {

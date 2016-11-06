@@ -5,22 +5,30 @@ import hu.javachallenge.processor.Processor;
 
 public class Player {
 
-    private static final Strategy STRATEGY = new ScoutStrategy();
+    private Player(Strategy strategy, Map map) {
+        this.strategy = strategy;
+        this.map = map;
+    }
 
-    private static final Map MAP = Map.MapConfig.getMap();
+    private final Strategy strategy;
+    private final Map map;
 
-    public static void play() {
+    private void play() {
 
         Processor.joinGame();
         Processor.waitForStart();
 
-        STRATEGY.init();
+        strategy.init();
 
         while (Processor.isGameRunning()) {
             Processor.updateOurSubmarines();
-            STRATEGY.onNewRound();
-            MAP.print();
+            strategy.onNewRound();
+            map.print();
             Processor.waitForNextRound();
         }
+    }
+
+    public static void play(Strategy strategy, Map map) {
+        new Player(strategy, map).play();
     }
 }

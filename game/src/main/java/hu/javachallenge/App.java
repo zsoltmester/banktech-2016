@@ -1,6 +1,8 @@
 package hu.javachallenge;
 
+import hu.javachallenge.map.Map;
 import hu.javachallenge.strategy.Player;
+import hu.javachallenge.strategy.ScoutStrategy;
 
 import java.util.logging.Logger;
 
@@ -28,6 +30,10 @@ public class App {
             serverAddress = args[0];
         }
 
-        Player.play();
+        try(Map map = Map.MapConfig.getMap()) {
+            Player.play(new ScoutStrategy(), map);
+        } catch (Exception e) {
+            LOGGER.warning("Exception while play. " + e);
+        }
     }
 }
