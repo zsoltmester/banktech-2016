@@ -69,9 +69,18 @@ public class MoveUtil {
     }
 
     public static double getAccelerationToCloseThere(Submarine submarine, Position targetPosition) {
+        double distance = submarine.getPosition().distance(targetPosition);
+        double speed = submarine.getVelocity();
 
+        double max = map.getConfiguration().getMaxAccelerationPerRound();
 
-        return 0.0;
+        if(distance < max) {
+            return distance - speed;
+        }
+
+        double expected = (distance + max) / 2  - speed;
+
+        return getAccelerationForTargetSpeed(submarine, speed + expected);
     }
 
     public static Position getPositionWhereShootTarget(Submarine submarine, Entity targetEntity) {

@@ -32,6 +32,7 @@ public class CommunicatorImpl implements Communicator {
                 .url(BASE_URL + relativeUrl)
                 .build();
 
+        LOGGER.fine("Request '" + request + "'");
         try {
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
@@ -51,6 +52,8 @@ public class CommunicatorImpl implements Communicator {
                     .url(BASE_URL + relativeUrl)
                     .post(RequestBody.create(JSON, requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)))
                     .build();
+
+            LOGGER.fine("Request '" + request + "'" + ", body: " + (requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)));
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
             LOGGER.fine("Response for POST request to '" + relativeUrl + "\': " + responseBean);

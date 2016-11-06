@@ -1,42 +1,82 @@
 package hu.javachallenge.strategy;
 
+import hu.javachallenge.bean.Entity;
+import hu.javachallenge.bean.Position;
+import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.Map;
 import hu.javachallenge.processor.Processor;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 
 public class ScoutStrategy implements Strategy {
 
     private Map map = Map.MapConfig.getMap();
 
-    /*private List<Position> targets = Arrays.asList(
-            new Position(map.getConfiguration().getWidth() * 2 / 3, map.getConfiguration().getHeight() * 2 / 3),
-            new Position(map.getConfiguration().getWidth() * 2 / 3, map.getConfiguration().getHeight() * 1 / 3),
-            new Position(map.getConfiguration().getWidth() * 1 / 3, map.getConfiguration().getHeight() * 1 / 3),
-            new Position(map.getConfiguration().getWidth() * 1 / 3, map.getConfiguration().getHeight() * 2 / 3));*/
+    private ArrayList<Deque<Position>> submarinesDestinations = new ArrayList<>();
+
+    @Override
+    public void init() {
+        int submarinesCount= map.getConfiguration().getSubmarinesPerTeam();
+        double part = map.getConfiguration().getWidth() / submarinesCount;
+        double radarDistance = map.getConfiguration().getSonarRange();
+        for(int i = 0; i < submarinesCount; ++i) {
+            Deque<Position> positions = new ArrayDeque<>();
+
+            positions.push(new Position(i * part + radarDistance, radarDistance));
+            positions.push(new Position((i+1) * part - radarDistance, radarDistance));
+            positions.push(new Position((i+1) * part - radarDistance, map.getConfiguration().getHeight() - radarDistance));
+            positions.push(new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance));
+
+            submarinesDestinations.add(positions);
+        }
+    }
 
     @Override
     public void onNewRound() {
-        map.getOurSubmarines().forEach(submarine -> {
-            Processor.move(submarine.getId(),
-                    MoveUtil.getAccelerationForTargetSpeed(submarine, map.getConfiguration().getMaxSpeed()),
-                    MoveUtil.getTurnForTargetPosition(submarine, map.getConfiguration().getIslandPositions().get(0)));
+        for(Submarine submarine : map.getOurSubmarines()) {
+            if (submarine.getSonarCooldown() == 0) {
+                Processor.extendSonar(submarine.getId());
+                submarine.setSonarExtended(map.getConfiguration().getExtendedSonarRounds());
+                submarine.setSonarCooldown(map.getConfiguration().getExtendedSonarCooldown());
+            }
+            Processor.sonar(submarine.getId());
+        }
 
-            if(submarine.getTorpedoCooldown() == 0) {/*
-                map.getEntities().filter(e -> !e.getOwner().getName().equals(Map.ourName))
+        int submarineIndex = 0;
+        for(Submarine submarine : map.getOurSubmarines()) {
+            // TODO calculate position
+            // move
+            Deque<Position> targets = submarinesDestinations.get(submarineIndex);
+
+            if(submarine.getPosition().distance(targets.peek()) < 10) {
+                targets.add(targets.pop());
+            }
+
+            Processor.move(submarine.getId(),
+                    MoveUtil.getAccelerationToCloseThere(submarine, targets.peek()),
+                    MoveUtil.getTurnForTargetPosition(submarine, targets.peek()));
+
+            // shooting
+            if(submarine.getTorpedoCooldown() == 0) {
+                Position toShoot = map.getEntities().filter(e -> !e.getOwner().getName().equals(Map.ourName))
                         .filter(e -> e.getType().equals(Entity.SUBMARINE))
                         .map(e -> MoveUtil.getPositionWhereShootTarget(submarine, e))
-                        .sorted((p1, p2) -> p1)
+                        .filter(map::isValidPosition)
+                        .filter(p -> p.distance(submarine.getPosition()) >
+                                map.getConfiguration().getTorpedoExplosionRadius())
+                        .sorted((p1, p2) ->
+                                Double.compare(p1.distance(submarine.getPosition()),
+                                        p2.distance(submarine.getPosition()) ))
                         .findFirst().orElse(null);
 
-                Double direction = 270.0;
-
-                if(entity != null) {
-                    direction = MoveUtil.getAngleForShootTarget(submarine, entity);
+                if(toShoot != null) {
+                    double direction = MoveUtil.getAngleForTargetPosition(submarine, toShoot);
+                    Processor.shoot(submarine.getId(), direction);
                 }
-                Processor.shoot(submarine.getId(), direction);*/
             }
-            if(submarine.getSonarCooldown() == 0) {
-                Processor.sonar(submarine.getId());
-            }
-        });
+            ++submarineIndex;
+        }
     }
 }
