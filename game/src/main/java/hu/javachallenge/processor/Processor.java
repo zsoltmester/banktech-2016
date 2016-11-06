@@ -193,20 +193,20 @@ public class Processor {
             LOGGER.warning("Safe check triggered: invalid submarine ID.");
             return;
         }
-        int maxAccelerationPerRound = map.getConfiguration().getMaxAccelerationPerRound();
-        if (Math.abs(acceleration) > maxAccelerationPerRound) {
-            acceleration = acceleration > 0 ? maxAccelerationPerRound : -maxAccelerationPerRound;
-            LOGGER.warning("Safe check triggered: decreased the acceleration to the maximum per round.");
+        int accelerationPerRound = map.getConfiguration().getMaxAccelerationPerRound();
+        if (Math.abs(acceleration) != accelerationPerRound && acceleration != 0.0) {
+            acceleration = acceleration > 0 ? accelerationPerRound : -accelerationPerRound;
+            LOGGER.warning("Safe check triggered: decreased the acceleration to the fix speed.");
         }
         double currentSpeed = submarine.getVelocity();
         int maxSpeed = map.getConfiguration().getMaxSpeed();
         if (acceleration + currentSpeed > maxSpeed) {
-            acceleration = maxSpeed - currentSpeed;
+            acceleration = 0;
             LOGGER.warning("Safe check triggered: decreased the acceleration to not to exceed the max speed.");
         }
 
         if(acceleration + currentSpeed < 0) {
-            acceleration = -currentSpeed;
+            acceleration = 0;
             LOGGER.warning("Safe check triggered: increased the acceleration to not to exceed the zero speed.");
         }
 

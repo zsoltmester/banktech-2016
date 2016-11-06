@@ -27,7 +27,7 @@ public class DummyStrategy implements Strategy {
 
         Submarine submarine = map.getOurSubmarines().get(Processor.game.getRound() % 2);
 
-        Double speed = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxAccelerationPerRound();
+        Double speed = (double) (randomGenerator.nextInt(3) - 1) * Processor.game.getMapConfiguration().getMaxAccelerationPerRound();
         Double turn = (randomGenerator.nextDouble() * 2 - 1) * Processor.game.getMapConfiguration().getMaxSteeringPerRound();
         Processor.move(submarine.getId(), speed, turn);
 

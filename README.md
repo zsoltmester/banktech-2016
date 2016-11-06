@@ -7,7 +7,6 @@
 *1, 2*: Második forduló előtt 
 *3, 4*: Elég csak a döntőre
 
-- (1) Acceleration fix - Béla
 - (3) Több féle mozgást felismerni. Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. Machine learning-el is lehetne ezt
 - (1) Mozgás fix: szigetelkürölős móka
 - (3) Mozgás fix: torpedóelkerülős móka

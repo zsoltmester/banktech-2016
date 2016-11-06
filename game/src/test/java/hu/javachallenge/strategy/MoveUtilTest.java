@@ -87,4 +87,36 @@ public class MoveUtilTest {
         TestCase.assertEquals(0, result.getX(), 0.00000001);
         TestCase.assertEquals(0, result.getY(), 0.00000001);
     }
+
+    @Test
+    public void getAccelerationToCloseThere() throws Exception {
+        Mockito.when(mockedMapConfiguration.getMaxAccelerationPerRound()).thenReturn(5);
+        Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(20);
+
+        submarine.setPosition(new Position(0, 50));
+        submarine.setVelocity(20.0);
+
+        TestCase.assertEquals(-5.0, MoveUtil.getAccelerationToCloseThere(submarine, new Position(0, 23)),0.00000001);
+        TestCase.assertEquals(-5.0, MoveUtil.getAccelerationToCloseThere(submarine, new Position(0, 20)),0.00000001);
+
+        TestCase.assertEquals(0.0, MoveUtil.getAccelerationToCloseThere(submarine, new Position(0, 0)),0.00000001);
+
+        // test of speed up, and slow down to the closest of the destination
+        submarine.setVelocity(0.0);
+        submarine.setPosition(new Position(0, 0.1395154));
+        Position to = new Position(0, -212.1005428);
+
+        boolean reachedPoint = false;
+        for(int i = 0; i < 15; ++i) {
+            double acceleration = MoveUtil.getAccelerationToCloseThere(submarine, to);
+            submarine.setVelocity(submarine.getVelocity() + acceleration);
+            submarine.getPosition().setY(submarine.getPosition().getY() - submarine.getVelocity());
+
+            if(submarine.getPosition().distance(to) < 2.5 && submarine.getVelocity() == 0.0) {
+                reachedPoint = true;
+                break;
+            }
+        }
+        TestCase.assertTrue(reachedPoint);
+    }
 }

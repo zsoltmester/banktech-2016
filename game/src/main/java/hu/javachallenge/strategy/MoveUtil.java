@@ -12,22 +12,6 @@ public class MoveUtil {
 
     private static IMap map = IMap.MapConfig.getMap();
 
-    public static double getAccelerationForTargetSpeed(Submarine submarine, double targetSpeed) {
-        int maxSpeed = map.getConfiguration().getMaxSpeed();
-        double maxAccelerationPerRound = map.getConfiguration().getMaxAccelerationPerRound();
-        double currentSpeed = submarine.getVelocity();
-
-        double targetAcceleration = Math.abs(targetSpeed - currentSpeed) > maxAccelerationPerRound
-                ? (targetSpeed > currentSpeed ? maxAccelerationPerRound : -maxAccelerationPerRound)
-                : targetSpeed - currentSpeed;
-
-        if (targetAcceleration + currentSpeed > maxSpeed) {
-            targetAcceleration = maxSpeed - currentSpeed;
-        }
-
-        return targetAcceleration;
-    }
-
     public static double getAngleForTargetPosition(Submarine submarine, Position targetPosition) {
         Position submarinePosition = submarine.getPosition();
 
@@ -72,15 +56,23 @@ public class MoveUtil {
         double distance = submarine.getPosition().distance(targetPosition);
         double speed = submarine.getVelocity();
 
-        double max = map.getConfiguration().getMaxAccelerationPerRound();
+        double maxAcceleration = map.getConfiguration().getMaxAccelerationPerRound();
+        double maxSpeed = map.getConfiguration().getMaxSpeed();
 
-        if(distance < max) {
-            return distance - speed;
+        // solution of 5 * i*(i+1) / 2 = x + 2.5 equality rounded down
+        // the sum of 5th multiples to distance (2.5 distance proximitly)
+        double expectedAcceleration = Math.floor((Math.sqrt(40*(distance+2.5)+25)-5) / 10) * 5 - speed;
+
+        expectedAcceleration = Math.max(-maxAcceleration, Math.min(maxAcceleration, expectedAcceleration));
+
+        if(expectedAcceleration + speed > maxSpeed) {
+            expectedAcceleration = 0;
+        }
+        if(expectedAcceleration + speed < 0) {
+            expectedAcceleration = 0;
         }
 
-        double expected = (distance + max) / 2  - speed;
-
-        return getAccelerationForTargetSpeed(submarine, speed + expected);
+        return expectedAcceleration;
     }
 
     public static Position getPositionWhereShootTarget(Submarine submarine, Entity targetEntity) {
