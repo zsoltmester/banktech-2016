@@ -77,11 +77,11 @@ class DataMap implements IMap {
     public void updateOurSubmarines(List<Submarine> submarines) {
         this.ourSubmarines = submarines;
 
-        List<Long> submarinesToRemove = entities.keySet().stream()
-                .filter(id -> this.ourSubmarines.stream().anyMatch(submarine -> submarine.getId().equals(id)))
+        List<Long> destroyedSubmarines = entities.keySet().stream()
+                .filter(id -> !this.ourSubmarines.stream().anyMatch(submarine -> submarine.getId().equals(id)))
                 .collect(Collectors.toList());
 
-        submarinesToRemove.forEach(id -> entities.remove(id));
+        destroyedSubmarines.forEach(id -> entities.remove(id));
     }
 
     @Override
