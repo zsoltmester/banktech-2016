@@ -28,6 +28,10 @@ public class Processor {
     private static Integer lastKnownRound;
 
     private static boolean isValidResponse(StatusResponse response) {
+        if(response == null) {
+            LOGGER.severe("Response is null. Maybe we lost the connection?");
+            return false;
+        }
         String message = response.getMessage();
         switch (response.getCode()) {
             case 1:
@@ -200,6 +204,12 @@ public class Processor {
             acceleration = maxSpeed - currentSpeed;
             LOGGER.warning("Safe check triggered: decreased the acceleration to not to exceed the max speed.");
         }
+
+        if(acceleration + currentSpeed < 0) {
+            acceleration = -currentSpeed;
+            LOGGER.warning("Safe check triggered: increased the acceleration to not to exceed the zero speed.");
+        }
+
         int maxSteeringPerRound = map.getConfiguration().getMaxSteeringPerRound();
         if (Math.abs(turn) > maxSteeringPerRound) {
             turn = turn > 0 ? maxSteeringPerRound : -maxSteeringPerRound;
