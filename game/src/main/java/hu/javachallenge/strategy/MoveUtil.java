@@ -61,7 +61,7 @@ public class MoveUtil {
 
         // solution of 5 * i*(i+1) / 2 = x + 2.5 equality rounded down
         // the sum of 5th multiples to distance (2.5 distance proximitly)
-        double expectedAcceleration = Math.floor((Math.sqrt(40*(distance+2.5)+25)-5) / 10) * 5 - speed;
+        double expectedAcceleration = Math.floor((Math.sqrt((2 * maxAcceleration * 4) * (distance + (maxAcceleration / 2)) + maxAcceleration * maxAcceleration) - maxAcceleration) / (2 * maxAcceleration)) * maxAcceleration - speed;
 
         expectedAcceleration = Math.max(-maxAcceleration, Math.min(maxAcceleration, expectedAcceleration));
 
