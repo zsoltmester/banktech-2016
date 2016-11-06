@@ -1,6 +1,7 @@
 package hu.javachallenge.map;
 
 import hu.javachallenge.bean.*;
+import hu.javachallenge.processor.Processor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -110,16 +111,17 @@ class MapGui extends DataMap {
 
             // paint the HP-s
             if (ourSubmarines != null) {
+                int height = (int) getPreferredSize().getHeight();
                 for(int i = 0; i < ourSubmarines.size(); ++i) {
                     Submarine submarine = ourSubmarines.get(i);
 
                     int hp = submarine.getHp();
 
                     graphics.setColor(Color.GREEN);
-                    graphics.fillRect(0, i*5, hp*2, 5);
+                    graphics.fillRect(0, height - i*5, hp*2, 5);
                     if(hp != 100) {
                         graphics.setColor(Color.RED);
-                        graphics.fillRect(hp * 2, i * 5, (100 - hp) * 2, 5);
+                        graphics.fillRect(hp * 2, height - i * 5, (100 - hp) * 2, 5);
                     }
                 }
                 ourSubmarines.forEach(submarine -> {
@@ -132,6 +134,13 @@ class MapGui extends DataMap {
             configuration.getIslandPositions().forEach(islandPosition -> {
                 fillCircle(graphics, islandPosition, configuration.getIslandSize());
             });
+
+            // paint the round number
+            Font usedFont = new Font("Dialog", Font.BOLD, 16);
+            graphics.setFont(usedFont);
+            graphics.setColor(Color.WHITE);
+            graphics.drawString("Round " + Processor.game.getRound(),
+                    2, (int) getPreferredSize().getHeight() - 12);
         }
 
         private void fillCircle(Graphics graphics, Position position, int radius) {

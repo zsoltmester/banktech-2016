@@ -139,7 +139,7 @@ public class Processor {
 
         lastKnownRound = game.getRound();
 
-        if (!game.getStatus().equals(GAME_STATUS.RUNNING.name())) {
+        if (game.getStatus().equals(GAME_STATUS.RUNNING.name())) {
             LOGGER.info("Next round started: " + lastKnownRound);
         }
     }
@@ -176,7 +176,7 @@ public class Processor {
         List<Submarine> submarines = submarinesResponse.getSubmarines();
         map.updateOurSubmarines(submarines);
 
-        LOGGER.info("Our submarines' status updated.");
+        LOGGER.fine("Our submarines' status updated.");
     }
 
     /**
