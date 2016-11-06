@@ -171,7 +171,7 @@ class MapGui extends DataMap {
             Font usedFont = new Font("Dialog", Font.BOLD, 16);
             graphics.setFont(usedFont);
             graphics.setColor(Color.WHITE);
-            graphics.drawString("Round " + Processor.game.getRound(),
+            graphics.drawString("Round " + Processor.game.getRound() + " / " + configuration.getRounds(),
                     2, (int) getPreferredSize().getHeight() - 12);
             int i = 0;
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
