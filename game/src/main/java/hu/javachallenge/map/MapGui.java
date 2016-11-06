@@ -81,7 +81,7 @@ class MapGui extends DataMap {
             // paint sonars
             if (ourSubmarines != null && displayWithRadius) {
 
-                graphics.setColor(Color.YELLOW);
+                graphics.setColor(new Color(189,183,107));
                 ourSubmarines.forEach(submarine -> {
 
                     boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
