@@ -5,6 +5,9 @@ import hu.javachallenge.processor.Processor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.List;
 
 class MapGui extends DataMap {
 
@@ -26,6 +29,7 @@ class MapGui extends DataMap {
         JFrame frame = new JFrame(OUR_NAME);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
+        frame.addKeyListener(mapPanel);
         frame.add(mapPanel);
         frame.pack();
         frame.setVisible(true);
@@ -40,9 +44,11 @@ class MapGui extends DataMap {
         }).start();
     }
 
-    private class MapPanel extends JPanel {
+    private class MapPanel extends JPanel implements KeyListener {
 
         private static final float SIZE_MULTIPLIER = 0.5f;
+        private boolean displayWithHistory = true;
+        private boolean displayWithRadius = true;
 
         private MapConfiguration configuration;
 
@@ -63,8 +69,9 @@ class MapGui extends DataMap {
             graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
-            if (ourSubmarines != null) {
-                // paint sonars
+            // paint sonars
+            if (ourSubmarines != null && displayWithRadius) {
+
                 graphics.setColor(Color.YELLOW);
                 ourSubmarines.forEach(submarine -> {
 
@@ -78,7 +85,7 @@ class MapGui extends DataMap {
             if (entities != null) {
                 // paint torpedos explosion ranges
                 getEntities().forEach(entity -> {
-                    if (entity.getType().equals(Entity.TORPEDO)) {
+                    if (entity.getType().equals(Entity.TORPEDO) && displayWithRadius) {
                         graphics.setColor(Color.ORANGE);
                         fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
                     }
@@ -86,11 +93,33 @@ class MapGui extends DataMap {
                 // paint entities
                 getEntities().forEach(entity -> {
                     if (entity.getType().equals(Entity.SUBMARINE)) {
-                        if (!entity.getOwner().getName().equals(OUR_NAME)) { // just for safe check, we already removed them
-                            graphics.setColor(Color.RED); // TODO calculate color from name, so at the finals each team will have a unique color
+                        if (!entity.getOwner().getName().equals(OUR_NAME)) {
+                            if (displayWithHistory) {
+                                List<Entity> history = getHistory(entity.getId(), 5);
+                                for(int i = 0; i < history.size() - 1; ++i) {
+                                    Entity e = history.get(i);
+                                    graphics.setColor(new Color(255, 250 - i * 50, 250 - i * 50));
+                                    if(e != null) {
+                                        fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
+                                    }
+                                }
+                            }
+
+                            graphics.setColor(Color.RED);
                             fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
                         }
                     } else if (entity.getType().equals(Entity.TORPEDO)) {
+                        if (displayWithHistory) {
+                            List<Entity> history = getHistory(entity.getId(), 3);
+                            for(int i = 0; i < history.size() - 1; ++i) {
+                                Entity e = history.get(i);
+                                graphics.setColor(new Color(200 - i * 50, 255, 255));
+                                if(e != null) {
+                                    fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange());
+                                }
+                            }
+                        }
+
                         graphics.setColor(Color.CYAN);
                         fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange());
                     }
@@ -114,10 +143,10 @@ class MapGui extends DataMap {
                     int hp = submarine.getHp();
 
                     graphics.setColor(Color.GREEN);
-                    graphics.fillRect(0, (int) (height - i * 10 * SIZE_MULTIPLIER), hp * 2, (int) (10 * SIZE_MULTIPLIER));
+                    graphics.fillRect(0, height - i*5 - 5, hp*2, 5);
                     if (hp != 100) {
                         graphics.setColor(Color.RED);
-                        graphics.fillRect(hp * 2, (int) (height - i * 10 * SIZE_MULTIPLIER), (100 - hp) * 2, (int) (10 * SIZE_MULTIPLIER));
+                        graphics.fillRect(hp * 2, height - i*5 - 5, (100 - hp) * 2, 5);
                     }
                 }
             }
@@ -141,6 +170,27 @@ class MapGui extends DataMap {
                     (int) ((position.getY() - radius) * SIZE_MULTIPLIER),
                     (int) (radius * 2 * SIZE_MULTIPLIER),
                     (int) (radius * 2 * SIZE_MULTIPLIER));
+
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            switch (e.getKeyChar()) {
+                case 'h':
+                    displayWithHistory = !displayWithHistory;
+                    break;
+                case 'r':
+                    displayWithRadius = !displayWithRadius;
+            }
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
 
         }
     }

@@ -1,10 +1,9 @@
 package hu.javachallenge.map;
 
 import hu.javachallenge.bean.*;
+import hu.javachallenge.processor.Processor;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class DataMap implements Map {
@@ -23,6 +22,8 @@ class DataMap implements Map {
     protected List<Submarine> ourSubmarines;
 
     protected HashMap<Long, List<Entity>> entities = new HashMap<>();
+
+    protected NavigableMap<Integer, java.util.Map<Long, Entity>> entityHistory = new TreeMap<>();
 
     @Override
     public void initialize(Game game) {
@@ -50,6 +51,22 @@ class DataMap implements Map {
     }
 
     @Override
+    public List<Entity> getHistory(Long id, int count) {
+        int round = Processor.game.getRound();
+
+        List<Entity> idHistory = new ArrayList<>();
+
+        for(int i = Math.max(0, round - count + 1); i <= round; ++i) {
+
+            java.util.Map<Long, Entity> roundHistory = entityHistory.get(i);
+
+            Entity entity = roundHistory == null ? null : roundHistory.get(id);
+            idHistory.add(entity);
+        }
+        return idHistory;
+    }
+
+    @Override
     public boolean isValidPosition(Position position) {
         return position != null &&
                 0 <= position.getX() && position.getX() < configuration.getWidth() &&
@@ -70,6 +87,7 @@ class DataMap implements Map {
     @Override
     public void submarineShoot(Long submarine, Double angle) {
         // TODO ez talán akkor lehet hasznos, ha követni akarjuk, hogy a torpedónk merre megy (és a következő sonar-ból már kimegy a rakéta, szóval msot látjuk utoljára)
+        // sajnos nem hasznos, mert mindenképpen kapunk infót róla, hogy megjelent, és hogy merre mozog.
         /*
         Entity entity = new Entity();
         entity.setPosition(ourSubmarines.stream().filter(s -> s.getId().equals(submarine)).findFirst().orElse(null)
@@ -87,6 +105,10 @@ class DataMap implements Map {
     @Override
     public void processSonarResult(Long submarine, List<Entity> entities) {
         this.entities.put(submarine, entities);
+
+        entityHistory.put(Processor.game.getRound(), getEntities().stream().collect(Collectors.toMap(
+                Entity::getId, e -> e, (e1, e2) -> e1
+        )));
     }
 
     @Override

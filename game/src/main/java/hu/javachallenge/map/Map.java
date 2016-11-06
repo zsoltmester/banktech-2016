@@ -18,6 +18,8 @@ public interface Map {
 
     List<Entity> getEntitiesForSubmarine(Long submarine);
 
+    List<Entity> getHistory(Long id, int count);
+
     boolean isValidPosition(Position position);
 
     void updateOurSubmarines(List<Submarine> submarines);
