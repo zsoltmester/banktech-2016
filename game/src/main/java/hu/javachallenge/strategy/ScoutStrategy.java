@@ -60,7 +60,7 @@ public class ScoutStrategy implements Strategy {
 
             // shooting
             if(submarine.getTorpedoCooldown() == 0) {
-                Position toShoot = map.getEntities().filter(e -> !e.getOwner().getName().equals(Map.ourName))
+                Position toShoot = map.getEntities().stream().filter(e -> !e.getOwner().getName().equals(Map.OUR_NAME))
                         .filter(e -> e.getType().equals(Entity.SUBMARINE))
                         .map(e -> MoveUtil.getPositionWhereShootTarget(submarine, e))
                         .filter(map::isValidPosition)

@@ -3,10 +3,10 @@ package hu.javachallenge.map;
 import hu.javachallenge.bean.*;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface Map {
-    String ourName = "Infinite Ringbuffer";
+
+    String OUR_NAME = "Infinite Ringbuffer";
 
     void initialize(Game game);
 
@@ -14,8 +14,9 @@ public interface Map {
 
     List<Submarine> getOurSubmarines();
 
-    Stream<Entity> getEntities();
-    List<Entity> getEntities(Long submarine);
+    List<Entity> getEntities();
+
+    List<Entity> getEntitiesForSubmarine(Long submarine);
 
     boolean isValidPosition(Position position);
 

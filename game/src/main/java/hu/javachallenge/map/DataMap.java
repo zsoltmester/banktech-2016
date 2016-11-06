@@ -2,8 +2,10 @@ package hu.javachallenge.map;
 
 import hu.javachallenge.bean.*;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class DataMap implements Map {
 
@@ -38,12 +40,12 @@ class DataMap implements Map {
     }
 
     @Override
-    public Stream<Entity> getEntities() {
-        return entities.values().stream().flatMap(Collection::stream);
+    public List<Entity> getEntities() {
+        return entities.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     @Override
-    public List<Entity> getEntities(Long submarine) {
+    public List<Entity> getEntitiesForSubmarine(Long submarine) {
         return entities.get(submarine);
     }
 
@@ -58,29 +60,28 @@ class DataMap implements Map {
     public void updateOurSubmarines(List<Submarine> submarines) {
         this.ourSubmarines = submarines;
 
-        for(Long key : entities.keySet().stream()
-                .filter(id -> !submarines.stream().anyMatch(s -> s.getId().equals(id)))
-                .toArray(Long[]::new)) {
-            entities.remove(key);
-        }
+        List<Long> submarinesToRemove = entities.keySet().stream()
+                .filter(id -> this.ourSubmarines.stream().anyMatch(submarine -> submarine.getId().equals(id))) // TODO pont nem kéne negálni, nem?
+                .collect(Collectors.toList());
+
+        submarinesToRemove.forEach(id -> entities.remove(id));
     }
 
     @Override
     public void submarineShoot(Long submarine, Double angle) {
+        // TODO ez talán akkor lehet hasznos, ha követni akarjuk, hogy a torpedónk merre megy (és a következő sonar-ból már kimegy a rakéta, szóval msot látjuk utoljára)
         /*
         Entity entity = new Entity();
         entity.setPosition(ourSubmarines.stream().filter(s -> s.getId().equals(submarine)).findFirst().orElse(null)
             .getPosition());
         entity.setAngle(angle);
-        entity.setOwner(new Owner(ourName));
+        entity.setOwner(new Owner(OUR_NAME));
         entity.setRoundsMoved(0);
         entity.setVelocity(configuration.getTorpedoSpeed());
         entity.setType("Torpedo");
 
         this.entities.put(-1L, Collections.singletonList(entity));
         */
-        // TODO
-        // but nothing to do
     }
 
     @Override
@@ -90,6 +91,6 @@ class DataMap implements Map {
 
     @Override
     public void print() {
-        // TODO should print it to the console
+        // no need for console map
     }
 }
