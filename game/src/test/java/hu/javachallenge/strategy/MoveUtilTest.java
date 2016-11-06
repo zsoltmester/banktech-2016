@@ -4,7 +4,7 @@ import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,7 +22,7 @@ public class MoveUtilTest {
     @org.junit.Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        Map mockedMap = Mockito.mock(Map.class);
+        IMap mockedMap = Mockito.mock(IMap.class);
         mockedMapConfiguration = Mockito.mock(MapConfiguration.class);
 
         Mockito.when(mockedMap.getConfiguration()).thenReturn(mockedMapConfiguration);

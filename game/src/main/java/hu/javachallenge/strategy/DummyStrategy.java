@@ -1,7 +1,7 @@
 package hu.javachallenge.strategy;
 
 import hu.javachallenge.bean.Submarine;
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
 import java.util.Random;
@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class DummyStrategy implements Strategy {
 
-    private Map map = Map.MapConfig.getMap();
+    private IMap map = IMap.MapConfig.getMap();
 
     @Override
     public void onNewRound() {

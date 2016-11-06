@@ -6,7 +6,7 @@ import hu.javachallenge.processor.Processor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class DataMap implements Map {
+class DataMap implements IMap {
 
     private static final DataMap INSTANCE = new DataMap();
 

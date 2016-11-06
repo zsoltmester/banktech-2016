@@ -1,17 +1,17 @@
 package hu.javachallenge.strategy;
 
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
 public class Player {
 
-    private Player(Strategy strategy, Map map) {
+    private Player(Strategy strategy, IMap map) {
         this.strategy = strategy;
         this.map = map;
     }
 
     private final Strategy strategy;
-    private final Map map;
+    private final IMap map;
 
     private void play() {
 
@@ -28,7 +28,7 @@ public class Player {
         }
     }
 
-    public static void play(Strategy strategy, Map map) {
+    public static void play(Strategy strategy, IMap map) {
         new Player(strategy, map).play();
     }
 }

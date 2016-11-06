@@ -3,14 +3,14 @@ package hu.javachallenge.strategy;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
-import hu.javachallenge.map.Map;
+import hu.javachallenge.map.IMap;
 
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static Map map = Map.MapConfig.getMap();
+    private static IMap map = IMap.MapConfig.getMap();
 
     public static double getAccelerationForTargetSpeed(Submarine submarine, double targetSpeed) {
         int maxSpeed = map.getConfiguration().getMaxSpeed();
