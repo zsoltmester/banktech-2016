@@ -61,7 +61,7 @@ class DataMap implements Map {
         this.ourSubmarines = submarines;
 
         List<Long> submarinesToRemove = entities.keySet().stream()
-                .filter(id -> this.ourSubmarines.stream().anyMatch(submarine -> submarine.getId().equals(id))) // TODO pont nem kéne negálni, nem?
+                .filter(id -> this.ourSubmarines.stream().anyMatch(submarine -> submarine.getId().equals(id)))
                 .collect(Collectors.toList());
 
         submarinesToRemove.forEach(id -> entities.remove(id));
