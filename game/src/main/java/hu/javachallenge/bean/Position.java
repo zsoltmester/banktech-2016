@@ -48,8 +48,12 @@ public class Position {
     }
 
     public void normalize() {
-        double distanceToOrigo = distance(new Position(0, 0));
+        double distanceToOrigo = length();
         x /= distanceToOrigo;
         y /= distanceToOrigo;
+    }
+
+    public double length() {
+        return distance(new Position(0, 0));
     }
 }

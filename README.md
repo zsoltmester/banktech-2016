@@ -7,7 +7,7 @@
 *1, 2*: Második forduló előtt 
 *3, 4*: Elég csak a döntőre
 
-- (3) Több féle mozgást felismerni. 
+- (3) Több féle mozgást felismerni. +1
 - (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
 - (4) Machine learning-el is lehetne ezt
 - (1) Mozgás fix: szigetelkürölős móka - Béla - Elvileg kész

@@ -3,6 +3,7 @@ package hu.javachallenge.strategy.moving;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
+import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.MoveUtil;
 
 import java.util.ArrayDeque;
@@ -29,11 +30,9 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         object.setAngle(nextAngle);
-        if(0 <= nextSpeed) {
+        if(0 <= nextSpeed && nextSpeed <= MoveUtil.map.getConfiguration().getMaxSpeed()) {
             object.setVelocity(nextSpeed);
         }
-
-        // TODO max speed handling
 
         object.setPosition(new Position(
                 object.getPosition().getX() + Math.cos(Math.toRadians(object.getAngle())) * object.getVelocity(),

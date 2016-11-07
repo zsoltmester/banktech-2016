@@ -8,12 +8,13 @@ import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static IMap map = IMap.MapConfig.getMap();
+    public static IMap map = IMap.MapConfig.getMap();
 
     public static double velocityDistance(double first, double second) {
         double targetTurn = second - first;
@@ -170,6 +171,36 @@ public class MoveUtil {
                     time * targetVelocity.getY() + target.getY());
         }
 
+        return null;
+    }
+
+    public static Position getPositionWhereShootMovingTarget(Position from, Entity entity) {
+        List<Entity> history = map.getHistory(entity.getId(), 2);
+        IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(history);
+
+        double torpedoSpeed = map.getConfiguration().getTorpedoSpeed();
+        double torpedoRange = map.getConfiguration().getTorpedoRange();
+
+        Entity entityClone;
+        try {
+            entityClone = (Entity) entity.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        int maxStep = (int) Math.ceil(new Position(map.getConfiguration().getWidth(),
+                map.getConfiguration().getHeight()).length() / torpedoSpeed); // upper bound of steps
+
+        for(int i = 1; i <= maxStep; ++i) {
+            entityMover.moveToNext(entityClone);
+            if(!map.isValidPosition(entityClone.getPosition())) {
+                return null;
+            }
+            if(Math.abs(entityClone.getPosition().distance(from) - torpedoSpeed * i) <= torpedoRange) {
+                return entityClone.getPosition();
+            }
+        }
         return null;
     }
 

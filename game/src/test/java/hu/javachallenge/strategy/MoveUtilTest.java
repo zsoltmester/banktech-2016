@@ -7,11 +7,14 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.moving.MovingIsland;
 import junit.framework.TestCase;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 /**
  * Created by qqcs on 05/11/16.
@@ -19,12 +22,13 @@ import java.lang.reflect.Field;
 public class MoveUtilTest {
 
     private Submarine submarine;
+    private IMap mockedMap;
     private MapConfiguration mockedMapConfiguration;
 
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        IMap mockedMap = Mockito.mock(IMap.class);
+        mockedMap = Mockito.mock(IMap.class);
         mockedMapConfiguration = Mockito.mock(MapConfiguration.class);
 
         Mockito.when(mockedMap.getConfiguration()).thenReturn(mockedMapConfiguration);
@@ -139,6 +143,7 @@ public class MoveUtilTest {
 
     @Test
     public void stepForward() throws Exception {
+        Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(20);
         Position squareSteps = MoveUtil.stepForward(new Position(0, 0), 0.0, 0.0, 90.0, 1.0, 4).getLast();
         TestCase.assertEquals(2.0, squareSteps.getX(), 0.00000001);
         TestCase.assertEquals(-2.0, squareSteps.getY(), 0.00000001);
@@ -164,14 +169,55 @@ public class MoveUtilTest {
 
         Position position = MoveUtil.evadeThis(submarine, new Position(10, 0), new MovingIsland(new Position(5, 0)), 1);
 
-        System.out.println(position);
         TestCase.assertEquals(5.0, position.getX(), 0.00000001);
         TestCase.assertEquals(3.0, Math.abs(position.getY()), 0.00000001);
 
         position = MoveUtil.evadeThis(submarine, new Position(10, 0), new MovingIsland(new Position(2, 1)), 3);
 
-        System.out.println(position);
         TestCase.assertEquals(2.0, position.getX(), 0.00000001);
         TestCase.assertEquals(-4.0, position.getY(), 0.00000001);
+    }
+
+
+    @Test
+    public void getPositionWhereShootMovingTarget() throws Exception {
+        Entity e1 = new Entity();
+        e1.setPosition(new Position(15, 5));
+        e1.setAngle(180.0);
+        e1.setVelocity(0.0);
+        e1.setId(0L);
+        Entity e2 = new Entity();
+        e2.setPosition(new Position(14, 5));
+        e2.setAngle(180.0);
+        e2.setVelocity(1.0);
+        e2.setId(0L);
+        Mockito.when(mockedMap.getHistory(0L, 2)).thenReturn(Arrays.asList(e1, e2));
+        Mockito.when(mockedMap.isValidPosition(Mockito.argThat(
+                new BaseMatcher<Position>() {
+                    @Override
+                    public void describeTo(Description description) {
+
+                    }
+
+                    @Override
+                    public boolean matches(Object item) {
+                        if(item == null || !item.getClass().equals(Position.class))
+                            return false;
+
+                        Position p = (Position) item;
+                        return 0 <= p.getX() && p.getX() <= 100 &&
+                                0 <= p.getY() && p.getY() <= 100;
+                    }
+                }))).thenReturn(true);
+        Mockito.when(mockedMapConfiguration.getTorpedoSpeed()).thenReturn(6.0);
+        Mockito.when(mockedMapConfiguration.getTorpedoRange()).thenReturn(2);
+        Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(5);
+        Mockito.when(mockedMapConfiguration.getWidth()).thenReturn(100);
+        Mockito.when(mockedMapConfiguration.getHeight()).thenReturn(100);
+
+        Position position = MoveUtil.getPositionWhereShootMovingTarget(new Position(5, 24), e2);
+
+        TestCase.assertEquals(5.0, position.getX(), 0.00000001);
+        TestCase.assertEquals(5.0, position.getY(), 0.00000001);
     }
 }
