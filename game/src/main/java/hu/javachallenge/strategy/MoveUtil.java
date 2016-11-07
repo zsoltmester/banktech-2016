@@ -15,6 +15,14 @@ public class MoveUtil {
 
     private static IMap map = IMap.MapConfig.getMap();
 
+    public static double velocityDistance(double first, double second) {
+        double targetTurn = second - first;
+        if(targetTurn > 180.0) targetTurn = targetTurn - 360;
+        if(targetTurn < -180.0) targetTurn = targetTurn + 360;
+
+        return targetTurn;
+    }
+
     public static ArrayDeque<Position> stepForward(Position from, Double direction, Double speed,
                                                    Double deltaDirection, Double deltaSpeed, int count) {
         Entity entity = new Entity();
@@ -66,9 +74,7 @@ public class MoveUtil {
 
         Integer maxSteering = map.getConfiguration().getMaxSteeringPerRound();
 
-        double targetTurn = toAngleInDegree - currentDirection;
-        if(targetTurn > 180.0) targetTurn = targetTurn - 360;
-        if(targetTurn < -180.0) targetTurn = targetTurn + 360;
+        double targetTurn = velocityDistance(currentDirection, toAngleInDegree);
 
         if(Math.abs(targetTurn) > maxSteering) {
             if(targetTurn > 0)
@@ -107,9 +113,7 @@ public class MoveUtil {
         double currentDirection = submarine.getAngle();
         double toAngleInDegree = getAngleForTargetPosition(submarine, targetPosition);
 
-        double targetTurn = toAngleInDegree - currentDirection;
-        if(targetTurn > 180.0) targetTurn = targetTurn - 360;
-        if(targetTurn < -180.0) targetTurn = targetTurn + 360;
+        double targetTurn = velocityDistance(currentDirection, toAngleInDegree);
 
         double maxAcceleration = map.getConfiguration().getMaxAccelerationPerRound();
         double currentSpeed = submarine.getVelocity();

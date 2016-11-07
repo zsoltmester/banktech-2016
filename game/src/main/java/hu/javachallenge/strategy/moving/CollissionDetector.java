@@ -19,13 +19,14 @@ public class CollissionDetector {
             T2 object2, IChangeMovableObject<T2> object2Moves, double object2radius, int step) {
 
 
-        T1 object1Clone = null;
-        T2 object2Clone = null;
+        T1 object1Clone;
+        T2 object2Clone;
         try {
             object1Clone = (T1) object1.clone();
             object2Clone = (T2) object2.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
+            return null;
         }
 
         for(int i = 0; i < step; ++i) {

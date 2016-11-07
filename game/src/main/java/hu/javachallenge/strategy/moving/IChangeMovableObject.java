@@ -3,6 +3,7 @@ package hu.javachallenge.strategy.moving;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
+import hu.javachallenge.strategy.MoveUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -41,12 +42,21 @@ public interface IChangeMovableObject<T extends MovableObject> {
     }
 
     static <T extends MovableObject> ArrayDeque<Position> getSteppedPositions(IChangeMovableObject<T> moving, T object, int count) {
+
+        T objectCopy;
+        try {
+            objectCopy = (T) object.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         ArrayDeque<Position> result = new ArrayDeque<>();
-        result.add(object.getPosition());
+        result.add(objectCopy.getPosition());
 
         for(int i = 0; i < count; ++i) {
-            moving.moveToNext(object);
-            result.add(object.getPosition());
+            moving.moveToNext(objectCopy);
+            result.add(objectCopy.getPosition());
         }
 
         return result;
@@ -87,12 +97,7 @@ public interface IChangeMovableObject<T extends MovableObject> {
             if(history.size() < 2 || history.get(history.size() - 2) == null)
                 return 0;
 
-            double angle = history.get(history.size() - 1).getAngle() - history.get(history.size() - 2).getAngle();
-
-            if(angle > 180.0) angle = angle - 360;
-            if(angle < -180.0) angle = angle + 360;
-
-            return angle;
+            return MoveUtil.velocityDistance(history.get(history.size() - 2).getAngle(), history.get(history.size() - 1).getAngle());
         }
 
         private static double getAccelerationDelta(List<Entity> history) {

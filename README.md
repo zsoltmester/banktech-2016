@@ -11,15 +11,15 @@
 - (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
 - (4) Machine learning-el is lehetne ezt
 - (1) Mozgás fix: szigetelkürölős móka - Béla - Elvileg kész
-- (3) Mozgás fix: torpedóelkerülős móka
-- (2) getTurnAndSpeedForTargetPosition
+- (3) Mozgás fix: torpedóelkerülős móka - Béla - Valami van
+- (2) getTurnAndSpeedForTargetPosition - getAccelerationToCloseThereWhenOnRightDirection függvény használja a turn információt a speedhez.
 - (1) Támadó stratégia. Figyeljünk, hogy ne menjünk túl közel hozzájuk, hogy kissebb eséllyel sebződjünk. Extended sonarnál lőhetünk random
 - (1) Kereső stratégia
 - (4) Több hajót formációba mozgassunk
 - (3) Pánik stratégia
 - (3) Stratégia, hogy random módon keressünk
 - (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását
-- (2) Ne lőjjünk át a szigeten
+- (2) Ne lőjjünk át a szigeten - Béla
 
 ## Maven project fordítása és futtatása
 
