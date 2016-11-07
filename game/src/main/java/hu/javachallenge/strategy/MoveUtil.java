@@ -5,12 +5,49 @@ import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 
+import java.util.ArrayDeque;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
     private static IMap map = IMap.MapConfig.getMap();
+
+    public static ArrayDeque<Position> stepForward(Position from, Double direction, Double speed,
+                                                   Double deltaDirection, Double deltaSpeed, int count) {
+
+        Position lastPosition = new Position(from.getX(), from.getY());
+        ArrayDeque<Position> result = new ArrayDeque<>();
+
+        result.add(lastPosition);
+        for(int i = 0; i < count; ++i) {
+            direction += deltaDirection;
+            speed += deltaSpeed;
+
+            Position deltaPosition = new Position(Math.cos(Math.toRadians(direction)) * speed,
+                    Math.sin(Math.toRadians(direction)) * speed);
+
+            deltaPosition.translate(lastPosition);
+            result.add(deltaPosition);
+
+            lastPosition = deltaPosition;
+        }
+
+        return result;
+    }
+
+    public static double distanceToTurnNDegreesOnMaxSpeed(double degree) {
+        Double maxSteering = map.getConfiguration().getMaxSteeringPerRound().doubleValue();
+        Double maxSpeed = map.getConfiguration().getMaxSpeed().doubleValue();
+
+        degree = Math.abs(degree);
+
+        int countOfStep = (int) Math.ceil(degree / maxSteering);
+
+        Position position = stepForward(new Position(0, 0), 0.0, maxSpeed, maxSteering, 0.0, countOfStep).getLast();
+
+        return position.distance(new Position(0, 0));
+    }
 
     public static double getAngleForTargetPosition(Submarine submarine, Position targetPosition) {
         Position submarinePosition = submarine.getPosition();
@@ -73,6 +110,30 @@ public class MoveUtil {
         }
 
         return expectedAcceleration;
+    }
+
+    public static double getAccelerationToCloseThereWhenOnRightDirection(Submarine submarine, Position targetPosition) {
+        double currentDirection = submarine.getAngle();
+        double toAngleInDegree = getAngleForTargetPosition(submarine, targetPosition);
+
+        double targetTurn = toAngleInDegree - currentDirection;
+        if(targetTurn > 180.0) targetTurn = targetTurn - 360;
+        if(targetTurn < -180.0) targetTurn = targetTurn + 360;
+
+        double maxAcceleration = map.getConfiguration().getMaxAccelerationPerRound();
+        double currentSpeed = submarine.getVelocity();
+
+        double acceleration = getAccelerationToCloseThere(submarine, targetPosition);
+
+        boolean badAngle = Math.abs(targetTurn) > 90.0 || (Math.abs(targetTurn) > 30.0 &&
+                submarine.getPosition().distance(targetPosition) < distanceToTurnNDegreesOnMaxSpeed(targetTurn));
+
+        if(badAngle) {
+            // WRONG WAY
+            return currentSpeed == 0.0 ? 0.0 : -maxAcceleration;
+        }
+
+        return acceleration;
     }
 
     public static Position getPositionWhereShootTarget(Submarine submarine, Entity targetEntity) {

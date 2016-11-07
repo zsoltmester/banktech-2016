@@ -135,4 +135,23 @@ public class MoveUtilTest {
         }
         TestCase.assertTrue(reachedPoint);
     }
+
+    @Test
+    public void stepForward() throws Exception {
+        Position squareSteps = MoveUtil.stepForward(new Position(0, 0), 0.0, 0.0, 90.0, 1.0, 4).getLast();
+        TestCase.assertEquals(2.0, squareSteps.getX(), 0.00000001);
+        TestCase.assertEquals(-2.0, squareSteps.getY(), 0.00000001);
+
+        Position linear = MoveUtil.stepForward(new Position(0, 0), 45.0, Math.sqrt(2), 0.0, 0.0, 3).getLast();
+        TestCase.assertEquals(3.0, linear.getX(), 0.00000001);
+        TestCase.assertEquals(3.0, linear.getY(), 0.00000001);
+    }
+
+    @Test
+    public void getAccelerationToCloseThereWhenOnRightDirection() throws Exception {
+        Mockito.when(mockedMapConfiguration.getMaxAccelerationPerRound()).thenReturn(5);
+        Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(20);
+
+        // TODO
+    }
 }

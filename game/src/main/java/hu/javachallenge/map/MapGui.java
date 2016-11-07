@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
 
@@ -108,8 +109,8 @@ class MapGui extends DataMap {
                                 List<Entity> history = getHistory(entity.getId(), 5);
                                 for(int i = 0; i < history.size() - 1; ++i) {
                                     Entity e = history.get(i);
-                                    graphics.setColor(new Color(255, 250 - i * 50, 250 - i * 50));
                                     if(e != null) {
+                                        graphics.setColor(new Color(255, 250 - i * 50, 250 - i * 50));
                                         fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
                                     }
                                 }
@@ -123,8 +124,8 @@ class MapGui extends DataMap {
                             List<Entity> history = getHistory(entity.getId(), 3);
                             for(int i = 0; i < history.size() - 1; ++i) {
                                 Entity e = history.get(i);
-                                graphics.setColor(new Color(200 - i * 50, 255, 255));
                                 if(e != null) {
+                                    graphics.setColor(new Color(200 - i * 50, 255, 255));
                                     fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange());
                                 }
                             }

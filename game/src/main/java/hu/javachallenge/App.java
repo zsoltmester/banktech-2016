@@ -33,7 +33,8 @@ public class App {
         try(IMap map = IMap.MapConfig.getMap()) {
             Player.play(new IndividualStrategy(), map);
         } catch (Exception e) {
-            LOGGER.warning("Exception while play. " + e);
+            LOGGER.warning("Exception while play. ");
+            e.printStackTrace();
         }
     }
 }

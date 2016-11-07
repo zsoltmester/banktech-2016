@@ -28,9 +28,8 @@ public class ScoutStrategy extends SubmarineStrategy {
         if (submarine.getPosition().distance(targets.peek()) < 10) {
             targets.add(targets.pop());
         }
-
         Processor.move(submarine.getId(),
-                MoveUtil.getAccelerationToCloseThere(submarine, targets.peek()),
+                MoveUtil.getAccelerationToCloseThereWhenOnRightDirection(submarine, targets.peek()),
                 MoveUtil.getTurnForTargetPosition(submarine, targets.peek()));
 
         // TODO temporary

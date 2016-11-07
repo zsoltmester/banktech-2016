@@ -41,4 +41,9 @@ public class Position {
                 ", y=" + y +
                 '}';
     }
+
+    public void translate(Position deltaPosition) {
+        x += deltaPosition.getX();
+        y += deltaPosition.getY();
+    }
 }

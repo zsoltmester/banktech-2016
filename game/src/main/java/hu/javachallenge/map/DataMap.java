@@ -56,6 +56,10 @@ class DataMap implements IMap {
 
         List<Entity> idHistory = new ArrayList<>();
 
+        for(int i = round - count + 1; i < 0; ++i) {
+            idHistory.add(null);
+        }
+
         for(int i = Math.max(0, round - count + 1); i <= round; ++i) {
 
             java.util.Map<Long, Entity> roundHistory = entityHistory.get(i);
