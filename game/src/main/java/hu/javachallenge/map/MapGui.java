@@ -7,9 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 class MapGui extends DataMap {
 
@@ -60,11 +59,23 @@ class MapGui extends DataMap {
         private static final float SIZE_MULTIPLIER = 0.5f;
         private boolean displayWithHistory = true;
         private boolean displayWithRadius = true;
+        private boolean displayWithTeamColor = false;
+        private Map<String, Color> playersColor = new HashMap<>();
+        private Random random = new Random();
 
         private MapConfiguration configuration;
 
         private MapPanel(MapConfiguration configuration) {
             this.configuration = configuration;
+
+            Set<String> names = Processor.game.getScores().getScores().keySet();
+            for(String name : names) {
+                final float hue = random.nextFloat();
+                final float saturation = 0.9f;
+                final float luminance = 1.0f;
+                final Color color = Color.getHSBColor(hue, saturation, luminance);
+                playersColor.put(name, color);
+            }
         }
 
         @Override
@@ -101,6 +112,7 @@ class MapGui extends DataMap {
                         fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
                     }
                 });
+
                 // paint entities
                 getEntities().forEach(entity -> {
                     if (entity.getType().equals(Entity.SUBMARINE)) {
@@ -112,12 +124,22 @@ class MapGui extends DataMap {
                                     if(e != null) {
                                         graphics.setColor(new Color(255, 250 - i * 50, 250 - i * 50));
                                         fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
+
+                                        if (displayWithTeamColor) {
+                                            graphics.setColor(playersColor.get(e.getOwner().getName()));
+                                            fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize() / 2);
+                                        }
                                     }
                                 }
                             }
 
                             graphics.setColor(Color.RED);
                             fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
+
+                            if (displayWithTeamColor) {
+                                graphics.setColor(playersColor.get(entity.getOwner().getName()));
+                                fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize() / 2);
+                            }
                         }
                     } else if (entity.getType().equals(Entity.TORPEDO)) {
                         if (displayWithHistory) {
@@ -127,21 +149,36 @@ class MapGui extends DataMap {
                                 if(e != null) {
                                     graphics.setColor(new Color(200 - i * 50, 255, 255));
                                     fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange());
+
+                                    if (displayWithTeamColor) {
+                                        graphics.setColor(playersColor.get(e.getOwner().getName()));
+                                        fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange() / 2);
+                                    }
                                 }
                             }
                         }
 
                         graphics.setColor(Color.CYAN);
                         fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange());
+
+                        if (displayWithTeamColor) {
+                            graphics.setColor(playersColor.get(entity.getOwner().getName()));
+                            fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange() / 2);
+                        }
                     }
                 });
             }
 
             // paint our submarines
             if (ourSubmarines != null) {
-                graphics.setColor(Color.GREEN); // TODO calculate color from name, so at the finals each team will have a unique color
                 ourSubmarines.forEach(submarine -> {
+                    graphics.setColor(Color.GREEN);
                     fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize());
+
+                    if (displayWithTeamColor) {
+                        graphics.setColor(playersColor.get(OUR_NAME));
+                        fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize() / 2);
+                    }
                 });
             }
 
@@ -178,7 +215,7 @@ class MapGui extends DataMap {
             Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
                 String key = entry.getKey();
-                graphics.setColor(connected.get(key) ? Color.WHITE : Color.RED);
+                graphics.setColor(connected.get(key) ? displayWithTeamColor ? playersColor.get(key) : Color.white : Color.RED);
                 graphics.drawString(key.substring(0, Math.min(10, key.length())) + ": " + entry.getValue(),
                         (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
                 ++i;
@@ -201,6 +238,19 @@ class MapGui extends DataMap {
                     break;
                 case 'r':
                     displayWithRadius = !displayWithRadius;
+                    break;
+                case 'c':
+                    displayWithTeamColor = !displayWithTeamColor;
+                    break;
+                case 'g':
+                    for(Map.Entry<String, Color> entry : playersColor.entrySet()) {
+                        final float hue = random.nextFloat();
+                        final float saturation = 0.9f;
+                        final float luminance = 1.0f;
+                        final Color color = Color.getHSBColor(hue, saturation, luminance);
+                        entry.setValue(color);
+                    }
+                    break;
             }
         }
 
