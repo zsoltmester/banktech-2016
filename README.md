@@ -7,6 +7,8 @@
 *1, 2*: Második forduló előtt 
 *3, 4*: Elég csak a döntőre
 
+- (1) Megjavítani a torpedoRange-es hibákat!! - Béla
+- (1) TorpedoRange -nél nagyobb távra nem érdemes lőni
 - (3) Több féle mozgást felismerni. +1
 - (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
 - (4) Machine learning-el is lehetne ezt
@@ -19,7 +21,8 @@
 - (3) Pánik stratégia
 - (3) Stratégia, hogy random módon keressünk
 - (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását
-- (2) Ne lőjjünk át a szigeten - Béla
+- (2) Ne lőjjünk át a szigeten - Béla - elvileg OK
+- (2) Ha van közelben valami robbanó a lövedék útjában, nem lőjük ki. - Béla - elvileg OK
 
 ## Maven project fordítása és futtatása
 
