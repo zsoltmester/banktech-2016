@@ -16,7 +16,7 @@ public abstract class SubmarineStrategy implements Strategy {
         this.submarineId = submarineId;
     }
 
-    protected Submarine getSubmarine() {
+    public Submarine getSubmarine() {
         return map.getOurSubmarines().stream().filter(s -> s.getId().equals(submarineId))
                 .findFirst().orElse(null);
     }

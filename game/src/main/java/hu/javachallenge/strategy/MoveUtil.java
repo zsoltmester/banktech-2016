@@ -4,6 +4,7 @@ import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
+import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
 import java.util.ArrayDeque;
 import java.util.OptionalDouble;
@@ -15,25 +16,14 @@ public class MoveUtil {
 
     public static ArrayDeque<Position> stepForward(Position from, Double direction, Double speed,
                                                    Double deltaDirection, Double deltaSpeed, int count) {
+        Entity entity = new Entity();
+        entity.setPosition(from);
+        entity.setAngle(direction);
+        entity.setVelocity(speed);
 
-        Position lastPosition = new Position(from.getX(), from.getY());
-        ArrayDeque<Position> result = new ArrayDeque<>();
+        IChangeMovableObject<Entity> movingObject = new IChangeMovableObject.FixMove<>(deltaSpeed, deltaDirection);
 
-        result.add(lastPosition);
-        for(int i = 0; i < count; ++i) {
-            direction += deltaDirection;
-            speed += deltaSpeed;
-
-            Position deltaPosition = new Position(Math.cos(Math.toRadians(direction)) * speed,
-                    Math.sin(Math.toRadians(direction)) * speed);
-
-            deltaPosition.translate(lastPosition);
-            result.add(deltaPosition);
-
-            lastPosition = deltaPosition;
-        }
-
-        return result;
+        return IChangeMovableObject.getSteppedPositions(movingObject, entity, count);
     }
 
     public static double distanceToTurnNDegreesOnMaxSpeed(double degree) {
@@ -173,10 +163,8 @@ public class MoveUtil {
         if(first.isPresent()) {
             double time = first.getAsDouble();
 
-            Position toTarget = new Position(time * targetVelocity.getX() + target.getX(),
+            return new Position(time * targetVelocity.getX() + target.getX(),
                     time * targetVelocity.getY() + target.getY());
-
-            return toTarget;
         }
 
         return null;
