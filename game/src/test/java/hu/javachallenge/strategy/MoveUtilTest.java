@@ -39,19 +39,19 @@ public class MoveUtilTest {
     @Test
     public void getAngleForTargetPosition() throws Exception {
         submarine.setPosition(new Position(-123, 0));
-        TestCase.assertEquals(0, MoveUtil.getAngleForTargetPosition(submarine, new Position(0, 0)), 0.00000001);
+        TestCase.assertEquals(0, MoveUtil.getAngleForTargetPosition(submarine.getPosition(), new Position(0, 0)), 0.00000001);
 
         submarine.setPosition(new Position(-5, -5));
-        TestCase.assertEquals(45, MoveUtil.getAngleForTargetPosition(submarine, new Position(0, 0)), 0.00000001);
+        TestCase.assertEquals(45, MoveUtil.getAngleForTargetPosition(submarine.getPosition(), new Position(0, 0)), 0.00000001);
 
         submarine.setPosition(new Position(0, -5));
-        TestCase.assertEquals(90, MoveUtil.getAngleForTargetPosition(submarine, new Position(0, 0)), 0.00000001);
+        TestCase.assertEquals(90, MoveUtil.getAngleForTargetPosition(submarine.getPosition(), new Position(0, 0)), 0.00000001);
 
         submarine.setPosition(new Position(5, -5));
-        TestCase.assertEquals(90, MoveUtil.getAngleForTargetPosition(submarine, new Position(5, 0)), 0.00000001);
+        TestCase.assertEquals(90, MoveUtil.getAngleForTargetPosition(submarine.getPosition(), new Position(5, 0)), 0.00000001);
 
         submarine.setPosition(new Position(-5, -5));
-        TestCase.assertEquals(45, MoveUtil.getAngleForTargetPosition(submarine, new Position(0, 0)), 0.00000001);
+        TestCase.assertEquals(45, MoveUtil.getAngleForTargetPosition(submarine.getPosition(), new Position(0, 0)), 0.00000001);
     }
 
     @Test

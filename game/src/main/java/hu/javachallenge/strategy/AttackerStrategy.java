@@ -5,6 +5,9 @@ import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
+import hu.javachallenge.strategy.moving.CollissionDetector;
+import hu.javachallenge.strategy.moving.IChangeMovableObject;
+import hu.javachallenge.strategy.moving.MovingIsland;
 
 /**
  * Created by qqcs on 06/11/16.
@@ -33,13 +36,47 @@ public class AttackerStrategy extends SubmarineStrategy {
                     .filter(map::isValidPosition)
                     .filter(p -> p.distance(submarine.getPosition()) >
                             map.getConfiguration().getTorpedoExplosionRadius())
+                    .filter(p -> {
+                        Entity torpedo = new Entity();
+                        torpedo.setPosition(submarine.getPosition());
+                        torpedo.setVelocity(map.getConfiguration().getTorpedoSpeed());
+                        torpedo.setAngle(MoveUtil.getAngleForTargetPosition(submarine.getPosition(), p));
+
+                        // not shoot islands
+                        return map.getConfiguration().getIslandPositions().stream()
+                                .map(MovingIsland::new).allMatch(island ->
+                                        CollissionDetector.collisionWith(
+                                        torpedo, new IChangeMovableObject.ZeroMove<>(),
+                                        map.getConfiguration().getTorpedoRange(),
+                                        island, island,
+                                        map.getConfiguration().getIslandSize(),
+                                        (int) Math.ceil(submarine.getPosition().distance(p) /
+                                                map.getConfiguration().getTorpedoSpeed())) == null)
+                                &&
+                        // not shoot anyone else
+                            map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE))
+                                .allMatch(e -> {
+                                    Integer time = CollissionDetector.entityCollisionWithEntityHistory(torpedo,
+                                            e, 100);
+
+                                    if(time != null) {
+                                        Position otherexplosion =
+                                                IChangeMovableObject.getSteppedPositions(new IChangeMovableObject.ZeroMove<>(),
+                                                torpedo, time).getLast();
+
+                                        return otherexplosion.distance(submarine.getPosition()) + 0.0001
+                                                 > p.distance(submarine.getPosition());
+                                    }
+                                    return true;
+                                });
+                    })
                     .sorted((p1, p2) ->
                             Double.compare(p1.distance(submarine.getPosition()),
                                     p2.distance(submarine.getPosition())))
                     .findFirst().orElse(null);
 
             if (toShoot != null) {
-                double direction = MoveUtil.getAngleForTargetPosition(submarine, toShoot);
+                double direction = MoveUtil.getAngleForTargetPosition(submarine.getPosition(), toShoot);
                 Processor.shoot(submarine.getId(), direction);
             }
         }

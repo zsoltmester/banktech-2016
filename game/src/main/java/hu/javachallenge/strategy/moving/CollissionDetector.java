@@ -32,6 +32,12 @@ public class CollissionDetector {
         for(int i = 0; i < step; ++i) {
             object1Moves.moveToNext(object1Clone);
             object2Moves.moveToNext(object2Clone);
+
+            if(!map.isValidPosition(object1Clone.getPosition()) ||
+                    !map.isValidPosition(object2Clone.getPosition())) {
+                break;
+            }
+
             if(object1Clone.getPosition().distance(object2Clone.getPosition()) < object1radius + object2radius) {
                 return i;
             }

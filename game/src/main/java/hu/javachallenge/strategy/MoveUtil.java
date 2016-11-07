@@ -48,11 +48,9 @@ public class MoveUtil {
         return position.distance(new Position(0, 0));
     }
 
-    public static double getAngleForTargetPosition(Submarine submarine, Position targetPosition) {
-        Position submarinePosition = submarine.getPosition();
-
-        double sx = submarinePosition.getX();
-        double sy = submarinePosition.getY();
+    public static double getAngleForTargetPosition(Position from, Position targetPosition) {
+        double sx = from.getX();
+        double sy = from.getY();
         double tx = targetPosition.getX();
         double ty = targetPosition.getY();
 
@@ -70,7 +68,7 @@ public class MoveUtil {
 
     public static double getTurnForTargetPosition(Submarine submarine, Position targetPosition) {
         double currentDirection = submarine.getAngle();
-        double toAngleInDegree = getAngleForTargetPosition(submarine, targetPosition);
+        double toAngleInDegree = getAngleForTargetPosition(submarine.getPosition(), targetPosition);
 
         Integer maxSteering = map.getConfiguration().getMaxSteeringPerRound();
 
@@ -111,7 +109,7 @@ public class MoveUtil {
 
     public static double getAccelerationToCloseThereWhenOnRightDirection(Submarine submarine, Position targetPosition) {
         double currentDirection = submarine.getAngle();
-        double toAngleInDegree = getAngleForTargetPosition(submarine, targetPosition);
+        double toAngleInDegree = getAngleForTargetPosition(submarine.getPosition(), targetPosition);
 
         double targetTurn = velocityDistance(currentDirection, toAngleInDegree);
 
