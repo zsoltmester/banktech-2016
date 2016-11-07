@@ -3,7 +3,6 @@ package hu.javachallenge.strategy.moving;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
-import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.MoveUtil;
 
 import java.util.ArrayDeque;
@@ -100,10 +99,14 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         private static double getAccelerationDelta(List<Entity> history) {
-            if(history.size() < 2 || history.get(history.size() - 2) == null)
-                return 0;
+            //if(history.size() < 2 || history.get(history.size() - 2) == null)
+            //    return 0;
 
-            return history.get(history.size() - 1).getVelocity() - history.get(history.size() - 2).getVelocity();
+            // TODO it is a hack!!!
+            // remove comment if it is final
+            return MoveUtil.map.getConfiguration().getMaxAccelerationPerRound();
+
+            //return history.get(history.size() - 1).getVelocity() - history.get(history.size() - 2).getVelocity();
         }
     }
 }

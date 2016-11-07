@@ -29,7 +29,7 @@ public class CollissionDetector {
             return null;
         }
 
-        for(int i = 0; i < step; ++i) {
+        for(int i = 1; i <= step; ++i) {
             object1Moves.moveToNext(object1Clone);
             object2Moves.moveToNext(object2Clone);
 
@@ -81,6 +81,6 @@ public class CollissionDetector {
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(entityHistory);
 
         return collisionWith(entity, new IChangeMovableObject.ZeroMove<>(), radius1,
-                entity, entityMover, radius2, step);
+                historicalEntity, entityMover, radius2, step);
     }
 }

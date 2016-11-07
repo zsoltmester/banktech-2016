@@ -217,7 +217,10 @@ public class MoveUtilTest {
 
         Position position = MoveUtil.getPositionWhereShootMovingTarget(new Position(5, 24), e2);
 
-        TestCase.assertEquals(5.0, position.getX(), 0.00000001);
+        // TODO meg lett hackelve, mert az elődöntőn hatásosabb a fix gyorsulással számolni
+        //TestCase.assertEquals(5.0, position.getX(), 0.00000001);
+        TestCase.assertEquals(11.0, position.getX(), 0.00000001);
+
         TestCase.assertEquals(5.0, position.getY(), 0.00000001);
     }
 }

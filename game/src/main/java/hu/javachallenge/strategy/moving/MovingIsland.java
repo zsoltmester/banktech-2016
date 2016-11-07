@@ -11,6 +11,8 @@ public final class MovingIsland extends Entity implements IChangeMovableObject<M
         setPosition(position);
         setVelocity(0.0);
         setAngle(0.0);
+        setType("Island");
+        setId(-1L);
     }
 
     @Override
