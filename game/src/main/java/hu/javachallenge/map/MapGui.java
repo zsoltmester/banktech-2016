@@ -175,8 +175,10 @@ class MapGui extends DataMap {
             graphics.drawString("Round " + Processor.game.getRound() + " / " + configuration.getRounds(),
                     2, (int) getPreferredSize().getHeight() - 12);
             int i = 0;
+            Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
                 String key = entry.getKey();
+                graphics.setColor(connected.get(key) ? Color.WHITE : Color.RED);
                 graphics.drawString(key.substring(0, Math.min(10, key.length())) + ": " + entry.getValue(),
                         (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
                 ++i;
