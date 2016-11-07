@@ -46,4 +46,10 @@ public class Position {
         x += deltaPosition.getX();
         y += deltaPosition.getY();
     }
+
+    public void normalize() {
+        double distanceToOrigo = distance(new Position(0, 0));
+        x /= distanceToOrigo;
+        y /= distanceToOrigo;
+    }
 }

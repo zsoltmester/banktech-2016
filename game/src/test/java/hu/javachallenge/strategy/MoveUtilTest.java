@@ -5,6 +5,7 @@ import hu.javachallenge.bean.MapConfiguration;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
+import hu.javachallenge.strategy.moving.MovingIsland;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -153,5 +154,24 @@ public class MoveUtilTest {
         Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(20);
 
         // TODO
+    }
+
+    @Test
+    public void evadeThis() throws Exception {
+        Mockito.when(mockedMapConfiguration.getSubmarineSize()).thenReturn(1);
+
+        submarine.setPosition(new Position(0, 0));
+
+        Position position = MoveUtil.evadeThis(submarine, new Position(10, 0), new MovingIsland(new Position(5, 0)), 1);
+
+        System.out.println(position);
+        TestCase.assertEquals(5.0, position.getX(), 0.00000001);
+        TestCase.assertEquals(3.0, Math.abs(position.getY()), 0.00000001);
+
+        position = MoveUtil.evadeThis(submarine, new Position(10, 0), new MovingIsland(new Position(2, 1)), 3);
+
+        System.out.println(position);
+        TestCase.assertEquals(2.0, position.getX(), 0.00000001);
+        TestCase.assertEquals(-4.0, position.getY(), 0.00000001);
     }
 }

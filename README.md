@@ -10,7 +10,7 @@
 - (3) Több féle mozgást felismerni. 
 - (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
 - (4) Machine learning-el is lehetne ezt
-- (1) Mozgás fix: szigetelkürölős móka - Béla
+- (1) Mozgás fix: szigetelkürölős móka - Béla - Elvileg kész
 - (3) Mozgás fix: torpedóelkerülős móka
 - (2) getTurnAndSpeedForTargetPosition
 - (1) Támadó stratégia. Figyeljünk, hogy ne menjünk túl közel hozzájuk, hogy kissebb eséllyel sebződjünk. Extended sonarnál lőhetünk random

@@ -1,6 +1,7 @@
 package hu.javachallenge.strategy;
 
 import hu.javachallenge.bean.Entity;
+import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
@@ -168,5 +169,27 @@ public class MoveUtil {
         }
 
         return null;
+    }
+
+    public static Position evadeThis(Submarine submarine, Position destination,
+                                     MovableObject object, double radius) {
+
+        Position result = new Position(destination.getX(), destination.getY());
+        result.translate(submarine.getPosition());
+
+        result = new Position(-result.getY(), result.getX());
+
+        result.normalize();
+
+        Position p1 = new Position(
+                object.getPosition().getX() + result.getX() * (radius + map.getConfiguration().getSubmarineSize() * 2),
+                object.getPosition().getY() + result.getY() * (radius + map.getConfiguration().getSubmarineSize() * 2));
+        Position p2 = new Position(
+                object.getPosition().getX() - result.getX() * (radius + map.getConfiguration().getSubmarineSize() * 2),
+                object.getPosition().getY() - result.getY() * (radius + map.getConfiguration().getSubmarineSize() * 2));
+
+        double distance1 = p1.distance(submarine.getPosition());
+        double distance2 = p2.distance(submarine.getPosition());
+        return distance1 < distance2 ? p1 : p2;
     }
 }

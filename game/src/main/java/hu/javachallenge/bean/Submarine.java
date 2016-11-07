@@ -1,6 +1,6 @@
 package hu.javachallenge.bean;
 
-public class Submarine implements IMovableObject {
+public class Submarine extends MovableObject {
 
     private String type;
     private Long id;

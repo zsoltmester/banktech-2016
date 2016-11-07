@@ -1,7 +1,7 @@
 package hu.javachallenge.strategy.moving;
 
 import hu.javachallenge.bean.Entity;
-import hu.javachallenge.bean.IMovableObject;
+import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.MoveStrategy;
@@ -14,22 +14,32 @@ import java.util.List;
 public class CollissionDetector {
     private static IMap map = IMap.MapConfig.getMap();
 
-    public static <T1 extends IMovableObject, T2 extends IMovableObject> Integer collisionWith(
+    public static <T1 extends MovableObject, T2 extends MovableObject> Integer collisionWith(
             T1 object1, IChangeMovableObject<T1> object1Moves, double object1radius,
             T2 object2, IChangeMovableObject<T2> object2Moves, double object2radius, int step) {
 
+
+        T1 object1Clone = null;
+        T2 object2Clone = null;
+        try {
+            object1Clone = (T1) object1.clone();
+            object2Clone = (T2) object2.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
         for(int i = 0; i < step; ++i) {
-            object1Moves.moveToNext(object1);
-            object2Moves.moveToNext(object2);
-            if(object1.getPosition().distance(object2.getPosition()) < object1radius + object2radius) {
+            object1Moves.moveToNext(object1Clone);
+            object2Moves.moveToNext(object2Clone);
+            if(object1Clone.getPosition().distance(object2Clone.getPosition()) < object1radius + object2radius) {
                 return i;
             }
         }
         return null;
     }
 
-    public static <T extends IMovableObject> Integer submarineCollision(MoveStrategy strategy,
-                                                                        T object, IChangeMovableObject<T> objectMoving, double radius, int step) {
+    public static <T extends MovableObject> Integer submarineCollision(MoveStrategy strategy,
+                                                                       T object, IChangeMovableObject<T> objectMoving, double radius, int step) {
         return collisionWith(strategy.getSubmarine(), strategy, map.getConfiguration().getSubmarineSize(),
                 object, objectMoving, radius, step);
     }

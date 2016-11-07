@@ -1,6 +1,6 @@
 package hu.javachallenge.bean;
 
-public class Entity implements IMovableObject {
+public class Entity extends MovableObject {
 
     public static final String SUBMARINE = "Submarine";
     public static final String TORPEDO = "Torpedo";

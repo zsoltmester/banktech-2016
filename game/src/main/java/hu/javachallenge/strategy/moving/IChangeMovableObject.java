@@ -1,7 +1,7 @@
 package hu.javachallenge.strategy.moving;
 
 import hu.javachallenge.bean.Entity;
-import hu.javachallenge.bean.IMovableObject;
+import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 
 import java.util.ArrayDeque;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by qqcs on 07/11/16.
  */
-public interface IChangeMovableObject<T extends IMovableObject> {
+public interface IChangeMovableObject<T extends MovableObject> {
 
     double getNextAcceleration(T object);
     double getNextSteering(T object);
@@ -40,7 +40,7 @@ public interface IChangeMovableObject<T extends IMovableObject> {
         ));
     }
 
-    static <T extends IMovableObject> ArrayDeque<Position> getSteppedPositions(IChangeMovableObject<T> moving, T object, int count) {
+    static <T extends MovableObject> ArrayDeque<Position> getSteppedPositions(IChangeMovableObject<T> moving, T object, int count) {
         ArrayDeque<Position> result = new ArrayDeque<>();
         result.add(object.getPosition());
 
@@ -52,7 +52,7 @@ public interface IChangeMovableObject<T extends IMovableObject> {
         return result;
     }
 
-    class FixMove<T extends IMovableObject> implements IChangeMovableObject<T> {
+    class FixMove<T extends MovableObject> implements IChangeMovableObject<T> {
         private final double nextAcceleration;
         private final double nextSteering;
 
@@ -72,7 +72,7 @@ public interface IChangeMovableObject<T extends IMovableObject> {
         }
     }
 
-    class ZeroMove<T extends IMovableObject> extends FixMove<T> {
+    class ZeroMove<T extends MovableObject> extends FixMove<T> {
         public ZeroMove() {
             super(0.0, 0.0);
         }
