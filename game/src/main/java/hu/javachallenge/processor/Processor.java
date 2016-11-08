@@ -19,7 +19,7 @@ public class Processor {
     private static Communicator communicator = new CommunicatorImpl(App.serverAddress);
     private static IMap map = IMap.MapConfig.getMap();
 
-    private enum GAME_STATUS {
+    public enum GAME_STATUS {
         WAITING, RUNNING, ENDED
     }
 
