@@ -174,12 +174,12 @@ public class MoveUtil {
         return null;
     }
 
-    public static Position getPositionWhereShootMovingTarget(Position from, Entity entity) {
+    public static Position getPositionWhereShootMovingTarget(Position from, Entity entity,
+                                                             double entitySize) {
         List<Entity> history = map.getHistory(entity.getId(), 2);
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(history);
 
         double torpedoSpeed = map.getConfiguration().getTorpedoSpeed();
-        double torpedoRange = map.getConfiguration().getTorpedoRange();
 
         Entity entityClone;
         try {
@@ -197,7 +197,7 @@ public class MoveUtil {
             if(!map.isValidPosition(entityClone.getPosition())) {
                 return null;
             }
-            if(Math.abs(entityClone.getPosition().distance(from) - torpedoSpeed * i) <= torpedoRange) {
+            if(Math.abs(entityClone.getPosition().distance(from) - torpedoSpeed * i) <= entitySize) {
                 return entityClone.getPosition();
             }
         }

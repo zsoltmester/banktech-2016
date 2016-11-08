@@ -32,7 +32,8 @@ public class AttackerStrategy extends SubmarineStrategy {
             Position toShoot = map.getEntities().stream()
                     .filter(e -> !e.getOwner().getName().equals(IMap.OUR_NAME))
                     .filter(e -> e.getType().equals(Entity.SUBMARINE))
-                    .map(e -> MoveUtil.getPositionWhereShootMovingTarget(submarine.getPosition(), e))
+                    .map(e -> MoveUtil.getPositionWhereShootMovingTarget(submarine.getPosition(), e,
+                            map.getConfiguration().getSubmarineSize()))
                     .filter(map::isValidPosition)
                     .filter(p -> p.distance(submarine.getPosition()) >
                             map.getConfiguration().getTorpedoExplosionRadius())
@@ -48,8 +49,7 @@ public class AttackerStrategy extends SubmarineStrategy {
                         return map.getConfiguration().getIslandPositions().stream()
                                 .map(MovingIsland::new).allMatch(island ->
                                         CollissionDetector.collisionWith(
-                                        torpedo, new IChangeMovableObject.ZeroMove<>(),
-                                        map.getConfiguration().getTorpedoRange(),
+                                        torpedo, new IChangeMovableObject.ZeroMove<>(), 1,
                                         island, island,
                                         map.getConfiguration().getIslandSize(),
                                         (int) Math.ceil(submarine.getPosition().distance(p) /

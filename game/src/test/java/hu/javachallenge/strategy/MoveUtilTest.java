@@ -210,12 +210,11 @@ public class MoveUtilTest {
                     }
                 }))).thenReturn(true);
         Mockito.when(mockedMapConfiguration.getTorpedoSpeed()).thenReturn(6.0);
-        Mockito.when(mockedMapConfiguration.getTorpedoRange()).thenReturn(2);
         Mockito.when(mockedMapConfiguration.getMaxSpeed()).thenReturn(5);
         Mockito.when(mockedMapConfiguration.getWidth()).thenReturn(100);
         Mockito.when(mockedMapConfiguration.getHeight()).thenReturn(100);
 
-        Position position = MoveUtil.getPositionWhereShootMovingTarget(new Position(5, 24), e2);
+        Position position = MoveUtil.getPositionWhereShootMovingTarget(new Position(5, 24), e2, 2);
 
         // TODO meg lett hackelve, mert az elődöntőn hatásosabb a fix gyorsulással számolni
         //TestCase.assertEquals(5.0, position.getX(), 0.00000001);

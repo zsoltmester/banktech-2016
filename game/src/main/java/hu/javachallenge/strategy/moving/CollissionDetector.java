@@ -61,8 +61,7 @@ public class CollissionDetector {
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.ZeroMove<>();
 
         double radius = entity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() :
-                map.getConfiguration().getTorpedoRange();
+                map.getConfiguration().getSubmarineSize() : 1;
 
         return submarineCollision(strategy, entity, entityMover, radius, step);
     }
@@ -71,12 +70,10 @@ public class CollissionDetector {
         List<Entity> entityHistory = map.getHistory(historicalEntity.getId(), 2);
 
         double radius1 = entity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() :
-                map.getConfiguration().getTorpedoRange();
+                map.getConfiguration().getSubmarineSize() : 1;
 
         double radius2 = historicalEntity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() :
-                map.getConfiguration().getTorpedoRange();
+                map.getConfiguration().getSubmarineSize() : 1;
 
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(entityHistory);
 

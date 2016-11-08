@@ -94,12 +94,15 @@ class MapGui extends DataMap {
             // paint sonars
             if (ourSubmarines != null && displayWithRadius) {
 
-                graphics.setColor(new Color(189,183,107));
                 ourSubmarines.forEach(submarine -> {
+                    // torpedos working radius (-+1)
+                    graphics.setColor(new Color(0, 0, 200));
+                    int maxTorpedoRange = (int) (configuration.getTorpedoRange() * configuration.getTorpedoSpeed());
+                    fillCircle(graphics, submarine.getPosition(), maxTorpedoRange);
 
+                    graphics.setColor(new Color(189,183,107));
                     boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
                     int sonarRange = hasExtendedSonar ? configuration.getExtendedSonarRange() : configuration.getSonarRange();
-
                     fillCircle(graphics, submarine.getPosition(), sonarRange);
                 });
             }
@@ -142,6 +145,8 @@ class MapGui extends DataMap {
                             }
                         }
                     } else if (entity.getType().equals(Entity.TORPEDO)) {
+
+                        // TODO torpedo radius is 1!
                         if (displayWithHistory) {
                             List<Entity> history = getHistory(entity.getId(), 3);
                             for(int i = 0; i < history.size() - 1; ++i) {
