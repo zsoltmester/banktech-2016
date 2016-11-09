@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface IChangeMovableObject<T extends MovableObject> {
 
+    IChangeMovableObject<MovableObject> ZERO_MOVE = new ZeroMove<>();
+
     double getNextAcceleration(T object);
     double getNextSteering(T object);
 
@@ -81,7 +83,7 @@ public interface IChangeMovableObject<T extends MovableObject> {
     }
 
     class ZeroMove<T extends MovableObject> extends FixMove<T> {
-        public ZeroMove() {
+        private ZeroMove() {
             super(0.0, 0.0);
         }
     }

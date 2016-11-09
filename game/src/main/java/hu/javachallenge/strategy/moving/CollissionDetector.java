@@ -58,12 +58,10 @@ public class CollissionDetector {
     }
 
     public static Integer submarineCollisionWithEntity(MoveStrategy strategy, Entity entity, int step) {
-        IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.ZeroMove<>();
-
         double radius = entity.getType().equals(Entity.SUBMARINE) ?
                 map.getConfiguration().getSubmarineSize() : 1;
 
-        return submarineCollision(strategy, entity, entityMover, radius, step);
+        return submarineCollision(strategy, entity, IChangeMovableObject.ZERO_MOVE, radius, step);
     }
 
     public static Integer entityCollisionWithEntityHistory(Entity entity, Entity historicalEntity, int step) {
@@ -77,7 +75,7 @@ public class CollissionDetector {
 
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(entityHistory);
 
-        return collisionWith(entity, new IChangeMovableObject.ZeroMove<>(), radius1,
+        return collisionWith(entity, IChangeMovableObject.ZERO_MOVE, radius1,
                 historicalEntity, entityMover, radius2, step);
     }
 }

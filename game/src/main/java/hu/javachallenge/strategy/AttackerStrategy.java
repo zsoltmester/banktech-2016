@@ -37,6 +37,9 @@ public class AttackerStrategy extends SubmarineStrategy {
                     .filter(map::isValidPosition)
                     .filter(p -> p.distance(submarine.getPosition()) >
                             map.getConfiguration().getTorpedoExplosionRadius())
+                    .filter(p -> p.distance(submarine.getPosition()) <
+                            map.getConfiguration().getTorpedoRange() *
+                                    (1 + map.getConfiguration().getTorpedoSpeed()))
                     .filter(p -> {
                         Entity torpedo = new Entity();
                         torpedo.setPosition(submarine.getPosition());
@@ -49,7 +52,7 @@ public class AttackerStrategy extends SubmarineStrategy {
                         return map.getConfiguration().getIslandPositions().stream()
                                 .map(MovingIsland::new).allMatch(island ->
                                         CollissionDetector.collisionWith(
-                                        torpedo, new IChangeMovableObject.ZeroMove<>(), 1,
+                                        torpedo, IChangeMovableObject.ZERO_MOVE, 1,
                                         island, island,
                                         map.getConfiguration().getIslandSize(),
                                         (int) Math.ceil(submarine.getPosition().distance(p) /
@@ -64,7 +67,7 @@ public class AttackerStrategy extends SubmarineStrategy {
                                             e, 100);
                                     if(time != null) {
                                         Position otherexplosion =
-                                                IChangeMovableObject.getSteppedPositions(new IChangeMovableObject.ZeroMove<>(),
+                                                IChangeMovableObject.getSteppedPositions(IChangeMovableObject.ZERO_MOVE,
                                                 torpedo, time).getLast();
                                         boolean result = otherexplosion.distance(submarine.getPosition())
                                                  > map.getConfiguration().getTorpedoExplosionRadius();

@@ -3,6 +3,7 @@ package hu.javachallenge.strategy;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
+import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
@@ -31,16 +32,32 @@ public class ScoutStrategy extends MoveStrategy {
     public void onRound() {
         Submarine submarine = getSubmarine();
 
-        if (submarine.getPosition().distance(targets.peek()) < 10) {
-            targets.add(targets.pop());
-        }
-        LOGGER.info("Submarine " + submarine.getId() + " next position: " + targets.peek());
+        changeTargetIfNeed();
 
-        // moves to the next position
-        super.onRound();
+        if (targets.peek() != null) {
+            LOGGER.info("Submarine " + submarine.getId() + " next position: " + targets.peek());
+            // moves to the next position
+            super.onRound();
+        } else {
+            LOGGER.info("Submarine " + submarine.getId() + " has no next position");
+            // stay calm
+            Processor.move(submarine.getId(), -1, 0);
+        }
 
         // TODO temporary
         new AttackerStrategy(submarine.getId()).onRound();
+    }
+
+    protected void changeTargetIfNeed() {
+        if (targets.peek() != null) {
+            if (getSubmarine().getPosition().distance(targets.peek()) < 10) {
+                targets.add(targets.pop());
+            }
+        }
+    }
+
+    protected Deque<Position> getTargets() {
+        return targets;
     }
 
     @Override

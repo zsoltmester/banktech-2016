@@ -1,65 +1,10 @@
 package hu.javachallenge.bean;
 
-public class Submarine extends MovableObject {
-
-    private String type;
-    private Long id;
-    private Position position;
-    private Owner owner;
-    private Double velocity;
-    private Double angle;
+public class Submarine extends Entity {
     private Integer hp;
     private Integer sonarCooldown;
     private Integer torpedoCooldown;
     private Integer sonarExtended;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
-    public Double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Double velocity) {
-        this.velocity = velocity;
-    }
-
-    public Double getAngle() {
-        return angle;
-    }
-
-    public void setAngle(Double angle) {
-        this.angle = angle;
-    }
 
     public Integer getHp() {
         return hp;
@@ -96,12 +41,12 @@ public class Submarine extends MovableObject {
     @Override
     public String toString() {
         return "Submarine{" +
-                "type='" + type + '\'' +
-                ", id=" + id +
-                ", position=" + position +
-                ", owner=" + owner +
-                ", velocity=" + velocity +
-                ", angle=" + angle +
+                "type='" + getType() + '\'' +
+                ", id=" + getId() +
+                ", position=" + getPosition() +
+                ", owner=" + getOwner() +
+                ", velocity=" + getVelocity() +
+                ", angle=" + getAngle() +
                 ", hp=" + hp +
                 ", sonarCooldown=" + sonarCooldown +
                 ", torpedoCooldown=" + torpedoCooldown +

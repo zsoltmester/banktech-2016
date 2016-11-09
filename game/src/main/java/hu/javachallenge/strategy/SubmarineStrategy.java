@@ -10,7 +10,7 @@ import hu.javachallenge.processor.Processor;
 public abstract class SubmarineStrategy implements Strategy {
     protected IMap map = IMap.MapConfig.getMap();
 
-    private final Long submarineId;
+    protected final Long submarineId;
 
     protected SubmarineStrategy(Long submarineId) {
         this.submarineId = submarineId;
