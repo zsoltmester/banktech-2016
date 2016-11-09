@@ -32,11 +32,11 @@ public class CommunicatorImpl implements Communicator {
                 .url(BASE_URL + relativeUrl)
                 .build();
 
-        LOGGER.fine("Request '" + request + "'");
+        LOGGER.finest("Request '" + request + "'");
         try {
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
-            LOGGER.fine("Response for GET request to '" + relativeUrl + "\': " + responseBean);
+            LOGGER.finest("Response for GET request to '" + relativeUrl + "\': " + responseBean);
             return responseBean;
         } catch (IOException e) {
             LOGGER.severe("Failed to execute GET request with URL: '" + relativeUrl + '\'');
@@ -53,10 +53,10 @@ public class CommunicatorImpl implements Communicator {
                     .post(RequestBody.create(JSON, requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)))
                     .build();
 
-            LOGGER.fine("Request '" + request + "'" + ", body: " + (requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)));
+            LOGGER.finest("Request '" + request + "'" + ", body: " + (requestBean == null ? "" : new ObjectMapper().writeValueAsString(requestBean)));
             String response = client.newCall(request).execute().body().string();
             T responseBean = new ObjectMapper().readValue(response, responseClass);
-            LOGGER.fine("Response for POST request to '" + relativeUrl + "\': " + responseBean);
+            LOGGER.finest("Response for POST request to '" + relativeUrl + "\': " + responseBean);
             return responseBean;
         } catch (IOException e) {
             LOGGER.severe("Failed to execute POST request with URL: '" + relativeUrl + '\'');

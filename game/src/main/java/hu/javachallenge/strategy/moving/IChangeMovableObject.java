@@ -48,7 +48,7 @@ public interface IChangeMovableObject<T extends MovableObject> {
             objectCopy = (T) object.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayDeque<>();
         }
 
         ArrayDeque<Position> result = new ArrayDeque<>();

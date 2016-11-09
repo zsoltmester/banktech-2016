@@ -33,16 +33,17 @@ public class AttackerStrategy extends SubmarineStrategy {
     // Need to be Stream -s
     Stream<Position> filterPointsToShoot(Stream<Position> possiblePositions) {
         Submarine submarine = getSubmarine();
+        double neeedDistanceFromTorpedo = map.getConfiguration().getTorpedoExplosionRadius()
+                + map.getConfiguration().getSubmarineSize();
 
         return possiblePositions.peek(e -> LOGGER.fine("Position where: " + e))
                 .filter(map::isValidPosition)
                 .filter(p -> p.distance(submarine.getPosition()) >
-                        map.getConfiguration().getTorpedoExplosionRadius())
+                        neeedDistanceFromTorpedo)
                 .peek(e -> LOGGER.fine("Bigger distance then torpedo explosion"))
-                .filter(p -> p.distance(
-                        IChangeMovableObject.getSteppedPositions(
-                                IChangeMovableObject.ZERO_MOVE, submarine, 2).getLast()) >
-                        map.getConfiguration().getTorpedoExplosionRadius())
+                .filter(p -> IChangeMovableObject.getSteppedPositions(
+                        IChangeMovableObject.ZERO_MOVE, submarine, 2).stream().allMatch(stp ->
+                        p.distance(stp) >= neeedDistanceFromTorpedo))
                 .peek(e -> LOGGER.fine("Bigger distance then torpedo explosion 2 tick later"))
                 .filter(p -> p.distance(submarine.getPosition()) <
                         map.getConfiguration().getTorpedoRange() *
@@ -74,15 +75,16 @@ public class AttackerStrategy extends SubmarineStrategy {
                                         Integer time = CollissionDetector.entityCollisionWithEntityHistory(torpedo,
                                                 e, 100);
                                         if(time != null) {
-                                            Position otherexplosion =
+                                            Position otherExplosion =
                                                     IChangeMovableObject.getSteppedPositions(IChangeMovableObject.ZERO_MOVE,
                                                             torpedo, time).getLast();
-                                            boolean result = otherexplosion.distance(submarine.getPosition())
-                                                    > map.getConfiguration().getTorpedoExplosionRadius();
+                                            boolean result = otherExplosion.distance(submarine.getPosition())
+                                                    > neeedDistanceFromTorpedo;
 
-                                            result &= otherexplosion.distance(IChangeMovableObject.getSteppedPositions(
-                                                    IChangeMovableObject.ZERO_MOVE, submarine, 2).getLast()) >
-                                                    map.getConfiguration().getTorpedoExplosionRadius();
+                                            result &= IChangeMovableObject.getSteppedPositions(
+                                                    IChangeMovableObject.ZERO_MOVE, submarine, 2).stream()
+                                                    .allMatch(stp -> otherExplosion.distance(stp) >
+                                                            neeedDistanceFromTorpedo);
 
                                             return result;
                                         }
