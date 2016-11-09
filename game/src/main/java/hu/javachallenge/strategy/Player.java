@@ -33,7 +33,7 @@ public class Player {
 
             strategy.onRound();
 
-            map.print();
+            map.tick();
             Processor.waitForNextRound();
         }
     }

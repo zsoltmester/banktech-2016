@@ -38,8 +38,8 @@ class MapGui extends DataMap {
     }
 
     @Override
-    public void print() {
-        super.print();
+    public void tick() {
+        super.tick();
         new Thread(() -> {
             mapPanel.invalidate();
             mapPanel.repaint();
@@ -235,6 +235,10 @@ class MapGui extends DataMap {
             }
 
             Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
+            graphics.setColor(Color.WHITE);
+            graphics.drawString("Possible torpedo hit: " + possiblyScores.getX().intValue() + ", destroy: " +
+                possiblyScores.getY().intValue(),
+                    (int) getPreferredSize().getWidth() - 320, (int) getPreferredSize().getHeight() - 2);
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
                 String key = entry.getKey();
                 graphics.setColor(connected.get(key) ? displayWithTeamColor ? playersColor.get(key) : Color.white : Color.RED);

@@ -31,7 +31,7 @@ public interface IMap extends AutoCloseable {
 
     void processSonarResult(Long submarine, List<Entity> entities);
 
-    void print();
+    void tick();
 
     class MapConfig {
 
