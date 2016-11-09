@@ -9,10 +9,14 @@ import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
 
+import java.util.logging.Logger;
+
 /**
  * Created by qqcs on 06/11/16.
  */
 public class AttackerStrategy extends SubmarineStrategy {
+
+    private static final Logger LOGGER = Logger.getLogger(AttackerStrategy.class.getName());
     protected AttackerStrategy(Long submarineId) {
         super(submarineId);
     }
@@ -32,14 +36,23 @@ public class AttackerStrategy extends SubmarineStrategy {
             Position toShoot = map.getEntities().stream()
                     .filter(e -> !e.getOwner().getName().equals(IMap.OUR_NAME))
                     .filter(e -> e.getType().equals(Entity.SUBMARINE))
+                    .peek(e -> LOGGER.fine("Entity to shoot: " + e))
                     .map(e -> MoveUtil.getPositionWhereShootMovingTarget(submarine.getPosition(), e,
                             map.getConfiguration().getSubmarineSize()))
+                    .peek(e -> LOGGER.fine("Position where: " + e))
                     .filter(map::isValidPosition)
                     .filter(p -> p.distance(submarine.getPosition()) >
                             map.getConfiguration().getTorpedoExplosionRadius())
+                    .peek(e -> LOGGER.fine("Bigger distance then torpedo explosion"))
+                    .filter(p -> p.distance(
+                            IChangeMovableObject.getSteppedPositions(
+                                    IChangeMovableObject.ZERO_MOVE, submarine, 2).getLast()) >
+                            map.getConfiguration().getTorpedoExplosionRadius())
+                    .peek(e -> LOGGER.fine("Bigger distance then torpedo explosion 2 tick later"))
                     .filter(p -> p.distance(submarine.getPosition()) <
                             map.getConfiguration().getTorpedoRange() *
                                     (1 + map.getConfiguration().getTorpedoSpeed()))
+                    .peek(e -> LOGGER.fine("Distance is good for us"))
                     .filter(p -> {
                         Entity torpedo = new Entity();
                         torpedo.setPosition(submarine.getPosition());
@@ -71,12 +84,18 @@ public class AttackerStrategy extends SubmarineStrategy {
                                                 torpedo, time).getLast();
                                         boolean result = otherexplosion.distance(submarine.getPosition())
                                                  > map.getConfiguration().getTorpedoExplosionRadius();
+
+                                        result &= otherexplosion.distance(IChangeMovableObject.getSteppedPositions(
+                                                        IChangeMovableObject.ZERO_MOVE, submarine, 2).getLast()) >
+                                                map.getConfiguration().getTorpedoExplosionRadius();
+
                                         return result;
                                     }
                                     return true;
                                 });
 
                     })
+                    .peek(e -> LOGGER.fine("Not shoot island or anyone else close to us"))
                     .sorted((p1, p2) ->
                             Double.compare(p1.distance(submarine.getPosition()),
                                     p2.distance(submarine.getPosition())))

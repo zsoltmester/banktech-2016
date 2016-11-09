@@ -20,7 +20,7 @@ public class IndividualStrategy implements Strategy {
 
         int submarinesCount = map.getConfiguration().getSubmarinesPerTeam();
         double part = map.getConfiguration().getWidth() / submarinesCount;
-        double radarDistance = map.getConfiguration().getSonarRange();
+        double radarDistance = map.getConfiguration().getExtendedSonarRange();
 
         int i = 0;
         for(Submarine submarine : map.getOurSubmarines()) {
