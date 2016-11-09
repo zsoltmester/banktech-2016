@@ -39,7 +39,7 @@ public interface IMap extends AutoCloseable {
         }
 
         public static IMap getMap() {
-            return MapGui.get();
+            return DataMap.get();
         }
     }
 }
