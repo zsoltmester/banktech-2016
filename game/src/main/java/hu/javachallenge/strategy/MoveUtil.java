@@ -130,10 +130,9 @@ public class MoveUtil {
         return acceleration;
     }
 
-    public static Position getPositionWhereShootTarget(Submarine submarine, Entity targetEntity) {
+    public static Position getPositionWhereShootTarget(Position from, Entity targetEntity) {
         // http://stackoverflow.com/a/2249237
 
-        Position from = submarine.getPosition();
         Position target = targetEntity.getPosition();
         Position targetVelocity =
                 new Position(targetEntity.getVelocity() * Math.cos(Math.toRadians(targetEntity.getAngle())),

@@ -3,6 +3,7 @@ package hu.javachallenge.map;
 import hu.javachallenge.bean.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IMap extends AutoCloseable {
 
@@ -19,6 +20,8 @@ public interface IMap extends AutoCloseable {
     List<Entity> getEntitiesForSubmarine(Long submarine);
 
     List<Entity> getHistory(Long id, int count);
+
+    Map<Integer, Map<Long, Entity>> getAllHistory();
 
     boolean isValidPosition(Position position);
 

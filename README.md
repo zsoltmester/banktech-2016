@@ -8,7 +8,7 @@
 *3, 4*: Elég csak a döntőre
 
 - (1) Megjavítani a torpedoRange-es hibákat!! - Béla - elvileg OK
-- (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni
+- (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni - elvileg OK
 - (3) Több féle mozgást felismerni. +1
 - (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
 - (4) Machine learning-el is lehetne ezt
@@ -20,7 +20,7 @@
 - (4) Több hajót formációba mozgassunk
 - (3) Pánik stratégia
 - (3) Stratégia, hogy random módon keressünk
-- (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását
+- (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását - Béla - OK
 - (2) Ne lőjjünk át a szigeten - Béla - elvileg OK
 - (2) Ha van közelben valami robbanó a lövedék útjában, nem lőjük ki. - Béla - elvileg OK
 

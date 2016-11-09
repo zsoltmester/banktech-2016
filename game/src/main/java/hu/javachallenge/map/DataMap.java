@@ -23,7 +23,7 @@ class DataMap implements IMap {
 
     protected HashMap<Long, List<Entity>> entities = new HashMap<>();
 
-    protected NavigableMap<Integer, java.util.Map<Long, Entity>> entityHistory = new TreeMap<>();
+    protected Map<Integer, Map<Long, Entity>> entityHistory = new TreeMap<>();
 
     @Override
     public void initialize(Game game) {
@@ -68,6 +68,11 @@ class DataMap implements IMap {
             idHistory.add(entity);
         }
         return idHistory;
+    }
+
+    @Override
+    public Map<Integer, Map<Long, Entity>> getAllHistory() {
+        return entityHistory;
     }
 
     @Override

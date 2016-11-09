@@ -99,7 +99,7 @@ public class MoveUtilTest {
         target.setVelocity(1.0);
         target.setAngle(180.0);
 
-        Position result = MoveUtil.getPositionWhereShootTarget(submarine, target);
+        Position result = MoveUtil.getPositionWhereShootTarget(submarine.getPosition(), target);
         TestCase.assertNotNull(result);
         TestCase.assertEquals(0, result.getX(), 0.00000001);
         TestCase.assertEquals(0, result.getY(), 0.00000001);
