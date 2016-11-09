@@ -91,15 +91,21 @@ class MapGui extends DataMap {
             graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
+
+            // torpedos working radius (-+1)
+            if (ourSubmarines != null && displayWithRadius) {
+
+                ourSubmarines.forEach(submarine -> {
+                    graphics.setColor(new Color(0, 0, 200));
+                    int maxTorpedoRange = (int) (configuration.getTorpedoRange() * (1 + configuration.getTorpedoSpeed()));
+                    fillCircle(graphics, submarine.getPosition(), maxTorpedoRange);
+                });
+            }
+
             // paint sonars
             if (ourSubmarines != null && displayWithRadius) {
 
                 ourSubmarines.forEach(submarine -> {
-                    // torpedos working radius (-+1)
-                    graphics.setColor(new Color(0, 0, 200));
-                    int maxTorpedoRange = (int) (configuration.getTorpedoRange() * configuration.getTorpedoSpeed());
-                    fillCircle(graphics, submarine.getPosition(), maxTorpedoRange);
-
                     graphics.setColor(new Color(189,183,107));
                     boolean hasExtendedSonar = submarine.getSonarExtended() > 0;
                     int sonarRange = hasExtendedSonar ? configuration.getExtendedSonarRange() : configuration.getSonarRange();
@@ -187,9 +193,10 @@ class MapGui extends DataMap {
                 });
             }
 
+            int height = (int) getPreferredSize().getHeight();
+
             // paint the HP-s
             if (ourSubmarines != null) {
-                int height = (int) getPreferredSize().getHeight();
                 for (int i = 0; i < ourSubmarines.size(); ++i) {
                     Submarine submarine = ourSubmarines.get(i);
 
@@ -215,8 +222,18 @@ class MapGui extends DataMap {
             graphics.setFont(usedFont);
             graphics.setColor(Color.WHITE);
             graphics.drawString("Round " + Processor.game.getRound() + " / " + configuration.getRounds(),
-                    2, (int) getPreferredSize().getHeight() - 12);
+                    2, (int) getPreferredSize().getHeight() - 17);
             int i = 0;
+
+            int roundPercent = (int) (Processor.game.getRound() * 100.0 / configuration.getRounds());
+
+            graphics.setColor(Color.cyan);
+            graphics.fillRect(0, height - 2*5 - 5, roundPercent*2, 5);
+            if (roundPercent != 100) {
+                graphics.setColor(Color.DARK_GRAY);
+                graphics.fillRect(roundPercent * 2, height - 2*5 - 5, (100 - roundPercent) * 2, 5);
+            }
+
             Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
                 String key = entry.getKey();
@@ -225,6 +242,7 @@ class MapGui extends DataMap {
                         (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
                 ++i;
             }
+
         }
 
         private void fillCircle(Graphics graphics, Position position, int radius) {
