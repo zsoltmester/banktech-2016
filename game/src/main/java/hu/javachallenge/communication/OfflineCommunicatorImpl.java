@@ -1,13 +1,11 @@
 package hu.javachallenge.communication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.javachallenge.bean.*;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.ScoutStrategy;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,11 +39,33 @@ public class OfflineCommunicatorImpl implements Communicator {
             game.setRound(0);
 
             // mapConf
-            try {
-                game.setMapConfiguration(new ObjectMapper().readValue("{TODO}", MapConfiguration.class));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            MapConfiguration configuration = new MapConfiguration();
+            game.setMapConfiguration(configuration);
+            configuration.setWidth(1700);
+            configuration.setHeight(800);
+            configuration.setIslandPositions(Collections.singletonList(new Position(850, 400)));
+            configuration.setTeamCount(1);
+            configuration.setSubmarinesPerTeam(2);
+            configuration.setTorpedoDamage(34);
+            configuration.setTorpedoHitScore(100);
+            configuration.setTorpedoDestroyScore(50);
+            configuration.setTorpedoHitPenalty(0);
+            configuration.setTorpedoCooldown(6);
+            configuration.setSonarRange(150);
+            configuration.setExtendedSonarRange(230);
+            configuration.setExtendedSonarRounds(10);
+            configuration.setExtendedSonarCooldown(20);
+            configuration.setTorpedoSpeed(40.0);
+            configuration.setTorpedoExplosionRadius(50);
+            configuration.setRoundLength(1000); // faster
+            configuration.setIslandSize(100);
+            configuration.setSubmarineSize(15);
+            configuration.setRounds(150);
+            configuration.setMaxSteeringPerRound(20);
+            configuration.setMaxAccelerationPerRound(5);
+            configuration.setMaxSpeed(20);
+            configuration.setTorpedoRange(10);
+            configuration.setRateLimitedPenalty(10);
 
             // conn status + scores
             HashMap<String, Boolean> map = new HashMap<>();
@@ -63,7 +83,45 @@ public class OfflineCommunicatorImpl implements Communicator {
             game.getScores().setScores(scores);
 
             // TODO create entities
+            Submarine s1 = new Submarine();
+            s1.setType(Entity.SUBMARINE);
+            s1.setId(++maxId);
+            s1.setPosition(new Position(200, 200));
+            s1.setOwner(new Owner(IMap.OUR_NAME));
+            s1.setVelocity(0.0);
+            s1.setAngle(17.10272896905237);
+            s1.setHp(100);
+            s1.setSonarCooldown(0);
+            s1.setTorpedoCooldown(0);
+            s1.setSonarExtended(0);
 
+            entityList.add(s1);
+
+            try {
+                s1 = (Submarine) s1.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            s1.setId(++maxId);
+            s1.setPosition(new Position(250, 250));
+            s1.setAngle(14.036243467926477);
+
+            entityList.add(s1);
+
+            try {
+                s1 = (Submarine) s1.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            s1.setOwner(new Owner("BOT"));
+            s1.setId(++maxId);
+            s1.setPosition(new Position(300, 300));
+            s1.setAngle(0.0);
+            s1.setVelocity(20.0);
+
+            entityList.add(s1);
 
             tickerThread = new Thread(this);
             tickerThread.start();
@@ -88,13 +146,13 @@ public class OfflineCommunicatorImpl implements Communicator {
                         .map(e -> (Submarine) e)
                         .findFirst().orElse(null);
             }
+        }
 
-            @Override
-            protected void changeTargetIfNeed() {
-                // TODO
-                getTargets().add(new Position(2, 2));
-
-                super.changeTargetIfNeed();
+        private double entityRadius(Entity e) {
+            if(e.getType().equals(Entity.SUBMARINE)) {
+                return game.getMapConfiguration().getSubmarineSize();
+            } else {
+                return 1;
             }
         }
 
@@ -102,12 +160,12 @@ public class OfflineCommunicatorImpl implements Communicator {
         public void run() {
             try {
                 Thread.sleep(200);
-                for(int i = 1; i < game.getMapConfiguration().getRounds() + 1; ++i) {
+                for(int i = 1; i <= game.getMapConfiguration().getRounds(); ++i) {
                     synchronized (this) {
                         game.setStatus(Processor.GAME_STATUS.RUNNING.name());
                         game.setRound(i);
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(game.getMapConfiguration().getRoundLength());
                     synchronized (this) {
                         for(Submarine submarine : getSubmarineList()) {
                             MoveRequest moveRequest = moves.get(submarine.getId());
@@ -127,6 +185,13 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 }
                             }
 
+                            // move
+                            IChangeMovableObject<MovableObject> move = IChangeMovableObject.ZERO_MOVE;
+                            if(moveRequest != null) {
+                                move = new IChangeMovableObject.FixMove<>(moveRequest.getSpeed(), moveRequest.getTurn());
+                            }
+                            move.moveToNext(submarine);
+
                             // shoot
                             if (shootRequest != null) {
                                 Entity entity = new Entity();
@@ -139,15 +204,58 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 entity.setOwner(new Owner(IMap.OUR_NAME));
 
                                 IChangeMovableObject.ZERO_MOVE.moveToNext(entity);
-                            }
 
-                            // move
-                            IChangeMovableObject<MovableObject> move = IChangeMovableObject.ZERO_MOVE;
-                            if(moveRequest != null) {
-                                move = new IChangeMovableObject.FixMove<>(moveRequest.getSpeed(), moveRequest.getTurn());
+                                entityList.add(entity);
+
+                                submarine.setTorpedoCooldown(game.getMapConfiguration().getTorpedoCooldown());
+                            } else if(submarine.getTorpedoCooldown() > 0) {
+                                submarine.setTorpedoCooldown(submarine.getTorpedoCooldown() - 1);
                             }
-                            move.moveToNext(submarine);
                         }
+
+                        // torpedos
+                        entityList = entityList.stream()
+                                .filter(e -> {
+                                    if(e.getType().equals(Entity.SUBMARINE)) {
+                                        return true;
+                                    }
+
+                                    boolean hasExplosion = entityList.stream()
+                                            .filter(o -> o.getType().equals(Entity.SUBMARINE))
+                                            .filter(o -> o.getPosition().distance(e.getPosition()) <
+                                            entityRadius(e) + entityRadius(o))
+                                            .count() != 0;
+
+                                    if (hasExplosion) {
+                                        Map.Entry<String, Integer> ownerPoint = game.getScores().getScores().entrySet().stream()
+                                                .filter(entry -> entry.getKey().equals(e.getOwner().getName()))
+                                                .findFirst().get();
+
+                                        entityList.stream()
+                                                .filter(o -> o.getType().equals(Entity.SUBMARINE))
+                                                .filter(o -> o.getPosition().distance(e.getPosition()) <
+                                                        entityRadius(o) +
+                                                game.getMapConfiguration().getTorpedoExplosionRadius())
+                                                .map(o -> (Submarine) o)
+                                                .forEach(o -> {
+                                                    o.setHp(o.getHp() - game.getMapConfiguration().getTorpedoDamage());
+
+                                                    if(!o.getOwner().getName().equals(e.getOwner().getName())) {
+                                                        ownerPoint.setValue(ownerPoint.getValue() +
+                                                            game.getMapConfiguration().getTorpedoHitScore());
+                                                        if(o.getHp() <= 0) {
+                                                            ownerPoint.setValue(ownerPoint.getValue() +
+                                                            game.getMapConfiguration().getTorpedoDestroyScore());
+                                                        }
+                                                    } else {
+                                                        ownerPoint.setValue(ownerPoint.getValue() +
+                                                            game.getMapConfiguration().getTorpedoHitPenalty());
+                                                    }
+                                                });
+                                    }
+
+                                    return !hasExplosion;
+                                }).collect(Collectors.toList());
 
 
                         // + moving others
@@ -155,7 +263,10 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 .filter(e -> {
                                     if(e.getType().equals(Entity.SUBMARINE) &&
                                             !e.getOwner().getName().equals(IMap.OUR_NAME)) {
-                                        new MyStrategy(e.getId()).moveToNext((Submarine) e);
+                                        new MyStrategy(e.getId(), new Position(850, 400)).moveToNext((Submarine) e);
+                                        if (((Submarine) e).getHp() < 0) {
+                                            return false;
+                                        }
                                     } else if (e.getType().equals(Entity.TORPEDO)) {
                                         IChangeMovableObject.ZERO_MOVE.moveToNext(e);
                                         if(e.getRoundsMoved() >= game.getMapConfiguration().getTorpedoRange()) {
@@ -165,8 +276,13 @@ public class OfflineCommunicatorImpl implements Communicator {
                                     }
                                     return isValidPosition(e.getPosition());
                                 })
-                                .filter(e -> true) // TODO nem-e ment neki torpedónak
-                                .filter(e -> true) // TODO nem-e ment neki szigetnek
+                                .filter(e ->
+                                        game.getMapConfiguration().getIslandPositions().stream()
+                                            .allMatch(is ->
+                                            e.getPosition().distance(is) >
+                                                    entityRadius(e) +
+                                                game.getMapConfiguration().getIslandSize())
+                                )
                                 .collect(Collectors.toList());
 
                         // remove messages

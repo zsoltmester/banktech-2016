@@ -94,7 +94,7 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         private static double getSteeringDelta(List<Entity> history) {
-            if(history.size() < 2 || history.get(history.size() - 2) == null)
+            if(history.size() < 2 || history.get(history.size() - 2) == null || history.get(history.size() - 1) == null)
                 return 0;
 
             return MoveUtil.velocityDistance(history.get(history.size() - 2).getAngle(), history.get(history.size() - 1).getAngle());
