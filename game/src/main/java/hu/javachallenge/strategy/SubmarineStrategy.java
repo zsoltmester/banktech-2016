@@ -4,10 +4,8 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
-/**
- * Created by qqcs on 06/11/16.
- */
 public abstract class SubmarineStrategy implements Strategy {
+
     protected IMap map = IMap.MapConfig.getMap();
 
     protected final Long submarineId;
@@ -17,8 +15,7 @@ public abstract class SubmarineStrategy implements Strategy {
     }
 
     public Submarine getSubmarine() {
-        return map.getOurSubmarines().stream().filter(s -> s.getId().equals(submarineId))
-                .findFirst().orElse(null);
+        return map.getOurSubmarines().stream().filter(s -> s.getId().equals(submarineId)).findFirst().orElse(null);
     }
 
     @Override
@@ -31,5 +28,11 @@ public abstract class SubmarineStrategy implements Strategy {
             submarine.setSonarCooldown(map.getConfiguration().getExtendedSonarCooldown());
         }
         Processor.sonar(submarine.getId());
+    }
+
+    @Override
+    public Strategy onChangeStrategy() {
+        // TODO maybe we should change here to the panic strategy, because it's a common thing and independent from the current strategy
+        return null;
     }
 }

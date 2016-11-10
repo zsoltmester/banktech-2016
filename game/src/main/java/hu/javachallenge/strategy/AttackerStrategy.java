@@ -15,9 +15,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by qqcs on 06/11/16.
- */
 public class AttackerStrategy extends SubmarineStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(AttackerStrategy.class.getName());
@@ -174,6 +171,7 @@ public class AttackerStrategy extends SubmarineStrategy {
 
     @Override
     public Strategy onChangeStrategy() {
+        // TODO we should change to something else it if there is nothing to attack
         return null;
     }
 }

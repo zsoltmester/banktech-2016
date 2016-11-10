@@ -2,45 +2,44 @@ package hu.javachallenge.strategy;
 
 import java.util.function.BooleanSupplier;
 
-/**
- * Created by qqcs on 06/11/16.
- */
 public class StrategySwitcher implements Strategy {
-    Strategy callerStrategy;
-    Strategy replacedByStrategy;
-    BooleanSupplier backToPrevious;
 
-    public StrategySwitcher(Strategy callerStrategy, Strategy replacedByStrategy, BooleanSupplier backToPrevious) {
-        this.callerStrategy = callerStrategy;
-        this.replacedByStrategy = replacedByStrategy;
-        this.backToPrevious = backToPrevious;
+    private Strategy caller;
+    private Strategy current;
+    private BooleanSupplier backToCaller;
+
+    public StrategySwitcher(Strategy caller, Strategy current, BooleanSupplier backToCaller) {
+        this.caller = caller;
+        this.current = current;
+        this.backToCaller = backToCaller;
     }
 
     @Override
     public void init() {
-        replacedByStrategy.init();
+        current.init();
     }
 
     @Override
     public void onStartRound() {
-        replacedByStrategy.onStartRound();
+        current.onStartRound();
     }
 
     @Override
     public void onRound() {
-        replacedByStrategy.onRound();
+        current.onRound();
     }
 
     @Override
     public Strategy onChangeStrategy() {
-        if(backToPrevious.getAsBoolean()) {
-            return callerStrategy;
+        if (backToCaller.getAsBoolean()) {
+            return caller;
         }
 
-        Strategy replaceStrategy = replacedByStrategy.onChangeStrategy();
-        if(replaceStrategy != null) {
-            replaceStrategy.init();
-            replacedByStrategy = replaceStrategy;
+        Strategy next = current.onChangeStrategy();
+        if (next != null) {
+            next.init();
+            current = next;
+            // TODO why we shouldn't change the caller to the previous current?
         }
 
         return null;

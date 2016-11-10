@@ -5,7 +5,7 @@ import hu.javachallenge.bean.*;
 import java.util.List;
 import java.util.Map;
 
-public interface IMap extends AutoCloseable {
+public interface IMap {
 
     String OUR_NAME = "Infinite Ringbuffer";
 
@@ -39,7 +39,7 @@ public interface IMap extends AutoCloseable {
         }
 
         public static IMap getMap() {
-            return DataMap.get();
+            return MapGui.get();
         }
     }
 }

@@ -46,14 +46,6 @@ class MapGui extends DataMap {
         }).start();
     }
 
-    @Override
-    public void close() {
-        if(frame != null) {
-            frame.dispose();
-            frame = null;
-        }
-    }
-
     private class MapPanel extends JPanel implements KeyListener {
 
         private static final float SIZE_MULTIPLIER = 0.5f;

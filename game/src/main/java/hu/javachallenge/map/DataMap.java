@@ -142,9 +142,4 @@ class DataMap implements IMap {
 
         previousScore = score;
     }
-
-    @Override
-    public void close() {
-
-    }
 }
