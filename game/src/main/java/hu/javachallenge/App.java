@@ -1,6 +1,5 @@
 package hu.javachallenge;
 
-import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.IndividualStrategy;
 import hu.javachallenge.strategy.Player;
 
@@ -30,10 +29,10 @@ public class App {
             serverAddress = args[0];
         }
 
-        try(IMap map = IMap.MapConfig.getMap()) {
-            Player.play(new IndividualStrategy(), map);
+        try {
+            Player.play(new IndividualStrategy());
         } catch (Exception e) {
-            LOGGER.warning("Exception while play. ");
+            LOGGER.warning("Exception while play.");
             e.printStackTrace();
         }
     }

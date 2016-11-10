@@ -5,12 +5,11 @@ import hu.javachallenge.processor.Processor;
 
 public class Player {
 
-    private Player(Strategy strategy, IMap map) {
+    private Player(Strategy strategy) {
         this.strategy = strategy;
-        this.map = map;
     }
 
-    private final IMap map;
+    private final IMap map = IMap.MapConfig.getMap();
 
     private Strategy strategy;
 
@@ -38,7 +37,7 @@ public class Player {
         }
     }
 
-    public static void play(Strategy strategy, IMap map) {
-        new Player(strategy, map).play();
+    public static void play(Strategy strategy) {
+        new Player(strategy).play();
     }
 }
