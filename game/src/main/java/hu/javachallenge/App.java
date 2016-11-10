@@ -29,11 +29,6 @@ public class App {
             serverAddress = args[0];
         }
 
-        try {
-            Player.play(new IndividualStrategy());
-        } catch (Exception e) {
-            LOGGER.warning("Exception while play.");
-            e.printStackTrace();
-        }
+        Player.play(new IndividualStrategy());
     }
 }
