@@ -9,24 +9,31 @@ import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Created by qqcs on 08/11/16.
- */
 public class OfflineCommunicatorImpl implements Communicator {
-    static class ServerGame implements Runnable {
-        private Game game = new Game();
-        private List<Entity> entityList = new ArrayList<>();
-        private HashMap<Long, MoveRequest> moves = new HashMap<>();
-        private HashMap<Long, ShootRequest> shoots = new HashMap<>();
-        private HashSet<Long> extSonar = new HashSet<>();
-        private Thread tickerThread;
-        private Long maxId = 0L;
 
-        public synchronized Game getGame() {
+    private static class ServerGame implements Runnable {
+
+        private Game game = new Game();
+
+        private Set<String> teams = new HashSet<>();
+        private Map<String, Integer> scores = new HashMap<>();
+
+        private List<Entity> entityList = new ArrayList<>();
+
+        private Map<Long, MoveRequest> moves = new HashMap<>();
+        private Map<Long, ShootRequest> shoots = new HashMap<>();
+        private Set<Long> extSonar = new HashSet<>();
+
+        private Thread tickerThread;
+
+        private long idSeed = 0L;
+        private Random random = new Random();
+
+        synchronized Game getGame() {
             return game;
         }
 
-        public synchronized List<Submarine> getSubmarineList() {
+        synchronized List<Submarine> getSubmarineList() {
             return entityList.stream()
                     .filter(e -> e.getOwner().getName().equals(IMap.OUR_NAME))
                     .filter(e -> (e instanceof Submarine))
@@ -34,17 +41,23 @@ public class OfflineCommunicatorImpl implements Communicator {
                     .collect(Collectors.toList());
         }
 
-        public synchronized void join() {
+        synchronized void join() {
             game.setStatus(Processor.GAME_STATUS.WAITING.name());
             game.setRound(0);
 
-            // mapConf
+            // teams
+            teams.add(IMap.OUR_NAME);
+            teams.add("rabbit");
+            teams.add("Just five more minutes Mom");
+            teams.add("Thats No Moon");
+
+            // map conf
             MapConfiguration configuration = new MapConfiguration();
             game.setMapConfiguration(configuration);
             configuration.setWidth(1700);
             configuration.setHeight(800);
             configuration.setIslandPositions(Collections.singletonList(new Position(850, 400)));
-            configuration.setTeamCount(1);
+            configuration.setTeamCount(teams.size());
             configuration.setSubmarinesPerTeam(2);
             configuration.setTorpedoDamage(34);
             configuration.setTorpedoHitScore(100);
@@ -67,65 +80,45 @@ public class OfflineCommunicatorImpl implements Communicator {
             configuration.setTorpedoRange(10);
             configuration.setRateLimitedPenalty(10);
 
-            // conn status + scores
-            HashMap<String, Boolean> map = new HashMap<>();
-            map.put(IMap.OUR_NAME, true);
-            map.put("BOT", true);
-
+            // conn status
+            Map<String, Boolean> connectionStatus = new HashMap<>();
+            teams.forEach(team -> connectionStatus.put(team, true));
             game.setConnectionStatus(new ConnectionStatus());
-            game.getConnectionStatus().setConnected(map);
+            game.getConnectionStatus().setConnected(connectionStatus);
 
-            HashMap<String, Integer> scores = new HashMap<>();
-            scores.put(IMap.OUR_NAME, 0);
-            scores.put("BOT", 0);
-
+            // scores
+            teams.forEach(team -> scores.put(team, 0));
             game.setScores(new Scores());
             game.getScores().setScores(scores);
 
-            // TODO create entities
-            Submarine s1 = new Submarine();
-            s1.setType(Entity.SUBMARINE);
-            s1.setId(++maxId);
-            s1.setPosition(new Position(200, 200));
-            s1.setOwner(new Owner(IMap.OUR_NAME));
-            s1.setVelocity(0.0);
-            s1.setAngle(17.10272896905237);
-            s1.setHp(100);
-            s1.setSonarCooldown(0);
-            s1.setTorpedoCooldown(0);
-            s1.setSonarExtended(0);
+            // submarines
+            final int[] i = {1};
+            List<String> randomOrderedTeams = new ArrayList<>(teams);
+            randomOrderedTeams.sort((s, t) -> random.nextInt(10) - 5);
+            randomOrderedTeams.forEach(team -> {
+                for (int j = 0; j < configuration.getSubmarinesPerTeam(); j++) {
+                    Submarine submarine = new Submarine();
+                    submarine.setType(Entity.SUBMARINE);
+                    submarine.setId(++idSeed);
+                    submarine.setPosition(new Position(
+                            i[0] % 2 == 0 ? configuration.getWidth() / (5 - j) : configuration.getWidth() * (4 - j) / (5 - j),
+                            i[0] > 2 ? configuration.getHeight() / (5 - j) : configuration.getHeight() * (4 - j) / (5 - j)));
+                    submarine.setOwner(new Owner(team));
+                    submarine.setVelocity(0.0);
+                    submarine.setAngle(random.nextDouble() * 360);
+                    submarine.setHp(100);
+                    submarine.setSonarCooldown(0);
+                    submarine.setTorpedoCooldown(0);
+                    submarine.setSonarExtended(0);
+                    entityList.add(submarine);
+                }
+                ++i[0];
+            });
 
-            entityList.add(s1);
 
-            try {
-                s1 = (Submarine) s1.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-
-            s1.setId(++maxId);
-            s1.setPosition(new Position(250, 250));
-            s1.setAngle(14.036243467926477);
-
-            entityList.add(s1);
-
-            try {
-                s1 = (Submarine) s1.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-
-            s1.setOwner(new Owner("BOT"));
-            s1.setId(++maxId);
-            s1.setPosition(new Position(300, 300));
-            s1.setAngle(0.0);
-            s1.setVelocity(20.0);
-
-            entityList.add(s1);
-
+            // start the game
             tickerThread = new Thread(this);
             tickerThread.start();
-            // & start the game
         }
 
         public boolean isValidPosition(Position position) {
@@ -149,7 +142,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         }
 
         private double entityRadius(Entity e) {
-            if(e.getType().equals(Entity.SUBMARINE)) {
+            if (e.getType().equals(Entity.SUBMARINE)) {
                 return game.getMapConfiguration().getSubmarineSize();
             } else {
                 return 1;
@@ -160,14 +153,14 @@ public class OfflineCommunicatorImpl implements Communicator {
         public void run() {
             try {
                 Thread.sleep(200);
-                for(int i = 1; i <= game.getMapConfiguration().getRounds(); ++i) {
+                for (int i = 1; i <= game.getMapConfiguration().getRounds(); ++i) {
                     synchronized (this) {
                         game.setStatus(Processor.GAME_STATUS.RUNNING.name());
                         game.setRound(i);
                     }
                     Thread.sleep(game.getMapConfiguration().getRoundLength());
                     synchronized (this) {
-                        for(Submarine submarine : getSubmarineList()) {
+                        for (Submarine submarine : getSubmarineList()) {
                             MoveRequest moveRequest = moves.get(submarine.getId());
                             ShootRequest shootRequest = shoots.get(submarine.getId());
                             Boolean extendSonar = extSonar.contains(submarine.getId());
@@ -177,17 +170,17 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 submarine.setSonarCooldown(game.getMapConfiguration().getExtendedSonarCooldown());
                                 submarine.setSonarExtended(game.getMapConfiguration().getExtendedSonarRounds());
                             } else {
-                                if(submarine.getSonarExtended() > 0) {
+                                if (submarine.getSonarExtended() > 0) {
                                     submarine.setSonarExtended(submarine.getSonarExtended() - 1);
                                 }
-                                if(submarine.getSonarCooldown() > 0) {
+                                if (submarine.getSonarCooldown() > 0) {
                                     submarine.setSonarCooldown(submarine.getSonarCooldown() - 1);
                                 }
                             }
 
                             // move
                             IChangeMovableObject<MovableObject> move = IChangeMovableObject.ZERO_MOVE;
-                            if(moveRequest != null) {
+                            if (moveRequest != null) {
                                 move = new IChangeMovableObject.FixMove<>(moveRequest.getSpeed(), moveRequest.getTurn());
                             }
                             move.moveToNext(submarine);
@@ -195,7 +188,7 @@ public class OfflineCommunicatorImpl implements Communicator {
                             // shoot
                             if (shootRequest != null) {
                                 Entity entity = new Entity();
-                                entity.setId(++maxId);
+                                entity.setId(++idSeed);
                                 entity.setPosition(submarine.getPosition());
                                 entity.setType(Entity.TORPEDO);
                                 entity.setVelocity(game.getMapConfiguration().getTorpedoSpeed());
@@ -208,7 +201,7 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 entityList.add(entity);
 
                                 submarine.setTorpedoCooldown(game.getMapConfiguration().getTorpedoCooldown());
-                            } else if(submarine.getTorpedoCooldown() > 0) {
+                            } else if (submarine.getTorpedoCooldown() > 0) {
                                 submarine.setTorpedoCooldown(submarine.getTorpedoCooldown() - 1);
                             }
                         }
@@ -216,14 +209,14 @@ public class OfflineCommunicatorImpl implements Communicator {
                         // torpedos
                         entityList = entityList.stream()
                                 .filter(e -> {
-                                    if(e.getType().equals(Entity.SUBMARINE)) {
+                                    if (e.getType().equals(Entity.SUBMARINE)) {
                                         return true;
                                     }
 
                                     boolean hasExplosion = entityList.stream()
                                             .filter(o -> o.getType().equals(Entity.SUBMARINE))
                                             .filter(o -> o.getPosition().distance(e.getPosition()) <
-                                            entityRadius(e) + entityRadius(o))
+                                                    entityRadius(e) + entityRadius(o))
                                             .count() != 0;
 
                                     if (hasExplosion) {
@@ -235,21 +228,21 @@ public class OfflineCommunicatorImpl implements Communicator {
                                                 .filter(o -> o.getType().equals(Entity.SUBMARINE))
                                                 .filter(o -> o.getPosition().distance(e.getPosition()) <
                                                         entityRadius(o) +
-                                                game.getMapConfiguration().getTorpedoExplosionRadius())
+                                                                game.getMapConfiguration().getTorpedoExplosionRadius())
                                                 .map(o -> (Submarine) o)
                                                 .forEach(o -> {
                                                     o.setHp(o.getHp() - game.getMapConfiguration().getTorpedoDamage());
 
-                                                    if(!o.getOwner().getName().equals(e.getOwner().getName())) {
+                                                    if (!o.getOwner().getName().equals(e.getOwner().getName())) {
                                                         ownerPoint.setValue(ownerPoint.getValue() +
-                                                            game.getMapConfiguration().getTorpedoHitScore());
-                                                        if(o.getHp() <= 0) {
+                                                                game.getMapConfiguration().getTorpedoHitScore());
+                                                        if (o.getHp() <= 0) {
                                                             ownerPoint.setValue(ownerPoint.getValue() +
-                                                            game.getMapConfiguration().getTorpedoDestroyScore());
+                                                                    game.getMapConfiguration().getTorpedoDestroyScore());
                                                         }
                                                     } else {
                                                         ownerPoint.setValue(ownerPoint.getValue() +
-                                                            game.getMapConfiguration().getTorpedoHitPenalty());
+                                                                game.getMapConfiguration().getTorpedoHitPenalty());
                                                     }
                                                 });
                                     }
@@ -261,7 +254,7 @@ public class OfflineCommunicatorImpl implements Communicator {
                         // + moving others
                         entityList = entityList.stream()
                                 .filter(e -> {
-                                    if(e.getType().equals(Entity.SUBMARINE) &&
+                                    if (e.getType().equals(Entity.SUBMARINE) &&
                                             !e.getOwner().getName().equals(IMap.OUR_NAME)) {
                                         new MyStrategy(e.getId(), new Position(850, 400)).moveToNext((Submarine) e);
                                         if (((Submarine) e).getHp() < 0) {
@@ -269,7 +262,7 @@ public class OfflineCommunicatorImpl implements Communicator {
                                         }
                                     } else if (e.getType().equals(Entity.TORPEDO)) {
                                         IChangeMovableObject.ZERO_MOVE.moveToNext(e);
-                                        if(e.getRoundsMoved() >= game.getMapConfiguration().getTorpedoRange()) {
+                                        if (e.getRoundsMoved() >= game.getMapConfiguration().getTorpedoRange()) {
                                             return false;
                                         }
                                         e.setRoundsMoved(e.getRoundsMoved());
@@ -278,10 +271,10 @@ public class OfflineCommunicatorImpl implements Communicator {
                                 })
                                 .filter(e ->
                                         game.getMapConfiguration().getIslandPositions().stream()
-                                            .allMatch(is ->
-                                            e.getPosition().distance(is) >
-                                                    entityRadius(e) +
-                                                game.getMapConfiguration().getIslandSize())
+                                                .allMatch(is ->
+                                                        e.getPosition().distance(is) >
+                                                                entityRadius(e) +
+                                                                        game.getMapConfiguration().getIslandSize())
                                 )
                                 .collect(Collectors.toList());
 
@@ -308,14 +301,14 @@ public class OfflineCommunicatorImpl implements Communicator {
         public synchronized MoveResponse moveSubmarine(Long submarineId, MoveRequest request) {
             Submarine submarine = findPlayerSubmarine(submarineId);
 
-            if(submarine == null) {
+            if (submarine == null) {
                 MoveResponse response = new MoveResponse();
                 setStatus(response, 4);
                 return response;
             }
             // move submarine
 
-            if(moves.containsKey(submarineId)) {
+            if (moves.containsKey(submarineId)) {
                 MoveResponse response = new MoveResponse();
                 setStatus(response, 10);
                 return response;
@@ -332,14 +325,14 @@ public class OfflineCommunicatorImpl implements Communicator {
         public synchronized ShootResponse shoot(Long submarineId, ShootRequest request) {
             Submarine submarine = findPlayerSubmarine(submarineId);
 
-            if(submarine == null) {
+            if (submarine == null) {
                 ShootResponse response = new ShootResponse();
                 setStatus(response, 4);
                 return response;
             }
 
             // shoot
-            if(shoots.containsKey(submarineId)) {
+            if (shoots.containsKey(submarineId)) {
                 ShootResponse response = new ShootResponse();
                 setStatus(response, 50);
                 return response;
@@ -355,7 +348,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         public synchronized SonarResponse sonar(Long submarineId) {
             Submarine submarine = findPlayerSubmarine(submarineId);
 
-            if(submarine == null) {
+            if (submarine == null) {
                 SonarResponse response = new SonarResponse();
                 setStatus(response, 4);
                 return response;
@@ -363,13 +356,13 @@ public class OfflineCommunicatorImpl implements Communicator {
 
             SonarResponse response = new SonarResponse();
             response.setEntities(
-            entityList.stream().filter(e ->
-                e.getPosition().distance(submarine.getPosition()) <=
-                        (submarine.getSonarExtended() > 0 ?
-                        game.getMapConfiguration().getExtendedSonarRange():
-                        game.getMapConfiguration().getSonarRange()))
-                    .filter(e -> !e.getId().equals(submarineId))
-                    .collect(Collectors.toList())
+                    entityList.stream().filter(e ->
+                            e.getPosition().distance(submarine.getPosition()) <=
+                                    (submarine.getSonarExtended() > 0 ?
+                                            game.getMapConfiguration().getExtendedSonarRange() :
+                                            game.getMapConfiguration().getSonarRange()))
+                            .filter(e -> !e.getId().equals(submarineId))
+                            .collect(Collectors.toList())
             );
             setStatus(response, 0);
             return response;
@@ -378,13 +371,13 @@ public class OfflineCommunicatorImpl implements Communicator {
         public synchronized ExtendSonarResponse extSonar(Long submarineId) {
             Submarine submarine = findPlayerSubmarine(submarineId);
 
-            if(submarine == null) {
+            if (submarine == null) {
                 ExtendSonarResponse response = new ExtendSonarResponse();
                 setStatus(response, 4);
                 return response;
             }
 
-            if(extSonar.contains(submarineId)) {
+            if (extSonar.contains(submarineId)) {
                 ExtendSonarResponse response = new ExtendSonarResponse();
                 setStatus(response, 50);
                 return response;
@@ -435,7 +428,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         JoinGameResponse response = new JoinGameResponse();
         ServerGame game = games.get(id);
 
-        if(game != null) {
+        if (game != null) {
             game.join();
         }
         setStatus(response, game != null ? 0 : 3);
@@ -448,7 +441,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         GameResponse response = new GameResponse();
         ServerGame game = games.get(id);
 
-        if(game != null) {
+        if (game != null) {
             response.setGame(game.getGame());
         }
         setStatus(response, game != null ? 0 : 3);
@@ -460,7 +453,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         SubmarinesResponse response = new SubmarinesResponse();
         ServerGame game = games.get(id);
 
-        if(game != null) {
+        if (game != null) {
             response.setSubmarines(game.getSubmarineList());
         }
         setStatus(response, game != null ? 0 : 3);
@@ -472,7 +465,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         MoveResponse response;
         ServerGame game = games.get(gameId);
 
-        if(game != null) {
+        if (game != null) {
             response = game.moveSubmarine(submarineId, request);
         } else {
             response = new MoveResponse();
@@ -486,7 +479,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         ShootResponse response;
         ServerGame game = games.get(gameId);
 
-        if(game != null) {
+        if (game != null) {
             response = game.shoot(submarineId, request);
         } else {
             response = new ShootResponse();
@@ -500,7 +493,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         SonarResponse response;
         ServerGame game = games.get(gameId);
 
-        if(game != null) {
+        if (game != null) {
             response = game.sonar(submarineId);
         } else {
             response = new SonarResponse();
@@ -514,7 +507,7 @@ public class OfflineCommunicatorImpl implements Communicator {
         ExtendSonarResponse response;
         ServerGame game = games.get(gameId);
 
-        if(game != null) {
+        if (game != null) {
             response = game.extSonar(submarineId);
         } else {
             response = new ExtendSonarResponse();

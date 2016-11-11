@@ -32,6 +32,9 @@ public class StrategySwitcher implements Strategy {
     @Override
     public Strategy onChangeStrategy() {
         if (backToCaller.getAsBoolean()) {
+            // TODO itt elfelejtettem azt, hogy
+            // Strategy changerNewStrategy = caller.onChangeStrategy();
+            // return changerNewStrategy == null ? caller : changerNewStrategy ;
             return caller;
         }
 

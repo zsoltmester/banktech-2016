@@ -1,9 +1,8 @@
 package hu.javachallenge.processor;
 
-import hu.javachallenge.App;
 import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
-import hu.javachallenge.communication.CommunicatorImpl;
+import hu.javachallenge.communication.OfflineCommunicatorImpl;
 import hu.javachallenge.map.IMap;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class Processor {
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_START = 100;
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
-    private static Communicator communicator = new CommunicatorImpl(App.serverAddress);
+    private static Communicator communicator = new OfflineCommunicatorImpl();
     private static IMap map = IMap.MapConfig.getMap();
 
     public enum GAME_STATUS {
