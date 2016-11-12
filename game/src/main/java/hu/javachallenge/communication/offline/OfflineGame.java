@@ -132,11 +132,10 @@ class OfflineGame implements Runnable {
                 /////
                 // shooting with enemy submarines
                 /////
+                Set<Entity> torpedosToAdd = new HashSet<>();
                 entityList.stream()
                         .filter(entity -> entity.getType().equals(Entity.SUBMARINE) && !entity.getOwner().getName().equals(IMap.OUR_NAME))
                         .forEach(entity -> {
-                            // TODO enemy shooting strategy
-
                             Submarine submarine = (Submarine) entity;
 
                             if (submarine.getTorpedoCooldown() > 0) {
@@ -162,65 +161,75 @@ class OfflineGame implements Runnable {
                             torpedo.setAngle(MoveUtil.getAngleForTargetPosition(submarine.getPosition(), positionToShoot));
                             torpedo.setRoundsMoved(0);
                             torpedo.setOwner(new Owner(submarine.getOwner().getName()));
+                            torpedosToAdd.add(torpedo);
+                            submarine.setTorpedoCooldown(game.getMapConfiguration().getTorpedoCooldown() + 1);
                         });
+                entityList.addAll(torpedosToAdd);
 
                 /////
-                // move the torpedos
+                // move the torpedos and explode if necessary
                 /////
+                Set<Long> explodedTorpedos = new HashSet<>();
                 entityList.stream()
                         .filter(entity -> entity.getType().equals(Entity.TORPEDO))
                         .forEach(torpedo -> {
                             torpedo.setRoundsMoved(torpedo.getRoundsMoved() - 1);
+                            Position oldPosition = torpedo.getPosition();
                             IChangeMovableObject.ZERO_MOVE.moveToNext(torpedo);
+
+                            List<Position> possibleExplosions = new ArrayList<>();
+                            entityList.stream()
+                                    .filter(entity -> entity.getType().equals(Entity.SUBMARINE))
+                                    .forEach(submarine -> possibleExplosions.addAll(getCircleLineIntersectionPoint(oldPosition, torpedo.getPosition(),
+                                            submarine.getPosition(), game.getMapConfiguration().getSubmarineSize())));
+                            Position explosionSite = possibleExplosions.stream()
+                                    .filter(possibleExplosionSite -> torpedo.getAngle() < 180 ?
+                                            possibleExplosionSite.getY() > torpedo.getPosition().getY() : possibleExplosionSite.getY() < torpedo.getPosition().getY())
+                                    .filter(possibleExplosionSite -> possibleExplosionSite.distance(torpedo.getPosition()) <= game.getMapConfiguration().getTorpedoSpeed())
+                                    .sorted((p1, p2) -> (int) p1.distance(p2))
+                                    .findFirst().orElse(null);
+
+                            if (explosionSite == null) {
+                                return;
+                            }
+
+                            explodedTorpedos.add(torpedo.getId());
+                            Map.Entry<String, Integer> torpedoOwnerScore = game.getScores().getScores().entrySet().stream()
+                                    .filter(entry -> entry.getKey().equals(torpedo.getOwner().getName()))
+                                    .findFirst().get();
+
+                            entityList.stream()
+                                    .filter(entity -> entity.getType().equals(Entity.SUBMARINE))
+                                    .filter(submarine -> submarine.getPosition().distance(explosionSite) < game.getMapConfiguration().getTorpedoExplosionRadius())
+                                    .map(submarine -> (Submarine) submarine)
+                                    .forEach(submarine -> {
+                                        submarine.setHp(submarine.getHp() - game.getMapConfiguration().getTorpedoDamage());
+
+                                        if (!submarine.getOwner().getName().equals(torpedo.getOwner().getName())) {
+                                            torpedoOwnerScore.setValue(torpedoOwnerScore.getValue() +
+                                                    game.getMapConfiguration().getTorpedoHitScore());
+                                            if (submarine.getHp() <= 0) {
+                                                torpedoOwnerScore.setValue(torpedoOwnerScore.getValue() +
+                                                        game.getMapConfiguration().getTorpedoDestroyScore());
+                                            }
+                                        } else {
+                                            torpedoOwnerScore.setValue(torpedoOwnerScore.getValue() +
+                                                    game.getMapConfiguration().getTorpedoHitPenalty());
+                                        }
+                                    });
                         });
 
                 /////
-                // explode the torpedos, if necessary
-                // destroy the torpedos, if exceeded the range
-                // destroy the torpedos, which are hit an island or went out from the map
+                // destroy the torpedos, if exploded or exceeded the range or hit an island or went out from the map
                 /////
                 entityList = entityList.stream()
-                        .filter(torpedo -> {
-                            if (torpedo.getType().equals(Entity.SUBMARINE)) {
-                                return true;
-                            }
-
-                            // TODO first calculate where exploded the torpedo, then get the affected submarines
-                            boolean exploded = entityList.stream()
-                                    .filter(otherEntity -> otherEntity.getType().equals(Entity.SUBMARINE))
-                                    .filter(submarine -> submarine.getPosition().distance(torpedo.getPosition())
-                                            < getEntityRadius(submarine))
-                                    .count() != 0;
-
-                            if (exploded) {
-                                Map.Entry<String, Integer> ownerPoint = game.getScores().getScores().entrySet().stream()
-                                        .filter(entry -> entry.getKey().equals(torpedo.getOwner().getName()))
-                                        .findFirst().get();
-
-                                entityList.stream()
-                                        .filter(otherEntity -> otherEntity.getType().equals(Entity.SUBMARINE))
-                                        .filter(submarine -> submarine.getPosition().distance(torpedo.getPosition())
-                                                < getEntityRadius(submarine) + game.getMapConfiguration().getTorpedoExplosionRadius()) // TODO temporary solution, because we don't know the hit point
-                                        .map(submarine -> (Submarine) submarine)
-                                        .forEach(submarine -> {
-                                            submarine.setHp(submarine.getHp() - game.getMapConfiguration().getTorpedoDamage());
-
-                                            if (!submarine.getOwner().getName().equals(torpedo.getOwner().getName())) {
-                                                ownerPoint.setValue(ownerPoint.getValue() +
-                                                        game.getMapConfiguration().getTorpedoHitScore());
-                                                if (submarine.getHp() <= 0) {
-                                                    ownerPoint.setValue(ownerPoint.getValue() +
-                                                            game.getMapConfiguration().getTorpedoDestroyScore());
-                                                }
-                                            } else {
-                                                ownerPoint.setValue(ownerPoint.getValue() +
-                                                        game.getMapConfiguration().getTorpedoHitPenalty());
-                                            }
-                                        });
-                            }
-
-                            return !exploded && torpedo.getRoundsMoved() < game.getMapConfiguration().getTorpedoRange() && isValidPosition(torpedo.getPosition()) && game.getMapConfiguration().getIslandPositions().stream().noneMatch(island -> island.distance(torpedo.getPosition()) < game.getMapConfiguration().getIslandSize());
-                        }).collect(Collectors.toList());
+                        .filter(torpedo -> !torpedo.getType().equals(Entity.TORPEDO)
+                                || (!explodedTorpedos.contains(torpedo.getId())  // not exploded
+                                && torpedo.getRoundsMoved() < game.getMapConfiguration().getTorpedoRange() // not exceeded the range
+                                && isValidPosition(torpedo.getPosition())  // not went out from the map
+                                && game.getMapConfiguration().getIslandPositions().stream()
+                                .noneMatch(island -> island.distance(torpedo.getPosition()) < game.getMapConfiguration().getIslandSize()))) // not hit an island
+                        .collect(Collectors.toList());
 
                 /////
                 // remove the destroyed submarines
@@ -244,10 +253,10 @@ class OfflineGame implements Runnable {
     }
 
     private Submarine findSubmarineToShoot(Submarine submarine) {
+        // there is the enemy shooting strategy
         List<Submarine> validTargets = entityList.stream()
-                .filter(entity -> entity.getType().equals(Entity.SUBMARINE) && !entity.getOwner().getName().equals(submarine.getOwner().getName()))
-                .filter(entity -> entity.getPosition().distance(submarine.getPosition()) <
-                        (submarine.getSonarExtended() > 0 ? game.getMapConfiguration().getExtendedSonarRange() : game.getMapConfiguration().getSonarRange()))
+                .filter(entity -> entity.getType().equals(Entity.SUBMARINE) && entity.getOwner().getName().equals(IMap.OUR_NAME)) // all againts us
+                // .filter(entity -> entity.getPosition().distance(submarine.getPosition()) < game.getMapConfiguration().getExtendedSonarRange()) // they see us anywhere
                 .map(entity -> (Submarine) entity)
                 .collect(Collectors.toList());
 
@@ -269,6 +278,40 @@ class OfflineGame implements Runnable {
                 return 0;
         }
     }
+
+    // http://stackoverflow.com/a/13055116
+    private List<Position> getCircleLineIntersectionPoint(Position pointA, Position pointB, Position center, double radius) {
+        double baX = pointB.getX() - pointA.getX();
+        double baY = pointB.getY() - pointA.getY();
+        double caX = center.getX() - pointA.getX();
+        double caY = center.getY() - pointA.getY();
+
+        double a = baX * baX + baY * baY;
+        double bBy2 = baX * caX + baY * caY;
+        double c = caX * caX + caY * caY - radius * radius;
+
+        double pBy2 = bBy2 / a;
+        double q = c / a;
+
+        double disc = pBy2 * pBy2 - q;
+        if (disc < 0) {
+            return Collections.emptyList();
+        }
+        // if disc == 0 ... dealt with later
+        double tmpSqrt = Math.sqrt(disc);
+        double abScalingFactor1 = -pBy2 + tmpSqrt;
+        double abScalingFactor2 = -pBy2 - tmpSqrt;
+
+        Position p1 = new Position(pointA.getX() - baX * abScalingFactor1, pointA.getY()
+                - baY * abScalingFactor1);
+        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
+            return Collections.singletonList(p1);
+        }
+        Position p2 = new Position(pointA.getX() - baX * abScalingFactor2, pointA.getY()
+                - baY * abScalingFactor2);
+        return Arrays.asList(p1, p2);
+    }
+
 
     synchronized void join() {
         game.setStatus(Processor.GAME_STATUS.WAITING.name());
