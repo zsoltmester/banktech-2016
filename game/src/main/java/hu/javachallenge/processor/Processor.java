@@ -2,7 +2,7 @@ package hu.javachallenge.processor;
 
 import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
-import hu.javachallenge.communication.OfflineCommunicatorImpl;
+import hu.javachallenge.communication.offline.OfflineCommunicatorImpl;
 import hu.javachallenge.map.IMap;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class Processor {
     private static Integer lastKnownRound;
 
     private static boolean isValidResponse(StatusResponse response) {
-        if(response == null) {
+        if (response == null) {
             LOGGER.severe("Response is null. Maybe we lost the connection?");
             return false;
         }
@@ -204,7 +204,7 @@ public class Processor {
             LOGGER.warning("Safe check triggered: decreased the acceleration to not to exceed the max speed.");
         }
 
-        if(acceleration + currentSpeed < 0) {
+        if (acceleration + currentSpeed < 0) {
             acceleration = 0;
             LOGGER.warning("Safe check triggered: increased the acceleration to not to exceed the zero speed.");
         }
