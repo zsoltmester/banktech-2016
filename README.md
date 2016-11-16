@@ -8,18 +8,19 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 
 **Időzítés:**
 
-9:30 – 10:00: Check in (regisztráció és gépek összerakása)
-10:00 – 10:20: Megnyitó
-10:20 – 12:20: Programozás
-12:20 – 13:00: Ebéd
-13:00 – 17:00: Programozás
-17:00 – 17:30: Döntő
-17:30-18:00: Eredményhirdetés
-18:15: Zárás
+- 9:30 – 10:00: Check in (regisztráció és gépek összerakása)
+- 10:00 – 10:20: Megnyitó
+- 10:20 – 12:20: Programozás
+- 12:20 – 13:00: Ebéd
+- 13:00 – 17:00: Programozás
+- 17:00 – 17:30: Döntő
+- 17:30 – 18:00: Eredményhirdetés
+- 18:15: Zárás
 
 **Vigyünk:**
-*Amit írtak:* Hozzatok magatokkal komplett számítógépeket, amin dolgozni tudtok. Lehet laptop vagy asztali gép. Csapatonként 3 darab hosszabbítót is hozzatok magatokkal. Opcionálisan 5-10 méteres LAN kábel.
-*TODO:* Beszéljük ezt majd meg. 
+
+- *Amit írtak:* Hozzatok magatokkal komplett számítógépeket, amin dolgozni tudtok. Lehet laptop vagy asztali gép. Csapatonként 3 darab hosszabbítót is hozzatok magatokkal. Opcionálisan 5-10 méteres LAN kábel.
+- *TODO:* Beszéljük ezt majd meg. 
 
 ## TODO
 
