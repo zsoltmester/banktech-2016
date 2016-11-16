@@ -328,27 +328,27 @@ class OfflineGame implements Runnable {
         game.setMapConfiguration(configuration);
         configuration.setWidth(1700);
         configuration.setHeight(800);
-        configuration.setIslandPositions(Collections.singletonList(new Position(850, 400)));
+        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
         configuration.setTeamCount(teams.size());
-        configuration.setSubmarinesPerTeam(2);
+        configuration.setSubmarinesPerTeam(3);
         configuration.setTorpedoDamage(34);
         configuration.setTorpedoHitScore(100);
         configuration.setTorpedoDestroyScore(50);
-        configuration.setTorpedoHitPenalty(0);
+        configuration.setTorpedoHitPenalty(50);
         configuration.setTorpedoCooldown(6);
-        configuration.setSonarRange(150);
-        configuration.setExtendedSonarRange(230);
+        configuration.setSonarRange(100);
+        configuration.setExtendedSonarRange(200);
         configuration.setExtendedSonarRounds(10);
         configuration.setExtendedSonarCooldown(20);
-        configuration.setTorpedoSpeed(40.0);
+        configuration.setTorpedoSpeed(20.);
         configuration.setTorpedoExplosionRadius(50);
         configuration.setRoundLength(1000); // faster
         configuration.setIslandSize(100);
         configuration.setSubmarineSize(15);
-        configuration.setRounds(150);
-        configuration.setMaxSteeringPerRound(20);
+        configuration.setRounds(300);
+        configuration.setMaxSteeringPerRound(10);
         configuration.setMaxAccelerationPerRound(5);
-        configuration.setMaxSpeed(20);
+        configuration.setMaxSpeed(15);
         configuration.setTorpedoRange(10);
         configuration.setRateLimitedPenalty(10);
 
