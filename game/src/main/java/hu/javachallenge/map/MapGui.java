@@ -51,7 +51,7 @@ class MapGui extends DataMap {
         private static final float SIZE_MULTIPLIER = 0.5f;
         private boolean displayWithHistory = true;
         private boolean displayWithRadius = true;
-        private boolean displayWithTeamColor = false;
+        private boolean displayWithTeamColor = true;
         private Map<String, Color> playersColor = new HashMap<>();
         private Random random = new Random();
 
@@ -214,16 +214,16 @@ class MapGui extends DataMap {
             graphics.setFont(usedFont);
             graphics.setColor(Color.WHITE);
             graphics.drawString("Round " + Processor.game.getRound() + " / " + configuration.getRounds(),
-                    2, (int) getPreferredSize().getHeight() - 17);
+                    2, (int) getPreferredSize().getHeight() - configuration.getSubmarinesPerTeam() * 5 - 7);
             int i = 0;
 
             int roundPercent = (int) (Processor.game.getRound() * 100.0 / configuration.getRounds());
 
             graphics.setColor(Color.cyan);
-            graphics.fillRect(0, height - 2*5 - 5, roundPercent*2, 5);
+            graphics.fillRect(0, height - configuration.getSubmarinesPerTeam() * 5 - 5, roundPercent * 2, 5);
             if (roundPercent != 100) {
                 graphics.setColor(Color.DARK_GRAY);
-                graphics.fillRect(roundPercent * 2, height - 2*5 - 5, (100 - roundPercent) * 2, 5);
+                graphics.fillRect(roundPercent * 2, height - configuration.getSubmarinesPerTeam() * 5 - 5, (100 - roundPercent) * 2, 5);
             }
 
             Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
