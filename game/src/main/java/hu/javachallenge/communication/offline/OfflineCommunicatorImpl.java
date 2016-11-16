@@ -19,7 +19,6 @@ public class OfflineCommunicatorImpl implements Communicator {
     @Override
     public CreateGameResponse createGame() {
         CreateGameResponse response = new CreateGameResponse();
-        response.setId((long) games.size());
 
         OfflineGame offlineGame = new OfflineGame();
         offlineGame.getGame().setId((long) games.size());

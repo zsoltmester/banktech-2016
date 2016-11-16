@@ -6,6 +6,7 @@ import hu.javachallenge.communication.offline.OfflineCommunicatorImpl;
 import hu.javachallenge.map.IMap;
 
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class Processor {
@@ -82,17 +83,35 @@ public class Processor {
     }
 
     /**
-     * It creates a game, validates that the server created it and then joins to it.
-     * <p>
-     * TODO at the finals, it's logic should be more sophisticated. There maybe we don't have to create a game, just join to one with a given game id.
+     * It joins to the given game.
      */
     public static void joinGame() {
-        CreateGameResponse createGameResponse = communicator.createGame();
-        gameId = createGameResponse.getId();
+        while (gameId == null) {
+            GamesResponse gamesResponse = communicator.getGames();
+            for (int i = 0; i < gamesResponse.getGames().size(); ++i) {
+                System.out.println("[" + i + "] " + gamesResponse.getGames().get(i));
+            }
 
-        GamesResponse gamesResponse = communicator.getGames();
-        if (!gamesResponse.getGames().stream().anyMatch(id -> id.equals(gameId))) {
-            LOGGER.warning("Created a game, but the created game id is missing from the available games list. Maybe we already joined to it.");
+            System.out.println("[c] create a game");
+            System.out.println("[e] exit");
+
+            String input = new Scanner(System.in).next();
+
+            switch (input) {
+                case "e":
+                    System.exit(0);
+                    break;
+                case "c":
+                    isValidResponse(communicator.createGame());
+                    break;
+                default:
+                    int chosenGame = Integer.valueOf(input);
+                    if (chosenGame < 0 || chosenGame >= gamesResponse.getGames().size()) {
+                        System.out.println("Invalid number.");
+                        break;
+                    }
+                    gameId = gamesResponse.getGames().get(chosenGame);
+            }
         }
 
         JoinGameResponse joinGameResponse = communicator.joinGame(gameId);
