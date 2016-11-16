@@ -24,9 +24,6 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 
 ## TODO
 
-*1, 2*: Második forduló előtt 
-*3, 4*: Elég csak a döntőre
-
 - (1) Megjavítani a torpedoRange-es hibákat!! - Béla - elvileg OK
 - (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni - elvileg OK
 - (3) Több féle mozgást felismerni. +1
