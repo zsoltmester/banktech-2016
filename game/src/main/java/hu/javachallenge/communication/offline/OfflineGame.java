@@ -213,7 +213,7 @@ class OfflineGame implements Runnable {
                                                         game.getMapConfiguration().getTorpedoDestroyScore());
                                             }
                                         } else {
-                                            torpedoOwnerScore.setValue(torpedoOwnerScore.getValue() +
+                                            torpedoOwnerScore.setValue(torpedoOwnerScore.getValue() -
                                                     game.getMapConfiguration().getTorpedoHitPenalty());
                                         }
                                     });
