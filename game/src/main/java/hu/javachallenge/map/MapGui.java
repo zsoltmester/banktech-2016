@@ -48,25 +48,26 @@ class MapGui extends DataMap {
 
     private class MapPanel extends JPanel implements KeyListener {
 
-        private static final float SIZE_MULTIPLIER = 0.5f;
-        private boolean displayWithHistory = true;
+        private final float SIZE_MULTIPLIER = 0.5f;
+        private final int TORPEDO_DISPLAY_SIZE = 4;
+        private final List<Color> AVAILABLE_TEAM_COLORS =
+                Arrays.asList(Color.GREEN, Color.RED, Color.CYAN, Color.YELLOW, Color.GRAY, Color.PINK, Color.MAGENTA);
+
+        private boolean displayWithHistory = false;
         private boolean displayWithRadius = true;
         private boolean displayWithTeamColor = true;
         private Map<String, Color> playersColor = new HashMap<>();
         private Random random = new Random();
-
         private MapConfiguration configuration;
 
         private MapPanel(MapConfiguration configuration) {
             this.configuration = configuration;
 
             Set<String> names = Processor.game.getScores().getScores().keySet();
+            int i = 0;
             for(String name : names) {
-                final float hue = random.nextFloat();
-                final float saturation = 0.9f;
-                final float luminance = 1.0f;
-                final Color color = Color.getHSBColor(hue, saturation, luminance);
-                playersColor.put(name, color);
+                playersColor.put(name, AVAILABLE_TEAM_COLORS.get(i));
+                ++i;
             }
         }
 
@@ -83,18 +84,17 @@ class MapGui extends DataMap {
             graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, getPreferredSize().width, getPreferredSize().height);
 
-
-            // torpedos working radius (-+1)
+            // paint working radius
             if (ourSubmarines != null && displayWithRadius) {
 
                 ourSubmarines.forEach(submarine -> {
                     graphics.setColor(new Color(0, 0, 200));
-                    int maxTorpedoRange = (int) (configuration.getTorpedoRange() * (1 + configuration.getTorpedoSpeed()));
+                    int maxTorpedoRange = (int) (configuration.getTorpedoRange() * configuration.getTorpedoSpeed());
                     fillCircle(graphics, submarine.getPosition(), maxTorpedoRange);
                 });
             }
 
-            // paint sonars
+            // paint our sonars
             if (ourSubmarines != null && displayWithRadius) {
 
                 ourSubmarines.forEach(submarine -> {
@@ -123,51 +123,32 @@ class MapGui extends DataMap {
                                 for(int i = 0; i < history.size() - 1; ++i) {
                                     Entity e = history.get(i);
                                     if(e != null) {
-                                        graphics.setColor(new Color(255, 250 - i * 50, 250 - i * 50));
-                                        fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
 
-                                        if (displayWithTeamColor) {
-                                            graphics.setColor(playersColor.get(e.getOwner().getName()));
-                                            fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize() / 2);
-                                        }
+                                        graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()).brighter() : Color.RED.brighter());
+                                        fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
                                     }
                                 }
                             }
 
-                            graphics.setColor(Color.RED);
+                            graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()) : Color.RED);
                             fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
-
-                            if (displayWithTeamColor) {
-                                graphics.setColor(playersColor.get(entity.getOwner().getName()));
-                                fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize() / 2);
-                            }
                         }
                     } else if (entity.getType().equals(Entity.TORPEDO)) {
 
-                        // TODO torpedo radius is 1!
                         if (displayWithHistory) {
                             List<Entity> history = getHistory(entity.getId(), 3);
                             for(int i = 0; i < history.size() - 1; ++i) {
                                 Entity e = history.get(i);
                                 if(e != null) {
-                                    graphics.setColor(new Color(200 - i * 50, 255, 255));
-                                    fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange());
 
-                                    if (displayWithTeamColor) {
-                                        graphics.setColor(playersColor.get(e.getOwner().getName()));
-                                        fillCircle(graphics, e.getPosition(), configuration.getTorpedoRange() / 2);
-                                    }
+                                    graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()).brighter() : Color.CYAN.brighter());
+                                    fillCircle(graphics, entity.getPosition(), TORPEDO_DISPLAY_SIZE);
                                 }
                             }
                         }
 
-                        graphics.setColor(Color.CYAN);
-                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange());
-
-                        if (displayWithTeamColor) {
-                            graphics.setColor(playersColor.get(entity.getOwner().getName()));
-                            fillCircle(graphics, entity.getPosition(), configuration.getTorpedoRange() / 2);
-                        }
+                        graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()) : Color.CYAN);
+                        fillCircle(graphics, entity.getPosition(), TORPEDO_DISPLAY_SIZE);
                     }
                 });
             }
@@ -175,13 +156,8 @@ class MapGui extends DataMap {
             // paint our submarines
             if (ourSubmarines != null) {
                 ourSubmarines.forEach(submarine -> {
-                    graphics.setColor(Color.GREEN);
+                    graphics.setColor(displayWithTeamColor ? playersColor.get(submarine.getOwner().getName()) : Color.GREEN);
                     fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize());
-
-                    if (displayWithTeamColor) {
-                        graphics.setColor(playersColor.get(OUR_NAME));
-                        fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize() / 2);
-                    }
                 });
             }
 
