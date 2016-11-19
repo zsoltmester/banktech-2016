@@ -5,15 +5,20 @@ import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
+import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.List;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static final int DISTANCE_FROM_ENTITY_WHEN_EVADE = 75;
+    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 50;
+    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 100;
 
     public static IMap map = IMap.MapConfig.getMap();
 
@@ -232,56 +237,34 @@ public class MoveUtil {
     public static Position evadeIsland(Submarine submarine, Position destination, Position entityToEvade, double radius) {
         Double objectX = entityToEvade.getX();
         Double objectY = entityToEvade.getY();
-        List<Position> possibleEvadePositions = Arrays.asList(
-                new Position(objectX + radius + DISTANCE_FROM_ENTITY_WHEN_EVADE, objectY),
-                new Position(objectX - radius - DISTANCE_FROM_ENTITY_WHEN_EVADE, objectY),
-                new Position(objectX, objectY + radius + DISTANCE_FROM_ENTITY_WHEN_EVADE),
-                new Position(objectX, objectY - radius - DISTANCE_FROM_ENTITY_WHEN_EVADE));
 
-        possibleEvadePositions = possibleEvadePositions.stream()
-                .filter(evadePoint -> getCircleLineIntersectionPoint(submarine.getPosition(), evadePoint, entityToEvade, radius).isEmpty()
-                        && getCircleLineIntersectionPoint(evadePoint, destination, entityToEvade, radius).isEmpty())
-                .filter(evadePoint -> map.isValidPosition(evadePoint))
-                .collect(Collectors.toList());
+        int delta = 0;
+        final Position[] target = {null};
+        while (target[0] == null && delta < MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE) {
+            List<Position> possibleEvadePositions = Arrays.asList(
+                    new Position(objectX + radius + MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE + delta, objectY),
+                    new Position(objectX - radius - MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE - delta, objectY),
+                    new Position(objectX, objectY + radius + MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE + delta),
+                    new Position(objectX, objectY - radius - MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE - delta));
 
-        if (possibleEvadePositions.isEmpty()) {
-            // TODO if can't evade with 2 line
+            possibleEvadePositions = possibleEvadePositions.stream()
+                    .filter(evadePoint -> CollissionDetector.getCircleLineIntersectionPoint(submarine.getPosition(), evadePoint, entityToEvade, radius).isEmpty()
+                            && CollissionDetector.getCircleLineIntersectionPoint(evadePoint, destination, entityToEvade, radius).isEmpty())
+                    .filter(evadePoint -> map.isValidPosition(evadePoint))
+                    .collect(Collectors.toList());
+
+            target[0] = possibleEvadePositions.stream()
+                    .filter(position -> new ScoutStrategy(submarine.getId(), position).onChangeStrategy() == null)
+                    .findFirst().orElse(null);
+
+            ++delta;
+        }
+
+        if (target[0] == null) {
+            // the submarine can't reach the destination
             return submarine.getPosition(); // stay
         }
 
-        return possibleEvadePositions.get(0);
-    }
-
-    // http://stackoverflow.com/a/13055116
-    public static List<Position> getCircleLineIntersectionPoint(Position pointA, Position pointB, Position center, double radius) {
-        double baX = pointB.getX() - pointA.getX();
-        double baY = pointB.getY() - pointA.getY();
-        double caX = center.getX() - pointA.getX();
-        double caY = center.getY() - pointA.getY();
-
-        double a = baX * baX + baY * baY;
-        double bBy2 = baX * caX + baY * caY;
-        double c = caX * caX + caY * caY - radius * radius;
-
-        double pBy2 = bBy2 / a;
-        double q = c / a;
-
-        double disc = pBy2 * pBy2 - q;
-        if (disc < 0) {
-            return Collections.emptyList();
-        }
-        // if disc == 0 ... dealt with later
-        double tmpSqrt = Math.sqrt(disc);
-        double abScalingFactor1 = -pBy2 + tmpSqrt;
-        double abScalingFactor2 = -pBy2 - tmpSqrt;
-
-        Position p1 = new Position(pointA.getX() - baX * abScalingFactor1, pointA.getY()
-                - baY * abScalingFactor1);
-        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
-            return Collections.singletonList(p1);
-        }
-        Position p2 = new Position(pointA.getX() - baX * abScalingFactor2, pointA.getY()
-                - baY * abScalingFactor2);
-        return Arrays.asList(p1, p2);
+        return target[0];
     }
 }

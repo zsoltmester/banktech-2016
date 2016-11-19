@@ -4,6 +4,7 @@ import hu.javachallenge.bean.*;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.MoveUtil;
+import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
 import java.util.*;
@@ -180,7 +181,7 @@ class OfflineGame implements Runnable {
                             List<Position> possibleExplosions = new ArrayList<>();
                             entityList.stream()
                                     .filter(entity -> entity.getType().equals(Entity.SUBMARINE))
-                                    .forEach(submarine -> possibleExplosions.addAll(MoveUtil.getCircleLineIntersectionPoint(oldPosition, torpedo.getPosition(),
+                                    .forEach(submarine -> possibleExplosions.addAll(CollissionDetector.getCircleLineIntersectionPoint(oldPosition, torpedo.getPosition(),
                                             submarine.getPosition(), game.getMapConfiguration().getSubmarineSize())));
                             Position explosionSite = possibleExplosions.stream()
                                     .filter(possibleExplosionSite -> torpedo.getAngle() < 180 ?

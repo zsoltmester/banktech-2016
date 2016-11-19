@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 public class ScoutStrategy extends MoveStrategy {
     private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
 
+    private static final int TARGET_REACHED_DISTANCE = 30;
+
     private final Deque<Position> targets;
 
     public ScoutStrategy(Long submarineId, Position... targets) {
@@ -67,7 +69,7 @@ public class ScoutStrategy extends MoveStrategy {
 
     protected void changeTargetIfNeed() {
         if (targets.peek() != null) {
-            if (getSubmarine().getPosition().distance(targets.peek()) < 10) {
+            if (getSubmarine().getPosition().distance(targets.peek()) < TARGET_REACHED_DISTANCE) {
                 targets.add(targets.pop());
             }
         }
@@ -94,10 +96,15 @@ public class ScoutStrategy extends MoveStrategy {
             if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
                 Position pos = MoveUtil.evadeIsland(getSubmarine(), targets.peek(), islandPosition, map.getConfiguration().getIslandSize());
 
-                LOGGER.info("Detect collision with Island in position: " + islandPosition);
-                LOGGER.info("Set new pos: " + pos);
+                LOGGER.info("Detect collision with island in position: " + islandPosition);
+                LOGGER.info("Evade position: " + pos);
+
+                if (pos.equals(getSubmarine().getPosition())) {
+                    LOGGER.warning("Submarine " + getSubmarine().getId() + " cannot reach the target: " + targets.peek());
+                }
+
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), pos),
-                        () -> getSubmarine().getPosition().distance(pos) < 10);
+                        () -> getSubmarine().getPosition().distance(pos) < TARGET_REACHED_DISTANCE);
             }
         }
 
