@@ -74,15 +74,21 @@ public class ScoutStrategy extends MoveStrategy {
     public Strategy onChangeStrategy() {
 
         for(Position islandPosition : map.getConfiguration().getIslandPositions()) {
-            if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 5) != null) {
+            if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
                 Position pos =
                         MoveUtil.evadeThis(getSubmarine(), targets.peek(),
                                 new MovingIsland(islandPosition), map.getConfiguration().getIslandSize());
 
                 LOGGER.info("Detect collision with Island in position: " + islandPosition);
                 LOGGER.info("Set new pos: " + pos);
-                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), pos),
-                        () -> CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 5) == null);
+                Strategy strategy = new ScoutStrategy(getSubmarine().getId(), pos);
+                Strategy nextStrategy = strategy;
+                while((nextStrategy = strategy.onChangeStrategy()) != null) {
+                    strategy = nextStrategy;
+                }
+
+                return new StrategySwitcher(this, strategy,
+                        () -> CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) == null);
             }
         }
 
@@ -98,18 +104,24 @@ public class ScoutStrategy extends MoveStrategy {
                 if(Math.abs(distance) < 10 || Math.abs(distance) > 170) {
                     // TFH párhuzamos
                     position = MoveUtil.evadeThis(getSubmarine(), where, entity,
-                                    map.getConfiguration().getTorpedoExplosionRadius());
+                                    map.getConfiguration().getTorpedoExplosionRadius() * 2);
                 } else {
                     position = getSubmarine().getPosition();
                 }
                 LOGGER.info("Detect collision with a torpedo in position: " + where);
                 LOGGER.info("Set new pos: " + position);
+                Strategy strategy = new ScoutStrategy(getSubmarine().getId(), position);
+                Strategy nextStrategy;
+                while((nextStrategy = strategy.onChangeStrategy()) != null) {
+                    strategy = nextStrategy;
+                }
 
-                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), position),
+                return new StrategySwitcher(this, strategy,
                         () -> {
                             Entity entity1 = map.getEntities().stream()
                                     .filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
-                            return entity1 == null || CollissionDetector.submarineCollisionWithEntity(this, entity1, 10) == null;
+                            return entity1 == null ||
+                                    CollissionDetector.submarineCollisionWithEntity(this, entity1, 10) == null;
                         });
 
             }

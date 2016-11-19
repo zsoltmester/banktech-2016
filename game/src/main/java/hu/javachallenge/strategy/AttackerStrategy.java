@@ -9,10 +9,7 @@ import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
 
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AttackerStrategy extends SubmarineStrategy {
@@ -111,7 +108,7 @@ public class AttackerStrategy extends SubmarineStrategy {
                             Double.compare(p1.distance(submarine.getPosition()),
                                     p2.distance(submarine.getPosition())))
                     .findFirst().orElse(null);
-
+            /*
             if (toShoot == null) { // historical shoot
                 List<Long> targetIds = map.getAllHistory().values().stream()
                         .flatMap(e -> e.entrySet().stream())
@@ -161,7 +158,7 @@ public class AttackerStrategy extends SubmarineStrategy {
                                     p2.distance(submarine.getPosition())))
                     .findFirst().orElse(null);
             }
-
+            */
             if (toShoot != null) {
                 double direction = MoveUtil.getAngleForTargetPosition(submarine.getPosition(), toShoot);
                 Processor.shoot(submarine.getId(), direction);
