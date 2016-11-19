@@ -319,11 +319,12 @@ class OfflineGame implements Runnable {
 
         // teams
         teams.add(IMap.OUR_NAME);
-        teams.add("rabbit");
+        /*teams.add("rabbit");
         teams.add("Just five more minutes Mom");
-        teams.add("Thats No Moon");
+        teams.add("Thats No Moon");*/
 
         // map conf
+        /* ///// Example from the docs
         MapConfiguration configuration = new MapConfiguration();
         game.setMapConfiguration(configuration);
         configuration.setWidth(1700);
@@ -343,6 +344,34 @@ class OfflineGame implements Runnable {
         configuration.setTorpedoSpeed(20.);
         configuration.setTorpedoExplosionRadius(50);
         configuration.setRoundLength(1000); // faster
+        configuration.setIslandSize(100);
+        configuration.setSubmarineSize(15);
+        configuration.setRounds(300);
+        configuration.setMaxSteeringPerRound(10);
+        configuration.setMaxAccelerationPerRound(5);
+        configuration.setMaxSpeed(15);
+        configuration.setTorpedoRange(10);
+        configuration.setRateLimitedPenalty(10);*/
+        ///// move testing
+        MapConfiguration configuration = new MapConfiguration();
+        game.setMapConfiguration(configuration);
+        configuration.setWidth(1700);
+        configuration.setHeight(800);
+        configuration.setIslandPositions(Collections.EMPTY_LIST);
+        configuration.setTeamCount(0);
+        configuration.setSubmarinesPerTeam(3);
+        configuration.setTorpedoDamage(34);
+        configuration.setTorpedoHitScore(100);
+        configuration.setTorpedoDestroyScore(50);
+        configuration.setTorpedoHitPenalty(50);
+        configuration.setTorpedoCooldown(6);
+        configuration.setSonarRange(100);
+        configuration.setExtendedSonarRange(200);
+        configuration.setExtendedSonarRounds(10);
+        configuration.setExtendedSonarCooldown(20);
+        configuration.setTorpedoSpeed(20.);
+        configuration.setTorpedoExplosionRadius(50);
+        configuration.setRoundLength(150); // faster
         configuration.setIslandSize(100);
         configuration.setSubmarineSize(15);
         configuration.setRounds(300);
