@@ -237,9 +237,11 @@ class MapGui extends DataMap {
                 graphics.drawString(key.substring(0, Math.min(10, key.length())) + ": " + entry.getValue(),
                         (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
 
-                graphics.drawString("Hit: " + possiblyScores.get(entry.getKey()).getX().intValue() + ", Des: " +
-                                possiblyScores.get(entry.getKey()).getY().intValue(),
-                        (int) getPreferredSize().getWidth() - 320, (i+1) * 14);
+                if (possiblyScores != null && !possiblyScores.isEmpty()) {
+                    graphics.drawString("Hit: " + possiblyScores.get(entry.getKey()).getX().intValue() + ", Des: " +
+                                    possiblyScores.get(entry.getKey()).getY().intValue(),
+                            (int) getPreferredSize().getWidth() - 320, (i + 1) * 14);
+                }
 
                 ++i;
             }
