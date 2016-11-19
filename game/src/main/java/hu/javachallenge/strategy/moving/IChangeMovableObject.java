@@ -101,14 +101,10 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         private static double getAccelerationDelta(List<Entity> history) {
-            //if(history.size() < 2 || history.get(history.size() - 2) == null)
-            //    return 0;
+            if(history.size() < 2 || history.get(history.size() - 2) == null)
+                return 0;
 
-            // TODO it is a hack!!!
-            // remove comment if it is final
-            return MoveUtil.map.getConfiguration().getMaxAccelerationPerRound();
-
-            //return history.get(history.size() - 1).getVelocity() - history.get(history.size() - 2).getVelocity();
+            return history.get(history.size() - 1).getVelocity() - history.get(history.size() - 2).getVelocity();
         }
     }
 }
