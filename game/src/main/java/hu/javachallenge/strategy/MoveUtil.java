@@ -46,7 +46,7 @@ public class MoveUtil {
 
         Position position = stepForward(new Position(0, 0), 0.0, maxSpeed, maxSteering, 0.0, countOfStep).getLast();
 
-        return position.distance(new Position(0, 0));
+        return position.length();
     }
 
     public static double getAngleForTargetPosition(Position from, Position targetPosition) {
@@ -75,11 +75,10 @@ public class MoveUtil {
 
         double targetTurn = velocityDistance(currentDirection, toAngleInDegree);
 
-        if(Math.abs(targetTurn) > maxSteering) {
-            if(targetTurn > 0)
-                targetTurn = maxSteering;
-            if(targetTurn < 0)
-                targetTurn = -maxSteering;
+        if(targetTurn > maxSteering) {
+            targetTurn = maxSteering;
+        } else if(targetTurn < -maxSteering) {
+            targetTurn = -maxSteering;
         }
 
         return targetTurn;
@@ -206,6 +205,7 @@ public class MoveUtil {
     public static Position evadeThis(Submarine submarine, Position destination,
                                      MovableObject object, double radius) {
 
+        // need some big changes
         Position result = new Position(destination.getX(), destination.getY());
         result.translate(submarine.getPosition());
 
