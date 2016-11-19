@@ -6,7 +6,6 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
-import hu.javachallenge.strategy.moving.MovingIsland;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -74,7 +73,7 @@ public class ScoutStrategy extends MoveStrategy {
         }
     }
 
-    protected Deque<Position> getTargets() {
+    public Deque<Position> getTargets() {
         return targets;
     }
 
@@ -93,20 +92,12 @@ public class ScoutStrategy extends MoveStrategy {
 
         for(Position islandPosition : map.getConfiguration().getIslandPositions()) {
             if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
-                Position pos =
-                        MoveUtil.evadeThis(getSubmarine(), targets.peek(),
-                                new MovingIsland(islandPosition), map.getConfiguration().getIslandSize());
+                Position pos = MoveUtil.evadeIsland(getSubmarine(), targets.peek(), islandPosition, map.getConfiguration().getIslandSize());
 
                 LOGGER.info("Detect collision with Island in position: " + islandPosition);
                 LOGGER.info("Set new pos: " + pos);
-                Strategy strategy = new ScoutStrategy(getSubmarine().getId(), pos);
-                Strategy nextStrategy = strategy;
-                while((nextStrategy = strategy.onChangeStrategy()) != null) {
-                    strategy = nextStrategy;
-                }
-
-                return new StrategySwitcher(this, strategy,
-                        () -> CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) == null);
+                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), pos),
+                        () -> getSubmarine().getPosition().distance(pos) < 10);
             }
         }
 

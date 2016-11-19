@@ -61,4 +61,8 @@ public class IndividualStrategy implements Strategy {
         // TODO if we want to switch the global state
         return null;
     }
+
+    public Map<Long, Strategy> getStrategies() {
+        return strategies;
+    }
 }

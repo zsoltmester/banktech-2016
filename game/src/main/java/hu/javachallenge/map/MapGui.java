@@ -2,6 +2,7 @@ package hu.javachallenge.map;
 
 import hu.javachallenge.bean.*;
 import hu.javachallenge.processor.Processor;
+import hu.javachallenge.strategy.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,14 +49,16 @@ class MapGui extends DataMap {
 
     private class MapPanel extends JPanel implements KeyListener {
 
-        private final float SIZE_MULTIPLIER = 0.5f;
+        private final float SIZE_MULTIPLIER = 1f;
         private final int TORPEDO_DISPLAY_SIZE = 4;
+        private final int TARGET_DISPLAY_SIZE = 6;
         private final List<Color> AVAILABLE_TEAM_COLORS =
                 Arrays.asList(Color.GREEN, Color.RED, Color.CYAN, Color.YELLOW, Color.GRAY, Color.PINK, Color.MAGENTA);
 
         private boolean displayWithHistory = false;
         private boolean displayWithRadius = true;
         private boolean displayWithTeamColor = true;
+        private boolean displayWithTargets = true;
         private Map<String, Color> playersColor = new HashMap<>();
         private Random random = new Random();
         private MapConfiguration configuration;
@@ -185,6 +188,31 @@ class MapGui extends DataMap {
                 fillCircle(graphics, islandPosition, configuration.getIslandSize());
             });
 
+            // paint the targets
+            if (displayWithTargets && ourSubmarines != null) {
+                IndividualStrategy individualStrategy = Player.strategy instanceof IndividualStrategy ? (IndividualStrategy) Player.strategy : null;
+                if (individualStrategy != null && individualStrategy.getStrategies() != null && !individualStrategy.getStrategies().isEmpty()) {
+                    Map<Long, Strategy> strategies = individualStrategy.getStrategies();
+                    ourSubmarines.stream().filter(submarine -> strategies.keySet().contains(submarine.getId())).forEach(submarine ->
+                    {
+                        Strategy strategy = strategies.get(submarine.getId());
+                        if (strategy == null) return;
+                        ScoutStrategy scoutStrategy = null;
+                        while (strategy instanceof StrategySwitcher) {
+                            strategy = ((StrategySwitcher) strategy).getCurrent();
+                        }
+                        if (strategy instanceof ScoutStrategy) scoutStrategy = (ScoutStrategy) strategy;
+                        if (scoutStrategy == null) return;
+                        graphics.setColor(Color.GRAY);
+                        scoutStrategy.getTargets().stream().forEachOrdered(target -> {
+                            fillCircle(graphics, target, TARGET_DISPLAY_SIZE);
+                            graphics.setColor(Color.LIGHT_GRAY);
+                        });
+                    });
+
+                }
+            }
+
             // paint the round number
             Font usedFont = new Font("Dialog", Font.BOLD, 16);
             graphics.setFont(usedFont);
@@ -246,6 +274,9 @@ class MapGui extends DataMap {
                         final Color color = Color.getHSBColor(hue, saturation, luminance);
                         entry.setValue(color);
                     }
+                    break;
+                case 't':
+                    displayWithTargets = !displayWithTargets;
                     break;
             }
         }

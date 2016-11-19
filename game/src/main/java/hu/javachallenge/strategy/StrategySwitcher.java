@@ -47,4 +47,8 @@ public class StrategySwitcher implements Strategy {
 
         return null;
     }
+
+    public Strategy getCurrent() {
+        return current;
+    }
 }

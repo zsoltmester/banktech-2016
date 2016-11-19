@@ -180,7 +180,7 @@ class OfflineGame implements Runnable {
                             List<Position> possibleExplosions = new ArrayList<>();
                             entityList.stream()
                                     .filter(entity -> entity.getType().equals(Entity.SUBMARINE))
-                                    .forEach(submarine -> possibleExplosions.addAll(getCircleLineIntersectionPoint(oldPosition, torpedo.getPosition(),
+                                    .forEach(submarine -> possibleExplosions.addAll(MoveUtil.getCircleLineIntersectionPoint(oldPosition, torpedo.getPosition(),
                                             submarine.getPosition(), game.getMapConfiguration().getSubmarineSize())));
                             Position explosionSite = possibleExplosions.stream()
                                     .filter(possibleExplosionSite -> torpedo.getAngle() < 180 ?
@@ -279,40 +279,6 @@ class OfflineGame implements Runnable {
         }
     }
 
-    // http://stackoverflow.com/a/13055116
-    private List<Position> getCircleLineIntersectionPoint(Position pointA, Position pointB, Position center, double radius) {
-        double baX = pointB.getX() - pointA.getX();
-        double baY = pointB.getY() - pointA.getY();
-        double caX = center.getX() - pointA.getX();
-        double caY = center.getY() - pointA.getY();
-
-        double a = baX * baX + baY * baY;
-        double bBy2 = baX * caX + baY * caY;
-        double c = caX * caX + caY * caY - radius * radius;
-
-        double pBy2 = bBy2 / a;
-        double q = c / a;
-
-        double disc = pBy2 * pBy2 - q;
-        if (disc < 0) {
-            return Collections.emptyList();
-        }
-        // if disc == 0 ... dealt with later
-        double tmpSqrt = Math.sqrt(disc);
-        double abScalingFactor1 = -pBy2 + tmpSqrt;
-        double abScalingFactor2 = -pBy2 - tmpSqrt;
-
-        Position p1 = new Position(pointA.getX() - baX * abScalingFactor1, pointA.getY()
-                - baY * abScalingFactor1);
-        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
-            return Collections.singletonList(p1);
-        }
-        Position p2 = new Position(pointA.getX() - baX * abScalingFactor2, pointA.getY()
-                - baY * abScalingFactor2);
-        return Arrays.asList(p1, p2);
-    }
-
-
     synchronized void join() {
         game.setStatus(Processor.GAME_STATUS.WAITING.name());
         game.setRound(0);
@@ -324,7 +290,8 @@ class OfflineGame implements Runnable {
         teams.add("Thats No Moon");*/
 
         // map conf
-        /* ///// Example from the docs
+
+        //// Example from the docs
         MapConfiguration configuration = new MapConfiguration();
         game.setMapConfiguration(configuration);
         configuration.setWidth(1700);
@@ -351,35 +318,16 @@ class OfflineGame implements Runnable {
         configuration.setMaxAccelerationPerRound(5);
         configuration.setMaxSpeed(15);
         configuration.setTorpedoRange(10);
-        configuration.setRateLimitedPenalty(10);*/
-        ///// move testing
-        MapConfiguration configuration = new MapConfiguration();
-        game.setMapConfiguration(configuration);
-        configuration.setWidth(1700);
-        configuration.setHeight(800);
-        configuration.setIslandPositions(Collections.EMPTY_LIST);
-        configuration.setTeamCount(0);
-        configuration.setSubmarinesPerTeam(3);
-        configuration.setTorpedoDamage(34);
-        configuration.setTorpedoHitScore(100);
-        configuration.setTorpedoDestroyScore(50);
-        configuration.setTorpedoHitPenalty(50);
-        configuration.setTorpedoCooldown(6);
-        configuration.setSonarRange(100);
-        configuration.setExtendedSonarRange(200);
-        configuration.setExtendedSonarRounds(10);
-        configuration.setExtendedSonarCooldown(20);
-        configuration.setTorpedoSpeed(20.);
-        configuration.setTorpedoExplosionRadius(50);
-        configuration.setRoundLength(150); // faster
-        configuration.setIslandSize(100);
-        configuration.setSubmarineSize(15);
-        configuration.setRounds(300);
-        configuration.setMaxSteeringPerRound(10);
-        configuration.setMaxAccelerationPerRound(5);
-        configuration.setMaxSpeed(15);
-        configuration.setTorpedoRange(10);
         configuration.setRateLimitedPenalty(10);
+
+        ///// for move testing
+        configuration.setIslandPositions(Collections.EMPTY_LIST);
+        configuration.setRounds(1000);
+        configuration.setTeamCount(0);
+        configuration.setRoundLength(150); // faster
+
+        ///// for collision testing
+        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
 
         // conn status
         Map<String, Boolean> connectionStatus = new HashMap<>();

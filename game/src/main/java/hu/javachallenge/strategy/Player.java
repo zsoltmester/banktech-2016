@@ -15,7 +15,7 @@ public class Player {
 
     private final IMap map = IMap.MapConfig.getMap();
 
-    private Strategy strategy;
+    public static Strategy strategy;
 
     private void play() {
 
