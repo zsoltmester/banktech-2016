@@ -6,13 +6,26 @@ import hu.javachallenge.bean.Position;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.MoveStrategy;
 
-import java.util.List;
-
 /**
  * Created by qqcs on 07/11/16.
  */
 public class CollissionDetector {
     private static IMap map = IMap.MapConfig.getMap();
+
+    public static int getEntitySize(Entity entity) {
+        switch (entity.getType())
+        {
+            case Entity.SUBMARINE:
+                return map.getConfiguration().getSubmarineSize();
+            case Entity.TORPEDO:
+                return 1;
+            case MovingIsland.ISLAND:
+                return map.getConfiguration().getIslandSize();
+            default:
+                assert false;
+                return 0;
+        }
+    }
 
     public static <T1 extends MovableObject, T2 extends MovableObject> Integer collisionWith(
             T1 object1, IChangeMovableObject<T1> object1Moves, double object1radius,
@@ -52,30 +65,18 @@ public class CollissionDetector {
     }
 
     public static Integer submarineCollisionWithIsland(MoveStrategy strategy, Position islandPos, int step) {
-        MovingIsland island = new MovingIsland(islandPos);
-        return submarineCollision(strategy,
-                island, island, map.getConfiguration().getIslandSize(), step);
+        return submarineCollisionWithEntity(strategy, new MovingIsland(islandPos), step);
     }
 
     public static Integer submarineCollisionWithEntity(MoveStrategy strategy, Entity entity, int step) {
-        double radius = entity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() : 1;
-
-        return submarineCollision(strategy, entity, IChangeMovableObject.ZERO_MOVE, radius, step);
+        return submarineCollision(strategy, entity, IChangeMovableObject.ZERO_MOVE, getEntitySize(entity), step);
     }
 
     public static Integer entityCollisionWithEntityHistory(Entity entity, Entity historicalEntity, int step) {
-        List<Entity> entityHistory = map.getHistory(historicalEntity.getId(), 2);
+        IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(
+                map.getHistory(historicalEntity.getId(), 2));
 
-        double radius1 = entity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() : 1;
-
-        double radius2 = historicalEntity.getType().equals(Entity.SUBMARINE) ?
-                map.getConfiguration().getSubmarineSize() : 1;
-
-        IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(entityHistory);
-
-        return collisionWith(entity, IChangeMovableObject.ZERO_MOVE, radius1,
-                historicalEntity, entityMover, radius2, step);
+        return collisionWith(entity, IChangeMovableObject.ZERO_MOVE, getEntitySize(entity),
+                historicalEntity, entityMover, getEntitySize(historicalEntity), step);
     }
 }
