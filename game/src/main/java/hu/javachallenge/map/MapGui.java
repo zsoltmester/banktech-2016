@@ -49,7 +49,7 @@ class MapGui extends DataMap {
 
     private class MapPanel extends JPanel implements KeyListener {
 
-        private final float SIZE_MULTIPLIER = 1f;
+        private final float SIZE_MULTIPLIER = 0.5f;
         private final int TORPEDO_DISPLAY_SIZE = 4;
         private final int TARGET_DISPLAY_SIZE = 6;
         private final List<Color> AVAILABLE_TEAM_COLORS =
@@ -203,10 +203,10 @@ class MapGui extends DataMap {
                         }
                         if (strategy instanceof ScoutStrategy) scoutStrategy = (ScoutStrategy) strategy;
                         if (scoutStrategy == null) return;
-                        graphics.setColor(Color.GRAY);
+                        graphics.setColor(Color.BLACK);
                         scoutStrategy.getTargets().stream().forEachOrdered(target -> {
                             fillCircle(graphics, target, TARGET_DISPLAY_SIZE);
-                            graphics.setColor(Color.LIGHT_GRAY);
+                            graphics.setColor(Color.WHITE);
                         });
                     });
 

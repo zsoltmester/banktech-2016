@@ -26,7 +26,7 @@ public class ScoutStrategy extends MoveStrategy {
         int firstTargetIndex = 0;
         for (int i = 1; i < targets.length; ++i) {
             if (targets[firstTargetIndex].distance(getSubmarine().getPosition()) < targets[i].distance(getSubmarine().getPosition())) {
-                targets[firstTargetIndex] = targets[i];
+                firstTargetIndex = i;
             }
         }
 
@@ -127,10 +127,10 @@ public class ScoutStrategy extends MoveStrategy {
                 LOGGER.info("Detect collision with a torpedo in position: " + where);
                 LOGGER.info("Set new pos: " + position);
                 Strategy strategy = new ScoutStrategy(getSubmarine().getId(), position);
-                Strategy nextStrategy;
+                /*Strategy nextStrategy;
                 while((nextStrategy = strategy.onChangeStrategy()) != null) {
                     strategy = nextStrategy;
-                }
+                }*/
 
                 return new StrategySwitcher(this, strategy,
                         () -> {
@@ -142,10 +142,9 @@ public class ScoutStrategy extends MoveStrategy {
 
             }
         }
-        // TODO collision detection
+
         // return new StrategySwitcher(new ScoutStrategy(submarineId, /* evade control points */),
         //        this, () -> { return /* when not afraid to collosion */ });
-
 
         return null;
     }
