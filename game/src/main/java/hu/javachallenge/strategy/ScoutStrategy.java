@@ -8,9 +8,7 @@ import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -21,7 +19,27 @@ public class ScoutStrategy extends MoveStrategy {
 
     public ScoutStrategy(Long submarineId, Position... targets) {
         super(submarineId);
-        this.targets = new ArrayDeque<>(Arrays.asList(targets));
+
+        // order the targets to start to scout the farthest point
+
+        int firstTargetIndex = 0;
+        for (int i = 1; i < targets.length; ++i) {
+            if (targets[firstTargetIndex].distance(getSubmarine().getPosition()) < targets[i].distance(getSubmarine().getPosition())) {
+                targets[firstTargetIndex] = targets[i];
+            }
+        }
+
+        List<Position> orderedTargets = new ArrayList<>(targets.length);
+        for (int i = firstTargetIndex; i < firstTargetIndex + targets.length; i++) {
+            orderedTargets.add(targets[i % targets.length]);
+        }
+
+        LOGGER.finest("Position for " + submarineId + ": " + getSubmarine().getPosition());
+        LOGGER.finest("Scout targets for " + submarineId + ": " + Arrays.toString(targets));
+        LOGGER.finest("First target index for " + submarineId + ": " + firstTargetIndex);
+        LOGGER.finest("Ordered scout targets for " + submarineId + ": " + orderedTargets);
+
+        this.targets = new ArrayDeque<>(orderedTargets);
     }
 
     @Override

@@ -393,7 +393,8 @@ class OfflineGame implements Runnable {
         game.getScores().setScores(scores);
 
         // submarines
-        int[] i = {1};
+        //int[] i = {1};
+        int[] i = {random.nextInt(4) + 1}; ///// to test move strategy, we should start from a random corner
         List<String> randomOrderedTeams = new ArrayList<>(teams);
         randomOrderedTeams.sort((s, t) -> random.nextInt(10) - 5);
         randomOrderedTeams.forEach(team -> {
@@ -402,8 +403,8 @@ class OfflineGame implements Runnable {
                 submarine.setType(Entity.SUBMARINE);
                 submarine.setId(++idSeed);
                 submarine.setPosition(new Position(
-                        i[0] % 2 == 0 ? configuration.getWidth() / (5 - j) : configuration.getWidth() * (4 - j) / (5 - j),
-                        i[0] > 2 ? configuration.getHeight() / (5 - j) : configuration.getHeight() * (4 - j) / (5 - j)));
+                        i[0] % 2 == 0 ? configuration.getWidth() / (7 - j) : configuration.getWidth() * (6 - j) / (7 - j),
+                        i[0] > 2 ? configuration.getHeight() / (7 - j) : configuration.getHeight() * (6 - j) / (7 - j)));
                 submarine.setOwner(new Owner(team));
                 submarine.setVelocity(0.0);
                 submarine.setAngle(random.nextDouble() * 360);
