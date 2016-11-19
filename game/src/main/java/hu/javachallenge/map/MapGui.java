@@ -124,8 +124,8 @@ class MapGui extends DataMap {
                                     Entity e = history.get(i);
                                     if(e != null) {
 
-                                        graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()).brighter() : Color.RED.brighter());
-                                        fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
+                                        graphics.setColor(displayWithTeamColor ? playersColor.get(e.getOwner().getName()).brighter() : Color.RED.brighter());
+                                        fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
                                     }
                                 }
                             }
@@ -141,8 +141,8 @@ class MapGui extends DataMap {
                                 Entity e = history.get(i);
                                 if(e != null) {
 
-                                    graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()).brighter() : Color.CYAN.brighter());
-                                    fillCircle(graphics, entity.getPosition(), TORPEDO_DISPLAY_SIZE);
+                                    graphics.setColor(displayWithTeamColor ? playersColor.get(e.getOwner().getName()).brighter() : Color.CYAN.brighter());
+                                    fillCircle(graphics, e.getPosition(), TORPEDO_DISPLAY_SIZE);
                                 }
                             }
                         }
