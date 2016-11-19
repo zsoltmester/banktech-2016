@@ -25,8 +25,8 @@ class DataMap implements IMap {
 
     protected Map<Integer, Map<Long, Entity>> entityHistory = new TreeMap<>();
 
-    protected Integer previousScore = 0;
-    protected Position possiblyScores = new Position(0, 0);
+    protected Map<String, Integer> previousScores = new HashMap<>();
+    protected Map<String, Position> possiblyScores = new HashMap<>();
 
     @Override
     public void initialize(Game game) {
@@ -98,20 +98,6 @@ class DataMap implements IMap {
 
     @Override
     public void submarineShoot(Long submarine, Double angle) {
-        // TODO ez talán akkor lehet hasznos, ha követni akarjuk, hogy a torpedónk merre megy (és a következő sonar-ból már kimegy a rakéta, szóval msot látjuk utoljára)
-        // sajnos nem hasznos, mert mindenképpen kapunk infót róla, hogy megjelent, és hogy merre mozog.
-        /*
-        Entity entity = new Entity();
-        entity.setPosition(ourSubmarines.stream().filter(s -> s.getId().equals(submarine)).findFirst().orElse(null)
-            .getPosition());
-        entity.setAngle(angle);
-        entity.setOwner(new Owner(OUR_NAME));
-        entity.setRoundsMoved(0);
-        entity.setVelocity(configuration.getTorpedoSpeed());
-        entity.setType("Torpedo");
-
-        this.entities.put(-1L, Collections.singletonList(entity));
-        */
     }
 
     @Override
@@ -125,21 +111,31 @@ class DataMap implements IMap {
 
     @Override
     public void tick() {
-        Integer score = Processor.game.getScores().getScores().get(OUR_NAME);
+        Map<String, Integer> scores = Processor.game.getScores().getScores();
 
-        Integer gotScore = score - previousScore;
+        for(Map.Entry<String, Integer> entry : scores.entrySet()) {
+            Integer previousScore = previousScores.get(entry.getKey());
+            if(previousScore == null) {
+                possiblyScores.put(entry.getKey(), new Position(0, 0));
+                continue;
+            }
+            Position possiblyScore = possiblyScores.get(entry.getKey());
 
-        int hitScore = getConfiguration().getTorpedoHitScore();
-        int destroyScore = getConfiguration().getTorpedoDestroyScore();
+            Integer gotScore = entry.getValue() - previousScore;
 
-        while(gotScore % hitScore != 0) {
-            possiblyScores.setX(possiblyScores.getX() + 1);
-            possiblyScores.setY(possiblyScores.getY() + 1);
-            gotScore -= destroyScore;
-            gotScore -= hitScore;
+            int hitScore = getConfiguration().getTorpedoHitScore();
+            int destroyScore = getConfiguration().getTorpedoDestroyScore();
+
+            while(gotScore % hitScore != 0) {
+                possiblyScore.setX(possiblyScore.getX() + 1);
+                possiblyScore.setY(possiblyScore.getY() + 1);
+                gotScore -= destroyScore;
+                gotScore -= hitScore;
+            }
+            possiblyScore.setX(possiblyScore.getX() + gotScore / hitScore);
+
         }
-        possiblyScores.setX(possiblyScores.getX() + gotScore / hitScore);
 
-        previousScore = score;
+        previousScores = scores;
     }
 }

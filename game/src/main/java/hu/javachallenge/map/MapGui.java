@@ -203,15 +203,16 @@ class MapGui extends DataMap {
             }
 
             Map<String, Boolean> connected = Processor.game.getConnectionStatus().getConnected();
-            graphics.setColor(Color.WHITE);
-            graphics.drawString("Possible torpedo hit: " + possiblyScores.getX().intValue() + ", destroy: " +
-                possiblyScores.getY().intValue(),
-                    (int) getPreferredSize().getWidth() - 320, (int) getPreferredSize().getHeight() - 2);
             for (Map.Entry<String, Integer> entry : Processor.game.getScores().getScores().entrySet()) {
                 String key = entry.getKey();
                 graphics.setColor(connected.get(key) ? displayWithTeamColor ? playersColor.get(key) : Color.white : Color.RED);
                 graphics.drawString(key.substring(0, Math.min(10, key.length())) + ": " + entry.getValue(),
                         (int) getPreferredSize().getWidth() - 150, (i+1) * 14);
+
+                graphics.drawString("Hit: " + possiblyScores.get(entry.getKey()).getX().intValue() + ", Des: " +
+                                possiblyScores.get(entry.getKey()).getY().intValue(),
+                        (int) getPreferredSize().getWidth() - 320, (i+1) * 14);
+
                 ++i;
             }
 
