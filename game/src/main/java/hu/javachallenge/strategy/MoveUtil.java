@@ -15,8 +15,8 @@ import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 75;
-    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 125;
+    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 100;
+    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 150;
 
     public static IMap map = IMap.MapConfig.getMap();
 
