@@ -7,10 +7,8 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalDouble;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
@@ -229,7 +227,7 @@ public class MoveUtil {
         return distance1 < distance2 ? p1 : p2;
     }
 
-    public static Position getEvadePosition(
+    public static List<Position> getEvadePosition(
             Submarine submarine, MoveStrategy submarineMoves, double submarineRadius,
             Entity entity, IChangeMovableObject<MovableObject> entityMoves, double entityRadius, int maxStep) {
         Submarine submarineClone;
@@ -254,7 +252,7 @@ public class MoveUtil {
                 Double entityY = entityClone.getPosition().getY();
 
                 int delta = MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE;
-                Position target;
+                Position target = null;
                 do {
                     List<Position> possibleEvadePositions = Arrays.asList(
                             new Position(entityX + entityRadius + delta, entityY),
@@ -262,15 +260,32 @@ public class MoveUtil {
                             new Position(entityX, entityY + entityRadius + delta),
                             new Position(entityX, entityY - entityRadius - delta));
 
-                    target = possibleEvadePositions.stream()
+                    possibleEvadePositions = possibleEvadePositions.stream()
                             .filter(evadePoint -> map.isValidPosition(evadePoint))
-                            .filter(evadePoint -> !new ScoutStrategy(submarine.getId(), evadePoint).willCollusionOccur(maxStep))
-                            .findAny().orElse(null);
+                            .filter(evadePoint -> !new ScoutStrategy(submarine.getId(), new ArrayList<>(Collections.singletonList(evadePoint))).willCollusionOccur(maxStep))
+                            .collect(Collectors.toList());
+
+                    if (possibleEvadePositions.size() > 1) {
+                        target = possibleEvadePositions.get(0);
+                        for (int j = 1; j < possibleEvadePositions.size(); ++j) {
+                            if (submarine.getPosition().distance(target) < submarine.getPosition().distance(possibleEvadePositions.get(j))) {
+                                target = possibleEvadePositions.get(j);
+                            }
+                        }
+                    } else if (possibleEvadePositions.size() == 1) {
+                        target = possibleEvadePositions.get(0);
+                    }
 
                     ++delta;
                 } while (target == null && delta <= MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE);
 
-                return target;
+                if (target == null) {
+                    return null;
+                }
+
+                double centerDelta = target.distance(submarine.getPosition()) / 2;
+                return Arrays.asList(new Position(target.getX() > submarine.getPosition().getX() ? target.getX() - centerDelta : target.getX() + centerDelta,
+                        target.getY() > submarine.getPosition().getY() ? target.getY() - centerDelta : target.getY() + centerDelta), target);
             }
         }
 

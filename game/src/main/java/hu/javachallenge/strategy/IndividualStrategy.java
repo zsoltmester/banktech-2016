@@ -5,7 +5,9 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IndividualStrategy implements Strategy {
@@ -31,7 +33,21 @@ public class IndividualStrategy implements Strategy {
                     new Position(i * part + radarDistance, radarDistance),
             };
 
-            Strategy strategy = new ScoutStrategy(submarine.getId(), positions);
+            // order the targets to start to scout the farthest point
+
+            int firstTargetIndex = 0;
+            for (int j = 1; j < positions.length; ++j) {
+                if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) {
+                    firstTargetIndex = j;
+                }
+            }
+
+            List<Position> orderedTargets = new ArrayList<>(positions.length);
+            for (int j = firstTargetIndex; j < firstTargetIndex + positions.length; j++) {
+                orderedTargets.add(positions[j % positions.length]);
+            }
+
+            Strategy strategy = new ScoutStrategy(submarine.getId(), orderedTargets);
             strategy.init();
             strategies.put(submarine.getId(), strategy);
             ++i;

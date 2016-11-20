@@ -8,40 +8,23 @@ import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ScoutStrategy extends MoveStrategy {
     private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
 
-    private static final int TARGET_REACHED_DISTANCE = 30;
+    private static final int TARGET_REACHED_DISTANCE = 5;
 
     private final Deque<Position> targets;
 
-    public ScoutStrategy(Long submarineId, Position... targets) {
+    public ScoutStrategy(Long submarineId, List<Position> targets) {
         super(submarineId);
-
-        // order the targets to start to scout the farthest point
-
-        int firstTargetIndex = 0;
-        for (int i = 1; i < targets.length; ++i) {
-            if (targets[firstTargetIndex].distance(getSubmarine().getPosition()) < targets[i].distance(getSubmarine().getPosition())) {
-                firstTargetIndex = i;
-            }
-        }
-
-        List<Position> orderedTargets = new ArrayList<>(targets.length);
-        for (int i = firstTargetIndex; i < firstTargetIndex + targets.length; i++) {
-            orderedTargets.add(targets[i % targets.length]);
-        }
-
-        LOGGER.finest("Position for " + submarineId + ": " + getSubmarine().getPosition());
-        LOGGER.finest("Scout targets for " + submarineId + ": " + Arrays.toString(targets));
-        LOGGER.finest("First target index for " + submarineId + ": " + firstTargetIndex);
-        LOGGER.finest("Ordered scout targets for " + submarineId + ": " + orderedTargets);
-
-        this.targets = new ArrayDeque<>(orderedTargets);
+        this.targets = new ArrayDeque<>(targets);
     }
 
     @Override
@@ -95,24 +78,23 @@ public class ScoutStrategy extends MoveStrategy {
 
         for(Position islandPosition : map.getConfiguration().getIslandPositions()) {
             if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
-                Position evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), new MovingIsland(islandPosition), IChangeMovableObject.ZERO_MOVE, map.getConfiguration().getIslandSize(), 10);
+                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), new MovingIsland(islandPosition), IChangeMovableObject.ZERO_MOVE, map.getConfiguration().getIslandSize(), 10);
 
                 LOGGER.info("Detect collision with island in position: " + islandPosition);
                 if (evadePosition == null) {
                     LOGGER.info("Cannot evade island: " + islandPosition + ". Wait for zero acceleration, then skip the target.");
                     if (getSubmarine().getVelocity() != 0) {
-                        evadePosition = getSubmarine().getPosition();
+                        evadePosition = Collections.singletonList(getSubmarine().getPosition());
                     } else {
                         targets.add(targets.pop());
                         break;
                     }
                 } else {
-                    LOGGER.info("Evade position: " + evadePosition);
+                    LOGGER.info("Evade position(s): " + evadePosition);
                 }
-
-                Position finalEvadePosition = evadePosition;
+                List<Position> finalEvadePosition = evadePosition;
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
-                        () -> getSubmarine().getPosition().distance(finalEvadePosition) < TARGET_REACHED_DISTANCE);
+                        () -> getSubmarine().getPosition().distance(finalEvadePosition.get(finalEvadePosition.size() - 1)) < TARGET_REACHED_DISTANCE);
             }
         }
 
@@ -134,7 +116,7 @@ public class ScoutStrategy extends MoveStrategy {
                 }
                 LOGGER.info("Detect collision with a torpedo in position: " + where);
                 LOGGER.info("Set new pos: " + position);
-                Strategy strategy = new ScoutStrategy(getSubmarine().getId(), position);
+                Strategy strategy = new ScoutStrategy(getSubmarine().getId(), Collections.singletonList(position));
                 /*Strategy nextStrategy;
                 while((nextStrategy = strategy.onChangeStrategy()) != null) {
                     strategy = nextStrategy;
