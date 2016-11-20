@@ -5,20 +5,18 @@ import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
-import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 50;
-    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 100;
+    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 75;
+    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 125;
 
     public static IMap map = IMap.MapConfig.getMap();
 
@@ -231,40 +229,51 @@ public class MoveUtil {
         return distance1 < distance2 ? p1 : p2;
     }
 
-    /**
-     * Evade a non moving object.
-     */
-    public static Position evadeIsland(Submarine submarine, Position destination, Position entityToEvade, double radius) {
-        Double objectX = entityToEvade.getX();
-        Double objectY = entityToEvade.getY();
-
-        int delta = 0;
-        final Position[] target = {null};
-        while (target[0] == null && delta < MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE) {
-            List<Position> possibleEvadePositions = Arrays.asList(
-                    new Position(objectX + radius + MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE + delta, objectY),
-                    new Position(objectX - radius - MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE - delta, objectY),
-                    new Position(objectX, objectY + radius + MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE + delta),
-                    new Position(objectX, objectY - radius - MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE - delta));
-
-            possibleEvadePositions = possibleEvadePositions.stream()
-                    .filter(evadePoint -> CollissionDetector.getCircleLineIntersectionPoint(submarine.getPosition(), evadePoint, entityToEvade, radius).isEmpty()
-                            && CollissionDetector.getCircleLineIntersectionPoint(evadePoint, destination, entityToEvade, radius).isEmpty())
-                    .filter(evadePoint -> map.isValidPosition(evadePoint))
-                    .collect(Collectors.toList());
-
-            target[0] = possibleEvadePositions.stream()
-                    .filter(position -> new ScoutStrategy(submarine.getId(), position).onChangeStrategy() == null)
-                    .findFirst().orElse(null);
-
-            ++delta;
+    public static Position getEvadePosition(
+            Submarine submarine, MoveStrategy submarineMoves, double submarineRadius,
+            Entity entity, IChangeMovableObject<MovableObject> entityMoves, double entityRadius, int maxStep) {
+        Submarine submarineClone;
+        Entity entityClone;
+        try {
+            submarineClone = (Submarine) submarine.clone();
+            entityClone = (Entity) entity.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
         }
 
-        if (target[0] == null) {
-            // the submarine can't reach the destination
-            return submarine.getPosition(); // stay
+        for (int i = 1; i <= maxStep; ++i) {
+            submarineMoves.moveToNext(submarineClone);
+            entityMoves.moveToNext(entityClone);
+
+            if (submarineClone.getPosition().distance(entityClone.getPosition()) < submarineRadius + entityRadius) {
+
+                // find an evade position
+
+                Double entityX = entityClone.getPosition().getX();
+                Double entityY = entityClone.getPosition().getY();
+
+                int delta = MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE;
+                Position target;
+                do {
+                    List<Position> possibleEvadePositions = Arrays.asList(
+                            new Position(entityX + entityRadius + delta, entityY),
+                            new Position(entityX - entityRadius - delta, entityY),
+                            new Position(entityX, entityY + entityRadius + delta),
+                            new Position(entityX, entityY - entityRadius - delta));
+
+                    target = possibleEvadePositions.stream()
+                            .filter(evadePoint -> map.isValidPosition(evadePoint))
+                            .filter(evadePoint -> !new ScoutStrategy(submarine.getId(), evadePoint).willCollusionOccur(maxStep))
+                            .findAny().orElse(null);
+
+                    ++delta;
+                } while (target == null && delta <= MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE);
+
+                return target;
+            }
         }
 
-        return target[0];
+        return null;
     }
 }

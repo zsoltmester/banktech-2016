@@ -6,6 +6,7 @@ import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
+import hu.javachallenge.strategy.moving.MovingIsland;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -94,17 +95,23 @@ public class ScoutStrategy extends MoveStrategy {
 
         for(Position islandPosition : map.getConfiguration().getIslandPositions()) {
             if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
-                Position pos = MoveUtil.evadeIsland(getSubmarine(), targets.peek(), islandPosition, map.getConfiguration().getIslandSize());
+                Position evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), new MovingIsland(islandPosition), IChangeMovableObject.ZERO_MOVE, map.getConfiguration().getIslandSize(), 10);
 
                 LOGGER.info("Detect collision with island in position: " + islandPosition);
-                LOGGER.info("Evade position: " + pos);
-
-                if (pos.equals(getSubmarine().getPosition())) {
-                    LOGGER.warning("Submarine " + getSubmarine().getId() + " cannot reach the target: " + targets.peek());
+                if (evadePosition == null) {
+                    LOGGER.info("Cannot evade island: " + islandPosition + ". Wait for zero acceleration, then skip the target.");
+                    if (getSubmarine().getVelocity() != 0) {
+                        evadePosition = getSubmarine().getPosition();
+                    } else {
+                        targets.add(targets.pop());
+                    }
+                } else {
+                    LOGGER.info("Evade position: " + evadePosition);
                 }
 
-                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), pos),
-                        () -> getSubmarine().getPosition().distance(pos) < TARGET_REACHED_DISTANCE);
+                Position finalEvadePosition = evadePosition;
+                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
+                        () -> getSubmarine().getPosition().distance(finalEvadePosition) < TARGET_REACHED_DISTANCE);
             }
         }
 
@@ -147,5 +154,21 @@ public class ScoutStrategy extends MoveStrategy {
         //        this, () -> { return /* when not afraid to collosion */ });
 
         return null;
+    }
+
+    public boolean willCollusionOccur(int maxSteps) {
+        for (Position islandPosition : map.getConfiguration().getIslandPositions()) {
+            if (CollissionDetector.submarineCollisionWithIsland(this, islandPosition, maxSteps) != null) {
+                return true;
+            }
+        }
+
+        for (Entity entity : map.getEntities().stream().filter(e -> e.getType().equals(Entity.TORPEDO)).collect(Collectors.toList())) {
+            if (CollissionDetector.submarineCollisionWithEntity(this, entity, maxSteps) != null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
