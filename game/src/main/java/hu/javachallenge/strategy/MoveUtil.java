@@ -16,8 +16,8 @@ public class MoveUtil {
     private static final int MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE = 100;
     private static final int MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE = 150;
 
-    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 20;
-    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
+    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 16;
+    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 66;
 
     public static IMap map = IMap.MapConfig.getMap();
 
@@ -243,6 +243,8 @@ public class MoveUtil {
             return null;
         }
 
+        boolean isTorpedo = entity.getType() != null && entity.getType().equals(Entity.TORPEDO);
+
         for (int i = 1; i <= maxStep; ++i) {
             submarineMoves.moveToNext(submarineClone);
             entityMoves.moveToNext(entityClone);
@@ -254,14 +256,22 @@ public class MoveUtil {
                 Double entityX = entityClone.getPosition().getX();
                 Double entityY = entityClone.getPosition().getY();
 
-                int delta = entity.getType().equals(Entity.TORPEDO) ? MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE;
+                int delta = isTorpedo ? MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE;
                 Position target = null;
                 do {
-                    List<Position> possibleEvadePositions = Arrays.asList(
+                    List<Position> possibleEvadePositions = new ArrayList<>(Arrays.asList(
                             new Position(entityX + entityRadius + delta, entityY),
                             new Position(entityX - entityRadius - delta, entityY),
                             new Position(entityX, entityY + entityRadius + delta),
-                            new Position(entityX, entityY - entityRadius - delta));
+                            new Position(entityX, entityY - entityRadius - delta)));
+
+                    if (isTorpedo) {
+                        possibleEvadePositions.addAll(Arrays.asList(
+                                new Position(entityX + entityRadius + delta, entityY + entityRadius + delta),
+                                new Position(entityX - entityRadius - delta, entityY + entityRadius + delta),
+                                new Position(entityX + entityRadius + delta, entityY - entityRadius - delta),
+                                new Position(entityX - entityRadius - delta, entityY - entityRadius - delta)));
+                    }
 
                     possibleEvadePositions = possibleEvadePositions.stream()
                             .filter(evadePoint -> map.isValidPosition(evadePoint))
@@ -281,7 +291,7 @@ public class MoveUtil {
 
                     ++delta;
                 }
-                while (target == null && delta <= (entity.getType().equals(Entity.TORPEDO) ? MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE));
+                while (target == null && delta <= (isTorpedo ? MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE));
 
                 if (target == null) {
                     return null;
