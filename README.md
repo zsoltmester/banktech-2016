@@ -1,6 +1,6 @@
 # Infinite Ringbuffer - BankTech Java Challange 2016
 
-**A döntő helyszíne:** 
+**A döntő helyszíne:**
 Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 
 **A döntő időpontja:**
@@ -20,26 +20,22 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 **Vigyünk:**
 
 - *Amit írtak:* Hozzatok magatokkal komplett számítógépeket, amin dolgozni tudtok. Lehet laptop vagy asztali gép. Csapatonként 3 darab hosszabbítót is hozzatok magatokkal. Opcionálisan 5-10 méteres LAN kábel.
-- *TODO:* Beszéljük ezt majd meg. 
+- *TODO:* Beszéljük ezt majd meg.
 
 ## TODO
 
 - (1) Megjavítani a torpedoRange-es hibákat!! - Béla - elvileg OK
 - (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni - elvileg OK
-- (3) Több féle mozgást felismerni. +1
-- (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz. 
-- (4) Machine learning-el is lehetne ezt
-- (1) Mozgás fix: szigetelkürölős móka - Béla - Elvileg kész
-- (3) Mozgás fix: torpedóelkerülős móka - Béla - Valami van
-- (2) getTurnAndSpeedForTargetPosition - getAccelerationToCloseThereWhenOnRightDirection függvény használja a turn információt a speedhez.
+- (1) Több hajót formációba mozgassunk
 - (1) Támadó stratégia. Figyeljünk, hogy ne menjünk túl közel hozzájuk, hogy kissebb eséllyel sebződjünk. Extended sonarnál lőhetünk random
-- (1) Kereső stratégia
-- (4) Több hajót formációba mozgassunk
-- (3) Pánik stratégia
-- (3) Stratégia, hogy random módon keressünk
+- (2) getTurnAndSpeedForTargetPosition - getAccelerationToCloseThereWhenOnRightDirection függvény használja a turn információt a speedhez.
 - (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását - Béla - OK
 - (2) Ne lőjjünk át a szigeten - Béla - elvileg OK
 - (2) Ha van közelben valami robbanó a lövedék útjában, nem lőjük ki. - Béla - elvileg OK
+- (3) Pánik stratégia
+- (3) Több féle mozgást felismerni. +1
+- (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz.
+- (4) Machine learning-el is lehetne ezt
 
 ## Maven project fordítása és futtatása
 
