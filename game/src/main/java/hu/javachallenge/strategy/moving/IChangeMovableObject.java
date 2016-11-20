@@ -31,7 +31,9 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         object.setAngle(nextAngle);
-        if(0 <= nextSpeed && nextSpeed <= MoveUtil.map.getConfiguration().getMaxSpeed()) {
+        double maxSpeed = (object instanceof Entity) && ((Entity) object).getType() != null && ((Entity) object).getType().equals(Entity.TORPEDO)
+                ? Integer.MAX_VALUE : MoveUtil.map.getConfiguration().getMaxSpeed();
+        if (0 <= nextSpeed && nextSpeed <= maxSpeed) {
             object.setVelocity(nextSpeed);
         }
 

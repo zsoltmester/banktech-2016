@@ -13,8 +13,11 @@ import java.util.stream.DoubleStream;
 
 public class MoveUtil {
 
-    private static final int MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE = 100;
-    private static final int MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE = 150;
+    private static final int MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE = 100;
+    private static final int MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE = 150;
+
+    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 20;
+    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
 
     public static IMap map = IMap.MapConfig.getMap();
 
@@ -251,7 +254,7 @@ public class MoveUtil {
                 Double entityX = entityClone.getPosition().getX();
                 Double entityY = entityClone.getPosition().getY();
 
-                int delta = MIN_DISTANCE_FROM_ENTITY_WHEN_EVADE;
+                int delta = entity.getType().equals(Entity.TORPEDO) ? MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE;
                 Position target = null;
                 do {
                     List<Position> possibleEvadePositions = Arrays.asList(
@@ -277,7 +280,8 @@ public class MoveUtil {
                     }
 
                     ++delta;
-                } while (target == null && delta <= MAX_DISTANCE_FROM_ENTITY_WHEN_EVADE);
+                }
+                while (target == null && delta <= (entity.getType().equals(Entity.TORPEDO) ? MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE));
 
                 if (target == null) {
                     return null;
