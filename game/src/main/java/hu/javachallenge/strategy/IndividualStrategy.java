@@ -26,6 +26,7 @@ public class IndividualStrategy implements Strategy {
 
         int i = 0;
         for(Submarine submarine : map.getOurSubmarines()) {
+            ///// split map equally
             Position[] positions = new Position[] {
                     new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance),
                     new Position((i + 1) * part - radarDistance, map.getConfiguration().getHeight() - radarDistance),
@@ -46,6 +47,30 @@ public class IndividualStrategy implements Strategy {
             for (int j = firstTargetIndex; j < firstTargetIndex + positions.length; j++) {
                 orderedTargets.add(positions[j % positions.length]);
             }
+
+            /*
+            ///// same points for all
+            Position[] positions = new Position[] {
+                    new Position(radarDistance, map.getConfiguration().getHeight() - radarDistance),
+                    new Position(map.getConfiguration().getWidth() - radarDistance, map.getConfiguration().getHeight() - radarDistance),
+                    new Position(map.getConfiguration().getWidth() - radarDistance, radarDistance),
+                    new Position(radarDistance, radarDistance),
+            };
+
+            // order the targets to start to scout the farthest point
+
+            int firstTargetIndex = 0;
+            for (int j = 1; j < positions.length; ++j) {
+                if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) {
+                    firstTargetIndex = j;
+                }
+            }
+
+            List<Position> orderedTargets = new ArrayList<>(positions.length);
+            for (int j = firstTargetIndex; j < firstTargetIndex + positions.length; j++) {
+                orderedTargets.add(positions[j % positions.length]);
+            }
+            */
 
             Strategy strategy = new ScoutStrategy(submarine.getId(), orderedTargets);
             strategy.init();

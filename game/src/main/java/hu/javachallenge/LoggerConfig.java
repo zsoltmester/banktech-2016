@@ -4,7 +4,7 @@ import java.util.logging.*;
 
 public class LoggerConfig {
 
-    private static final Level LOG_LEVEL = Level.FINE;
+    private static final Level LOG_LEVEL = Level.INFO;
 
     static {
         Logger logger = Logger.getLogger(App.class.getPackage().getName());

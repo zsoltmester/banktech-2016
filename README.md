@@ -24,7 +24,6 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 
 ## TODO
 
-- (1) Performance issue - nem az AttackerStrategy-vel vagy a ScoutStrategy.onChangeRound-al van a baj - Nekem a jvm heap növelése megoldotta: `-Xms1024m -Xmx1024m`
 - (1) Megjavítani a torpedoRange-es hibákat!! - Béla - elvileg OK
 - (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni - elvileg OK
 - (1) Több hajót formációba mozgassunk

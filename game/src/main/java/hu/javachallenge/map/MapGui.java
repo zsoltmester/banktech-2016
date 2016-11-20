@@ -22,7 +22,10 @@ class MapGui extends DataMap {
     private JFrame frame;
     private MapPanel mapPanel;
 
-    MapGui() {
+    private Map<String, Integer> previousScores = new HashMap<>();
+    private Map<String, Position> possiblyScores = new HashMap<>();
+
+    private MapGui() {
     }
 
     @Override
@@ -40,7 +43,42 @@ class MapGui extends DataMap {
 
     @Override
     public void tick() {
-        super.tick();
+        Map<String, Integer> scores = Processor.game.getScores().getScores();
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            Integer previousScore = previousScores.get(entry.getKey());
+            if (previousScore == null) {
+                possiblyScores.put(entry.getKey(), new Position(0, 0));
+                continue;
+            }
+            Position possiblyScore = possiblyScores.get(entry.getKey());
+
+            Integer gotScore = entry.getValue() - previousScore;
+
+            /*
+            // Sometimes the following bad data comes from the server:
+            LOGGER.severe("previousScore: " + previousScore); // 350
+            LOGGER.severe("entry.getValue(): " + entry.getValue()); // 340
+            LOGGER.severe("gotScore: " + gotScore); // -10
+            // So that's why we do the following hack:
+            */
+            if (gotScore < 0) {
+                gotScore = 0;
+            }
+
+            int hitScore = getConfiguration().getTorpedoHitScore();
+            int destroyScore = getConfiguration().getTorpedoDestroyScore();
+
+            if (gotScore % hitScore != 0) {
+                possiblyScore.setX(possiblyScore.getX() + 1);
+                possiblyScore.setY(possiblyScore.getY() + 1);
+                gotScore -= destroyScore;
+                gotScore -= hitScore;
+            }
+            possiblyScore.setX(possiblyScore.getX() + gotScore / hitScore);
+
+        }
+        previousScores = scores;
+
         new Thread(() -> {
             mapPanel.invalidate();
             mapPanel.repaint();

@@ -25,9 +25,6 @@ class DataMap implements IMap {
 
     protected Map<Integer, Map<Long, Entity>> entityHistory = new TreeMap<>();
 
-    protected Map<String, Integer> previousScores = new HashMap<>();
-    protected Map<String, Position> possiblyScores = new HashMap<>();
-
     @Override
     public void initialize(Game game) {
         this.configuration = game.getMapConfiguration();
@@ -111,31 +108,5 @@ class DataMap implements IMap {
 
     @Override
     public void tick() {
-        Map<String, Integer> scores = Processor.game.getScores().getScores();
-
-        for(Map.Entry<String, Integer> entry : scores.entrySet()) {
-            Integer previousScore = previousScores.get(entry.getKey());
-            if(previousScore == null) {
-                possiblyScores.put(entry.getKey(), new Position(0, 0));
-                continue;
-            }
-            Position possiblyScore = possiblyScores.get(entry.getKey());
-
-            Integer gotScore = entry.getValue() - previousScore;
-
-            int hitScore = getConfiguration().getTorpedoHitScore();
-            int destroyScore = getConfiguration().getTorpedoDestroyScore();
-
-            while(gotScore % hitScore != 0) {
-                possiblyScore.setX(possiblyScore.getX() + 1);
-                possiblyScore.setY(possiblyScore.getY() + 1);
-                gotScore -= destroyScore;
-                gotScore -= hitScore;
-            }
-            possiblyScore.setX(possiblyScore.getX() + gotScore / hitScore);
-
-        }
-
-        previousScores = scores;
     }
 }
