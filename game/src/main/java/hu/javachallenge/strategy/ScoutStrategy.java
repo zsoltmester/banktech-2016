@@ -19,6 +19,7 @@ public class ScoutStrategy extends MoveStrategy {
     private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
 
     private static final int TARGET_REACHED_DISTANCE = 5;
+    private static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
 
     private final Deque<Position> targets;
 
@@ -77,8 +78,8 @@ public class ScoutStrategy extends MoveStrategy {
     public Strategy onChangeStrategy() {
 
         for(Position islandPosition : map.getConfiguration().getIslandPositions()) {
-            if(CollissionDetector.submarineCollisionWithIsland(this, islandPosition, 10) != null) {
-                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), new MovingIsland(islandPosition), IChangeMovableObject.ZERO_MOVE, map.getConfiguration().getIslandSize(), 10);
+            if (CollissionDetector.submarineCollisionWithIsland(this, islandPosition, STEPS_TO_CHECK_FOR_COLLISION) != null) {
+                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), new MovingIsland(islandPosition), IChangeMovableObject.ZERO_MOVE, map.getConfiguration().getIslandSize(), STEPS_TO_CHECK_FOR_COLLISION);
 
                 LOGGER.info("Detect collision with island in position: " + islandPosition);
                 if (evadePosition == null) {
@@ -100,7 +101,7 @@ public class ScoutStrategy extends MoveStrategy {
 
         for(Entity entity : map.getEntities().stream().filter(e -> e.getType().equals(Entity.TORPEDO)).collect(Collectors.toList())) {
             Integer time;
-            if((time = CollissionDetector.submarineCollisionWithEntity(this, entity, 10)) != null) {
+            if ((time = CollissionDetector.submarineCollisionWithEntity(this, entity, STEPS_TO_CHECK_FOR_COLLISION)) != null) {
                 Position where = IChangeMovableObject.getSteppedPositions(this, getSubmarine(), time).getLast();
 
                 // párhuzamos vagy merőleges?
@@ -127,7 +128,7 @@ public class ScoutStrategy extends MoveStrategy {
                             Entity entity1 = map.getEntities().stream()
                                     .filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
                             return entity1 == null ||
-                                    CollissionDetector.submarineCollisionWithEntity(this, entity1, 10) == null;
+                                    CollissionDetector.submarineCollisionWithEntity(this, entity1, STEPS_TO_CHECK_FOR_COLLISION) == null;
                         });
 
             }
