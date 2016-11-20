@@ -104,6 +104,7 @@ public class ScoutStrategy extends MoveStrategy {
                         evadePosition = getSubmarine().getPosition();
                     } else {
                         targets.add(targets.pop());
+                        break;
                     }
                 } else {
                     LOGGER.info("Evade position: " + evadePosition);
