@@ -297,9 +297,13 @@ public class MoveUtil {
                     return null;
                 }
 
-                double centerDelta = target.distance(submarine.getPosition()) / 2;
-                return Arrays.asList(new Position(target.getX() > submarine.getPosition().getX() ? target.getX() - centerDelta : target.getX() + centerDelta,
-                        target.getY() > submarine.getPosition().getY() ? target.getY() - centerDelta : target.getY() + centerDelta), target);
+                if (isTorpedo) {
+                    return Collections.singletonList(target);
+                } else {
+                    double centerDelta = target.distance(submarine.getPosition()) / 2;
+                    return Arrays.asList(new Position(target.getX() > submarine.getPosition().getX() ? target.getX() - centerDelta : target.getX() + centerDelta,
+                            target.getY() > submarine.getPosition().getY() ? target.getY() - centerDelta : target.getY() + centerDelta), target);
+                }
             }
         }
 
