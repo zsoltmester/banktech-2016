@@ -330,6 +330,9 @@ class OfflineGame implements Runnable {
         ///// for collision testing
         configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
 
+        ///// for testing moving in a group
+        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1300, 400)));
+
         // conn status
         Map<String, Boolean> connectionStatus = new HashMap<>();
         teams.forEach(team -> connectionStatus.put(team, true));

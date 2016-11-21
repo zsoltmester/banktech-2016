@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class IndividualStrategy implements Strategy {
 
+    private static final int GAP_WHEN_MOVING_IN_GROUP = 60;
+    private static final int SHIFT_WHEN_MOVING_IN_GROUP = 1;
+
     private IMap map = IMap.MapConfig.getMap();
 
     private Map<Long, Strategy> strategies = new HashMap<>();
@@ -26,6 +29,8 @@ public class IndividualStrategy implements Strategy {
 
         int i = 0;
         for(Submarine submarine : map.getOurSubmarines()) {
+
+            /*
             ///// split map equally
             Position[] positions = new Position[] {
                     new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance),
@@ -33,20 +38,7 @@ public class IndividualStrategy implements Strategy {
                     new Position((i + 1) * part - radarDistance, radarDistance),
                     new Position(i * part + radarDistance, radarDistance),
             };
-
-            // order the targets to start to scout the farthest point
-
-            int firstTargetIndex = 0;
-            for (int j = 1; j < positions.length; ++j) {
-                if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) {
-                    firstTargetIndex = j;
-                }
-            }
-
-            List<Position> orderedTargets = new ArrayList<>(positions.length);
-            for (int j = firstTargetIndex; j < firstTargetIndex + positions.length; j++) {
-                orderedTargets.add(positions[j % positions.length]);
-            }
+            */
 
             /*
             ///// same points for all
@@ -56,12 +48,22 @@ public class IndividualStrategy implements Strategy {
                     new Position(map.getConfiguration().getWidth() - radarDistance, radarDistance),
                     new Position(radarDistance, radarDistance),
             };
+            */
 
-            // order the targets to start to scout the farthest point
+            ///// moving in a group, with a gap between each other
+            int k = i - SHIFT_WHEN_MOVING_IN_GROUP;
+            Position[] positions = new Position[]{
+                    new Position(radarDistance + k * GAP_WHEN_MOVING_IN_GROUP, map.getConfiguration().getHeight() - radarDistance - k * GAP_WHEN_MOVING_IN_GROUP),
+                    new Position(map.getConfiguration().getWidth() - radarDistance - k * GAP_WHEN_MOVING_IN_GROUP, map.getConfiguration().getHeight() - radarDistance - k * GAP_WHEN_MOVING_IN_GROUP),
+                    new Position(map.getConfiguration().getWidth() - radarDistance - k * GAP_WHEN_MOVING_IN_GROUP, radarDistance + k * GAP_WHEN_MOVING_IN_GROUP),
+                    new Position(radarDistance + k * GAP_WHEN_MOVING_IN_GROUP, radarDistance + k * GAP_WHEN_MOVING_IN_GROUP),
+            };
 
+            // order the targets to start to scout the (nearest/farthest) point
             int firstTargetIndex = 0;
             for (int j = 1; j < positions.length; ++j) {
-                if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) {
+                if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) { // nearest
+                    //if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) { // farthest
                     firstTargetIndex = j;
                 }
             }
@@ -70,7 +72,6 @@ public class IndividualStrategy implements Strategy {
             for (int j = firstTargetIndex; j < firstTargetIndex + positions.length; j++) {
                 orderedTargets.add(positions[j % positions.length]);
             }
-            */
 
             Strategy strategy = new ScoutStrategy(submarine.getId(), orderedTargets);
             strategy.init();
