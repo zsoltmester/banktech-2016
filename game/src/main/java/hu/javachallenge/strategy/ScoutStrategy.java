@@ -3,6 +3,7 @@ package hu.javachallenge.strategy;
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.bean.Submarine;
+import hu.javachallenge.map.IMap;
 import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
@@ -18,8 +19,9 @@ import java.util.stream.Collectors;
 public class ScoutStrategy extends MoveStrategy {
     private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
 
-    private static final int TARGET_REACHED_DISTANCE = 5;
+    private static final int TARGET_REACHED_DISTANCE = 15;
     private static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
+    private static final int EVADE_SUBMARINE_MINIMUM = 100;
 
     private final Deque<Position> targets;
 
@@ -93,27 +95,43 @@ public class ScoutStrategy extends MoveStrategy {
                 } else {
                     LOGGER.info("Evade position(s): " + evadePosition);
                 }
-                List<Position> finalEvadePosition = evadePosition;
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
-                        () -> getSubmarine().getPosition().distance(finalEvadePosition.get(finalEvadePosition.size() - 1)) < TARGET_REACHED_DISTANCE);
+                        () -> !willCollusionOccur(STEPS_TO_CHECK_FOR_COLLISION));
             }
         }
 
         for (Entity torpedo : map.getEntities().stream().filter(e -> e.getType().equals(Entity.TORPEDO)).collect(Collectors.toList())) {
             if (CollissionDetector.submarineCollisionWithEntity(this, torpedo, STEPS_TO_CHECK_FOR_COLLISION) != null) {
-                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), torpedo, IChangeMovableObject.ZERO_MOVE, 1, STEPS_TO_CHECK_FOR_COLLISION);
+
+                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), torpedo, IChangeMovableObject.ZERO_MOVE, 5, STEPS_TO_CHECK_FOR_COLLISION);
 
                 LOGGER.info("Detect collision with TORPEDO in position: " + torpedo);
                 if (evadePosition == null) {
                     LOGGER.info("Cannot evade TORPEDO: " + torpedo + ". Wait...");
-                    evadePosition = Collections.singletonList(getSubmarine().getPosition());
+                    break;
                 } else {
                     LOGGER.info("Evade position(s): " + evadePosition);
                 }
-                List<Position> finalEvadePosition = evadePosition;
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
-                        () -> map.getEntities().stream().noneMatch(entity -> entity.getId().equals(torpedo.getId()))
-                                || getSubmarine().getPosition().distance(finalEvadePosition.get(finalEvadePosition.size() - 1)) < TARGET_REACHED_DISTANCE);
+                        () -> !willCollusionOccur(STEPS_TO_CHECK_FOR_COLLISION));
+            }
+        }
+
+        for (Entity submarine : map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE) && !e.getOwner().getName().equals(IMap.OUR_NAME)).collect(Collectors.toList())) {
+            if (CollissionDetector.submarineCollisionWithEntity(this, submarine, STEPS_TO_CHECK_FOR_COLLISION) != null) {
+
+                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), submarine, new IChangeMovableObject.HistoryMove(map.getHistory(submarine.getId(), 2)), map.getConfiguration().getSubmarineSize(), STEPS_TO_CHECK_FOR_COLLISION);
+
+                LOGGER.info("Detect collision with SUBMARINE in position: " + submarine);
+                if (evadePosition == null) {
+                    LOGGER.info("Cannot evade SUBMARINE: " + submarine + ". Wait...");
+                    break;
+                } else {
+                    LOGGER.info("Evade position(s): " + evadePosition);
+                }
+                return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
+                        () -> map.getEntities().stream().noneMatch(entity -> entity.getId().equals(submarine.getId()))
+                                || getSubmarine().getPosition().distance(submarine.getPosition()) > EVADE_SUBMARINE_MINIMUM);
             }
         }
 

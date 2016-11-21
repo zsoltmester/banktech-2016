@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IChangeMovableObject<T extends MovableObject> {
 
-    IChangeMovableObject<MovableObject> ZERO_MOVE = new ZeroMove<>();
+    IChangeMovableObject<Entity> ZERO_MOVE = new ZeroMove<>();
 
     double getNextAcceleration(T object);
     double getNextSteering(T object);
@@ -31,6 +31,7 @@ public interface IChangeMovableObject<T extends MovableObject> {
         }
 
         object.setAngle(nextAngle);
+
         double maxSpeed = (object instanceof Entity) && ((Entity) object).getType() != null && ((Entity) object).getType().equals(Entity.TORPEDO)
                 ? Integer.MAX_VALUE : MoveUtil.map.getConfiguration().getMaxSpeed();
         if (0 <= nextSpeed && nextSpeed <= maxSpeed) {

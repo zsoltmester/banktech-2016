@@ -24,18 +24,13 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 
 ## TODO
 
-- (1) Megjavítani a torpedoRange-es hibákat!! - Béla - elvileg OK
-- (1) TorpedoRange -nél nagyobb távra nem érdemes lőni - Béla - tesztelni - elvileg OK
-- (1) Több hajót formációba mozgassunk
-- (1) Támadó stratégia. Figyeljünk, hogy ne menjünk túl közel hozzájuk, hogy kissebb eséllyel sebződjünk. Extended sonarnál lőhetünk random
-- (2) getTurnAndSpeedForTargetPosition - getAccelerationToCloseThereWhenOnRightDirection függvény használja a turn információt a speedhez.
-- (2) History alapján is lőhetnénk, ha épp nincs kire és tudjuk a mozgását - Béla - OK
-- (2) Ne lőjjünk át a szigeten - Béla - elvileg OK
-- (2) Ha van közelben valami robbanó a lövedék útjában, nem lőjük ki. - Béla - elvileg OK
-- (3) Pánik stratégia
-- (3) Több féle mozgást felismerni. +1
-- (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz.
-- (4) Machine learning-el is lehetne ezt
+- (1) Megjavítani a torpedoRange-es hibákat. Egy konstansba szervezzük ki, hogy mekkorának tekintsünk egy torpedót
+- (1) Több hajót formációba mozgassunk. Háromszögformáció. Várják be egymást
+- (2) Pánik stratégia
+- (2) Kígyó mozgás
+- (3) History move okosítás
+- (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz
+- (5) History alapján is lőhetnénk, ha jobb
 
 ## Maven project fordítása és futtatása
 

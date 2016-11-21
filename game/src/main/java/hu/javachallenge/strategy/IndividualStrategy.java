@@ -30,7 +30,7 @@ public class IndividualStrategy implements Strategy {
         int i = 0;
         for(Submarine submarine : map.getOurSubmarines()) {
 
-            /*
+
             ///// split map equally
             Position[] positions = new Position[] {
                     new Position(i * part + radarDistance, map.getConfiguration().getHeight() - radarDistance),
@@ -38,7 +38,6 @@ public class IndividualStrategy implements Strategy {
                     new Position((i + 1) * part - radarDistance, radarDistance),
                     new Position(i * part + radarDistance, radarDistance),
             };
-            */
 
             /*
             ///// same points for all
@@ -50,6 +49,7 @@ public class IndividualStrategy implements Strategy {
             };
             */
 
+            /*
             ///// moving in a group, with a gap between each other
             int k = i - SHIFT_WHEN_MOVING_IN_GROUP;
             Position[] positions = new Position[]{
@@ -58,12 +58,13 @@ public class IndividualStrategy implements Strategy {
                     new Position(map.getConfiguration().getWidth() - radarDistance - k * GAP_WHEN_MOVING_IN_GROUP, radarDistance + k * GAP_WHEN_MOVING_IN_GROUP),
                     new Position(radarDistance + k * GAP_WHEN_MOVING_IN_GROUP, radarDistance + k * GAP_WHEN_MOVING_IN_GROUP),
             };
+            */
 
             // order the targets to start to scout the (nearest/farthest) point
             int firstTargetIndex = 0;
             for (int j = 1; j < positions.length; ++j) {
-                if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) { // nearest
-                    //if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) { // farthest
+                //if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) { // nearest
+                if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) { // farthest
                     firstTargetIndex = j;
                 }
             }

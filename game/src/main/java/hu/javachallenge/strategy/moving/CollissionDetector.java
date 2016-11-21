@@ -22,7 +22,7 @@ public class CollissionDetector {
             case Entity.SUBMARINE:
                 return map.getConfiguration().getSubmarineSize();
             case Entity.TORPEDO:
-                return 1;
+                return 5;
             case MovingIsland.ISLAND:
                 return map.getConfiguration().getIslandSize();
             default:

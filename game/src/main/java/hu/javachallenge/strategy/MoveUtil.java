@@ -16,8 +16,8 @@ public class MoveUtil {
     private static final int MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE = 100;
     private static final int MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE = 150;
 
-    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 16;
-    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 66;
+    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 20;
+    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
 
     public static IMap map = IMap.MapConfig.getMap();
 
@@ -230,14 +230,14 @@ public class MoveUtil {
         return distance1 < distance2 ? p1 : p2;
     }
 
-    public static List<Position> getEvadePosition(
+    public static <T extends Entity> List<Position> getEvadePosition(
             Submarine submarine, MoveStrategy submarineMoves, double submarineRadius,
-            Entity entity, IChangeMovableObject<MovableObject> entityMoves, double entityRadius, int maxStep) {
+            T entity, IChangeMovableObject<T> entityMoves, double entityRadius, int maxStep) {
         Submarine submarineClone;
-        Entity entityClone;
+        T entityClone;
         try {
             submarineClone = (Submarine) submarine.clone();
-            entityClone = (Entity) entity.clone();
+            entityClone = (T) entity.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             return null;
