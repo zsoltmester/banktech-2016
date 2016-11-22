@@ -288,7 +288,7 @@ public class MoveUtil {
                     if (possibleEvadePositions.size() > 1) {
                         target = possibleEvadePositions.get(0);
                         for (int j = 1; j < possibleEvadePositions.size(); ++j) {
-                            if (isSubmarine ? submarine.getPosition().distance(target) > submarine.getPosition().distance(possibleEvadePositions.get(j))
+                            if (isSubmarine || isTorpedo ? submarine.getPosition().distance(target) > submarine.getPosition().distance(possibleEvadePositions.get(j))
                                     : submarine.getPosition().distance(target) < submarine.getPosition().distance(possibleEvadePositions.get(j))) {
                                 target = possibleEvadePositions.get(j);
                             }
