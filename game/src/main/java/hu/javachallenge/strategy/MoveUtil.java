@@ -19,6 +19,9 @@ public class MoveUtil {
     private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 20;
     private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
 
+    private static final int MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 150;
+    private static final int MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 200;
+
     public static IMap map = IMap.MapConfig.getMap();
 
     public static double velocityDistance(double first, double second) {
@@ -244,6 +247,7 @@ public class MoveUtil {
         }
 
         boolean isTorpedo = entity.getType() != null && entity.getType().equals(Entity.TORPEDO);
+        boolean isSubmarine = entity.getType() != null && entity.getType().equals(Entity.SUBMARINE);
 
         for (int i = 1; i <= maxStep; ++i) {
             submarineMoves.moveToNext(submarineClone);
@@ -256,7 +260,8 @@ public class MoveUtil {
                 Double entityX = entityClone.getPosition().getX();
                 Double entityY = entityClone.getPosition().getY();
 
-                int delta = isTorpedo ? MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE;
+                int delta = isTorpedo ? MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE :
+                        isSubmarine ? MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE : MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE;
                 Position target = null;
                 do {
                     List<Position> possibleEvadePositions = new ArrayList<>(Arrays.asList(
@@ -291,13 +296,14 @@ public class MoveUtil {
 
                     ++delta;
                 }
-                while (target == null && delta <= (isTorpedo ? MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE : MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE));
+                while (target == null && delta <= (isTorpedo ? MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE :
+                        isSubmarine ? MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE : MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE));
 
                 if (target == null) {
                     return null;
                 }
 
-                if (isTorpedo) {
+                if (isTorpedo || isSubmarine) {
                     return Collections.singletonList(target);
                 } else {
                     double centerDelta = target.distance(submarine.getPosition()) / 2;
