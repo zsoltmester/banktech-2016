@@ -17,10 +17,12 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 - 17:30 – 18:00: Eredményhirdetés
 - 18:15: Zárás
 
-**Vigyünk:**
+**Infók:**
 
-- *Amit írtak:* Hozzatok magatokkal komplett számítógépeket, amin dolgozni tudtok. Lehet laptop vagy asztali gép. Csapatonként 3 darab hosszabbítót is hozzatok magatokkal. Opcionálisan 5-10 méteres LAN kábel.
-- *TODO:* Beszéljük ezt majd meg.
+- Lesz sok tesztelési lehetőség.
+- Délután lesznek mért eedmények.
+- A legjobb 8 jut a döntőbe.
+- Párhuzamosan akár 6 játék is mehet.
 
 ## TODO
 
