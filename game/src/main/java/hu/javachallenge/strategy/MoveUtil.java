@@ -336,6 +336,13 @@ public class MoveUtil {
         return new Position(x, y);
     }
 
+    private static Position moveInInfiniteHalfCircle(double t, double x0, double y0, double y1) {
+        double r = (y1 - y0) / 2;
+        double x = Math.cos(t * Math.PI) * r + x0;
+        double y = Math.sin(t * Math.PI) * r + (y1 - y0) / 2 + y0;
+        return new Position(x, y);
+    }
+
     public static Position moveInInfinite(int tickTime, Position p0, Position p1, int loopLength) {
         double t = (double)tickTime / loopLength;
 
