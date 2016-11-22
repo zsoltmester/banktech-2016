@@ -337,7 +337,7 @@ public class MoveUtil {
     }
 
     public static Position moveInInfinite(int tickTime, Position p0, Position p1, int loopLength) {
-        double t = tickTime / loopLength;
+        double t = (double)tickTime / loopLength;
 
         if (t < 0.0 || t > 1) {
             return null;
