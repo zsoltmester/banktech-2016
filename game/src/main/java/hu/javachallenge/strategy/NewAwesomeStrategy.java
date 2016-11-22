@@ -22,7 +22,7 @@ public class NewAwesomeStrategy implements Strategy {
     private int plus = 0;
     private int maxDistanceToTarget;
 
-    class MyMoveStrategy extends MoveStrategy {
+    class MyMoveStrategy extends CollisionDetectorStrategy {
         private int myId;
 
         protected MyMoveStrategy(Long submarineId, int myId) {
@@ -46,6 +46,10 @@ public class NewAwesomeStrategy implements Strategy {
         @Override
         public double getNextSteering(Submarine submarine) {
             return MoveUtil.getTurnForTargetPosition(submarine, getFinalPosition());
+        }
+
+        @Override
+        protected void goToNextTarget() {
         }
 
         @Override
@@ -78,13 +82,23 @@ public class NewAwesomeStrategy implements Strategy {
         maxDistanceToTarget = map.getConfiguration().getSubmarineSize() * 2;
 
         targets = new ArrayDeque<>();
-
+/*
         Position p0 = new Position(450, 200);
         Position p1 = new Position(1275, 600);
         for(int ind = 0; ind < 100; ++ind) {
             Position p = MoveUtil.moveInInfinite(ind, p0, p1, 100);
             targets.push(p);
         }
+*/
+
+        targets.push(new Position(450, 200));
+        targets.push(new Position(850, 400));
+        targets.push(new Position(1275, 600));
+        targets.push(new Position(1575, 400));
+        targets.push(new Position(1275, 200));
+        targets.push(new Position(850, 400));
+        targets.push(new Position(450, 600));
+        targets.push(new Position(150, 400));
 
         Position p = map.getOurSubmarines().get(0).getPosition();
         int minindex = 0;
@@ -126,6 +140,12 @@ public class NewAwesomeStrategy implements Strategy {
             strategy.onRound();
         }
         plus++;
+
+        if(plus % 2 == 0) {
+            distance += 10;
+        } else {
+            distance -= 10;
+        }
     }
 
     @Override
