@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ScoutStrategy extends MoveStrategy {
     private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
 
-    private static final int TARGET_REACHED_DISTANCE = 15;
+    private static final int TARGET_REACHED_DISTANCE = 5;
     private static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
 
     private final Deque<Position> targets;
@@ -124,13 +124,13 @@ public class ScoutStrategy extends MoveStrategy {
                 LOGGER.info("Detect collision with SUBMARINE in position: " + submarine);
                 if (evadePosition == null) {
                     LOGGER.info("Cannot evade SUBMARINE: " + submarine + ". Wait...");
-                    break;
+                    continue;
                 } else {
                     LOGGER.info("Evade position(s): " + evadePosition);
                 }
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
                         () -> map.getEntities().stream().noneMatch(entity -> entity.getId().equals(submarine.getId()))
-                                || getSubmarine().getPosition().distance(submarine.getPosition()) > MoveUtil.MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE);
+                                || evadePosition.get(evadePosition.size() - 1).distance(getSubmarine().getPosition()) > MoveUtil.MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE);
             }
         }
 

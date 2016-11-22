@@ -16,11 +16,11 @@ public class MoveUtil {
     private static final int MIN_DISTANCE_FROM_ISLAND_WHEN_EVADE = 100;
     private static final int MAX_DISTANCE_FROM_ISLAND_WHEN_EVADE = 150;
 
-    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 19;
-    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
+    private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 25;
+    private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 75;
 
-    public static final int MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 150;
-    private static final int MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 200;
+    public static final int MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 100;
+    public static final int MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 150;
 
     public static final int TORPEDO_SIZE = 5;
 
@@ -288,7 +288,8 @@ public class MoveUtil {
                     if (possibleEvadePositions.size() > 1) {
                         target = possibleEvadePositions.get(0);
                         for (int j = 1; j < possibleEvadePositions.size(); ++j) {
-                            if (submarine.getPosition().distance(target) < submarine.getPosition().distance(possibleEvadePositions.get(j))) {
+                            if (isSubmarine ? submarine.getPosition().distance(target) > submarine.getPosition().distance(possibleEvadePositions.get(j))
+                                    : submarine.getPosition().distance(target) < submarine.getPosition().distance(possibleEvadePositions.get(j))) {
                                 target = possibleEvadePositions.get(j);
                             }
                         }
