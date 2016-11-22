@@ -317,4 +317,9 @@ public class MoveUtil {
 
         return null;
     }
+    
+    public static Position getPositionToAngle(Position center, double angle, double distance) {
+        return new Position(center.getX() + Math.cos(Math.toRadians(angle)) * distance,
+                    center.getY() + Math.sin(Math.toRadians(angle)) * distance);
+    }
 }
