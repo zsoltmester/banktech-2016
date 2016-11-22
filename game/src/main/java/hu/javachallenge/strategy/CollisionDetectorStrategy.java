@@ -16,7 +16,7 @@ public abstract class CollisionDetectorStrategy extends MoveStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(CollisionDetectorStrategy.class.getName());
 
-    protected static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
+    public static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
 
     protected CollisionDetectorStrategy(Long submarineId) {
         super(submarineId);

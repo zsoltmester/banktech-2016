@@ -40,7 +40,7 @@ public class ScoutStrategy extends CollisionDetectorStrategy {
         }
 
         // TODO temporary
-        new AttackerStrategy(submarine.getId()).onRound();
+        new AttackerStrategy(submarine.getId(), this).onRound();
     }
 
     protected void changeTargetIfNeed() {

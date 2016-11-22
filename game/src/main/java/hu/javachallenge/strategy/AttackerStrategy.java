@@ -15,8 +15,12 @@ import java.util.stream.Stream;
 public class AttackerStrategy extends SubmarineStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(AttackerStrategy.class.getName());
-    protected AttackerStrategy(Long submarineId) {
+
+    private MoveStrategy parent;
+
+    protected AttackerStrategy(Long submarineId, MoveStrategy parent) {
         super(submarineId);
+        this.parent = parent;
     }
 
     @Override

@@ -140,12 +140,14 @@ public class NewAwesomeStrategy implements Strategy {
             strategy.onRound();
         }
         for (Submarine submarine : map.getOurSubmarines()) {
-            // TODO temporary
-            new AttackerStrategy(submarine.getId()).onRound();
+            Strategy strategy = strategies.get(submarine.getId());
+            while (strategy instanceof StrategySwitcher) {
+                strategy = ((StrategySwitcher) strategy).getCurrent();
+            }
+            MoveStrategy moveStrategy = strategy instanceof MoveStrategy ? (MoveStrategy) strategy : null;
+            new AttackerStrategy(submarine.getId(), moveStrategy).onRound();
         }
         plus+=5;
-
-        // TODO temporary
     }
 
     @Override
