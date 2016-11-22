@@ -5,6 +5,7 @@ import hu.javachallenge.bean.MovableObject;
 import hu.javachallenge.bean.Position;
 import hu.javachallenge.map.IMap;
 import hu.javachallenge.strategy.MoveStrategy;
+import hu.javachallenge.strategy.MoveUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,7 +23,7 @@ public class CollissionDetector {
             case Entity.SUBMARINE:
                 return map.getConfiguration().getSubmarineSize();
             case Entity.TORPEDO:
-                return 5;
+                return MoveUtil.TORPEDO_SIZE;
             case MovingIsland.ISLAND:
                 return map.getConfiguration().getIslandSize();
             default:

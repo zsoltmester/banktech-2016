@@ -103,7 +103,7 @@ public class ScoutStrategy extends MoveStrategy {
         for (Entity torpedo : map.getEntities().stream().filter(e -> e.getType().equals(Entity.TORPEDO)).collect(Collectors.toList())) {
             if (CollissionDetector.submarineCollisionWithEntity(this, torpedo, STEPS_TO_CHECK_FOR_COLLISION) != null) {
 
-                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), torpedo, IChangeMovableObject.ZERO_MOVE, 5, STEPS_TO_CHECK_FOR_COLLISION);
+                List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), torpedo, IChangeMovableObject.ZERO_MOVE, MoveUtil.TORPEDO_SIZE, STEPS_TO_CHECK_FOR_COLLISION);
 
                 LOGGER.info("Detect collision with TORPEDO in position: " + torpedo);
                 if (evadePosition == null) {
