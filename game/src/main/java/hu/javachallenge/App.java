@@ -1,7 +1,7 @@
 package hu.javachallenge;
 
+import hu.javachallenge.strategy.IndividualStrategy;
 import hu.javachallenge.strategy.Player;
-import hu.javachallenge.strategy.StackedIndividualStrategy;
 
 import java.util.logging.Logger;
 
@@ -23,12 +23,13 @@ public class App {
 
         // query the server address
         if (args.length == 0) {
-            serverAddress = "195.228.45.100:8080";
+            serverAddress = "192.168.88.5:8080";
             LOGGER.warning("No server address given, using the default: " + serverAddress);
         } else {
             serverAddress = args[0];
+            LOGGER.fine("Server started on:" + serverAddress);
         }
 
-        Player.play(new StackedIndividualStrategy());
+        Player.play(new IndividualStrategy());
     }
 }
