@@ -1,6 +1,6 @@
 package hu.javachallenge;
 
-import hu.javachallenge.strategy.IndividualStrategy;
+import hu.javachallenge.strategy.NewAwesomeStrategy;
 import hu.javachallenge.strategy.Player;
 
 import java.util.logging.Logger;
@@ -30,6 +30,6 @@ public class App {
             LOGGER.fine("Server started on:" + serverAddress);
         }
 
-        Player.play(new IndividualStrategy());
+        Player.play(new NewAwesomeStrategy());
     }
 }

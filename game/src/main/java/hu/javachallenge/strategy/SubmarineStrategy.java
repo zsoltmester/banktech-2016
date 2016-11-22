@@ -21,6 +21,7 @@ public abstract class SubmarineStrategy implements Strategy {
     @Override
     public final void onStartRound() {
         Submarine submarine = getSubmarine();
+        if(submarine == null) return;
 
         if (submarine.getSonarCooldown() == 0) {
             Processor.extendSonar(submarine.getId());

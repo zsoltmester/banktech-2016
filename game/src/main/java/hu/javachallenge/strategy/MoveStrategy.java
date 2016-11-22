@@ -18,6 +18,7 @@ public abstract class MoveStrategy extends SubmarineStrategy implements IChangeM
     @Override
     public void onRound() {
         Submarine submarine = getSubmarine();
+        if(submarine == null) return;
         Processor.move(submarine.getId(), getNextAcceleration(submarine),
                 getNextSteering(submarine));
 
