@@ -77,6 +77,10 @@ public class CollissionDetector {
         return submarineCollision(strategy, entity, IChangeMovableObject.ZERO_MOVE, getEntitySize(entity), step);
     }
 
+    public static Integer submarineCollisionWithSubmarine(MoveStrategy strategy, Entity entity, int step) {
+        return submarineCollision(strategy, entity, IChangeMovableObject.ZERO_MOVE, MoveUtil.MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE, step);
+    }
+
     public static Integer entityCollisionWithEntityHistory(Entity entity, Entity historicalEntity, int step) {
         IChangeMovableObject<Entity> entityMover = new IChangeMovableObject.HistoryMove(
                 map.getHistory(historicalEntity.getId(), 2));

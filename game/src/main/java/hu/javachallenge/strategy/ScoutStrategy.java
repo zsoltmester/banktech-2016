@@ -117,7 +117,7 @@ public class ScoutStrategy extends MoveStrategy {
         }
 
         for (Entity submarine : map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE) && !e.getOwner().getName().equals(IMap.OUR_NAME)).collect(Collectors.toList())) {
-            if (CollissionDetector.submarineCollisionWithEntity(this, submarine, STEPS_TO_CHECK_FOR_COLLISION) != null) {
+            if (CollissionDetector.submarineCollisionWithSubmarine(this, submarine, STEPS_TO_CHECK_FOR_COLLISION) != null) {
 
                 List<Position> evadePosition = MoveUtil.getEvadePosition(getSubmarine(), this, map.getConfiguration().getSubmarineSize(), submarine, new IChangeMovableObject.HistoryMove(map.getHistory(submarine.getId(), 2)), map.getConfiguration().getSubmarineSize(), STEPS_TO_CHECK_FOR_COLLISION);
 
@@ -146,6 +146,12 @@ public class ScoutStrategy extends MoveStrategy {
 
         for (Entity entity : map.getEntities().stream().filter(e -> e.getType().equals(Entity.TORPEDO)).collect(Collectors.toList())) {
             if (CollissionDetector.submarineCollisionWithEntity(this, entity, maxSteps) != null) {
+                return true;
+            }
+        }
+
+        for (Entity entity : map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE)).collect(Collectors.toList())) {
+            if (CollissionDetector.submarineCollisionWithSubmarine(this, entity, maxSteps) != null) {
                 return true;
             }
         }
