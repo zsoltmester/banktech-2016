@@ -66,27 +66,9 @@ public class AttackerStrategy extends SubmarineStrategy {
                                                     map.getConfiguration().getTorpedoSpeed())) == null)
 
                             &&
-                            // not shoot anyone else
+                            // not shoot our submarines
                             map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE))
-                                    .allMatch(e -> {
-                                        Integer time = CollissionDetector.entityCollisionWithEntityHistory(torpedo,
-                                                e, 100);
-                                        if(time != null) {
-                                            Position otherExplosion =
-                                                    IChangeMovableObject.getSteppedPositions(IChangeMovableObject.ZERO_MOVE,
-                                                            torpedo, time).getLast();
-                                            boolean result = otherExplosion.distance(submarine.getPosition())
-                                                    > neeedDistanceFromTorpedo;
-
-                                            result &= IChangeMovableObject.getSteppedPositions(
-                                                    IChangeMovableObject.ZERO_MOVE, submarine, 2).stream()
-                                                    .allMatch(stp -> otherExplosion.distance(stp) >
-                                                            neeedDistanceFromTorpedo);
-
-                                            return result;
-                                        }
-                                        return true;
-                                    });
+                                    .allMatch(e -> CollissionDetector.submarineCollisionWithEntity(parent, torpedo, CollisionDetectorStrategy.STEPS_TO_CHECK_FOR_COLLISION) == null);
 
                 })
                 .peek(e -> LOGGER.fine("Not shoot island or anyone else close to us"));
