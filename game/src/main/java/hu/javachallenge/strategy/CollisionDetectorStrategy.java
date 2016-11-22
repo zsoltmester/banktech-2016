@@ -22,8 +22,7 @@ public abstract class CollisionDetectorStrategy extends MoveStrategy {
         super(submarineId);
     }
 
-    protected abstract void goToNextTaget();
-
+    protected abstract void goToNextTarget();
 
     @Override
     public Strategy onChangeStrategy() {
@@ -38,7 +37,7 @@ public abstract class CollisionDetectorStrategy extends MoveStrategy {
                     if (getSubmarine().getVelocity() != 0) {
                         evadePosition = Collections.singletonList(getSubmarine().getPosition());
                     } else {
-                        goToNextTaget();
+                        goToNextTarget();
                         break;
                     }
                 } else {
