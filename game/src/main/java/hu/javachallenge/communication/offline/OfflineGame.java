@@ -298,7 +298,7 @@ class OfflineGame implements Runnable {
         game.setMapConfiguration(configuration);
         configuration.setWidth(1700);
         configuration.setHeight(800);
-        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
+        configuration.setIslandPositions(Arrays.asList(new Position(600, 400), new Position(1125, 400)));
         configuration.setTeamCount(teams.size());
         configuration.setSubmarinesPerTeam(3);
         configuration.setTorpedoDamage(34);
@@ -323,16 +323,16 @@ class OfflineGame implements Runnable {
         configuration.setRateLimitedPenalty(10);
 
         ///// for move testing
-        configuration.setIslandPositions(Collections.EMPTY_LIST);
+        // configuration.setIslandPositions(Collections.EMPTY_LIST);
         configuration.setRounds(1000);
         configuration.setTeamCount(teams.size());
         configuration.setRoundLength(150); // faster
 
         ///// for collision testing
-        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
+        // configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
 
         ///// for testing moving in a group
-        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1300, 400)));
+        // configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1300, 400)));
 
         // conn status
         Map<String, Boolean> connectionStatus = new HashMap<>();

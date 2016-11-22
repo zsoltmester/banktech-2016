@@ -250,11 +250,12 @@ class MapGui extends DataMap {
                 }
                 NewAwesomeStrategy newAwesomeStrategy;
                 if ((newAwesomeStrategy = Player.strategy instanceof NewAwesomeStrategy ? (NewAwesomeStrategy) Player.strategy : null) != null) {
-                    graphics.setColor(Color.BLACK);
-                    newAwesomeStrategy.getTargets().stream().forEachOrdered(target -> {
-                        fillCircle(graphics, target, TARGET_DISPLAY_SIZE);
-                        graphics.setColor(Color.WHITE);
-                    });
+                    ArrayList<Position> targetsArray = new ArrayList<>(newAwesomeStrategy.getTargets());
+                    for (int i = 0; i < targetsArray.size(); ++i) {
+                        float c = (float)i / targetsArray.size();
+                        graphics.setColor(new Color(c, c, c));
+                        fillCircle(graphics, targetsArray.get(i), TARGET_DISPLAY_SIZE);
+                    }
                 }
             }
 
