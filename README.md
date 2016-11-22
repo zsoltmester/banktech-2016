@@ -17,23 +17,6 @@ Tesla Budapest - Kazinczy utca 21./C, Budapest 1075
 - 17:30 – 18:00: Eredményhirdetés
 - 18:15: Zárás
 
-**Infók:**
-
-- Lesz sok tesztelési lehetőség.
-- Délután lesznek mért eedmények.
-- A legjobb 8 jut a döntőbe.
-- Párhuzamosan akár 6 játék is mehet.
-
-## TODO
-
-- (1) Megjavítani a torpedoRange-es hibákat. Egy konstansba szervezzük ki, hogy mekkorának tekintsünk egy torpedót
-- (1) Több hajót formációba mozgassunk. Háromszögformáció. Várják be egymást
-- (2) Pánik stratégia
-- (2) Kígyó mozgás
-- (3) History move okosítás
-- (3) Majd esetleg ezeket a felismerteket cachelni egy adott csapathoz / submarine ID-hoz
-- (5) History alapján is lőhetnénk, ha jobb
-
 ## Maven project fordítása és futtatása
 
 1. Legyen feltelepítve egy *Java 8* és a *JAVA_HOME* környezeti változótok annak rootjába mutasson.
