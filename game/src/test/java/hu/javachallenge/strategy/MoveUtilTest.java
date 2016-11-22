@@ -219,4 +219,11 @@ public class MoveUtilTest {
         TestCase.assertEquals(5.0, position.getX(), 0.00000001);
         TestCase.assertEquals(5.0, position.getY(), 0.00000001);
     }
+
+    @Test
+    public void getPositionToAngle() throws Exception {
+        Position result = MoveUtil.getPositionToAngle(new Position(0, 0), 45, 1);
+        TestCase.assertEquals(1.0 / Math.sqrt(2), result.getX(), 0.00000001);
+        TestCase.assertEquals(1.0 / Math.sqrt(2), result.getY(), 0.00000001);
+    }
 }
