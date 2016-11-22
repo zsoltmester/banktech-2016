@@ -10,7 +10,8 @@ public class Player {
     private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
 
     private Player(Strategy strategy) {
-        this.strategy = strategy;
+        LOGGER.fine("Create static strategy: " + strategy.getClass().getName());
+        Player.strategy = strategy;
     }
 
     private final IMap map = IMap.MapConfig.getMap();

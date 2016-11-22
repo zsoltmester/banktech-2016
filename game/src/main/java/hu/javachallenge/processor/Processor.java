@@ -1,8 +1,9 @@
 package hu.javachallenge.processor;
 
+import hu.javachallenge.App;
 import hu.javachallenge.bean.*;
 import hu.javachallenge.communication.Communicator;
-import hu.javachallenge.communication.offline.OfflineCommunicatorImpl;
+import hu.javachallenge.communication.CommunicatorImpl;
 import hu.javachallenge.map.IMap;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class Processor {
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_START = 100;
     private static final Integer SLEEP_TIME_AT_WAITING_FOR_NEXT_ROUND = 100;
 
-    private static Communicator communicator = new OfflineCommunicatorImpl();
+    private static Communicator communicator = new CommunicatorImpl(App.serverAddress); //new OfflineCommunicatorImpl();
     private static IMap map = IMap.MapConfig.getMap();
 
     public enum GAME_STATUS {
@@ -86,6 +87,7 @@ public class Processor {
      * It joins to the given game.
      */
     public static void joinGame() {
+        LOGGER.finer("Try to join game with communicator: " + communicator.getClass().getName());
         while (gameId == null) {
             GamesResponse gamesResponse = communicator.getGames();
             for (int i = 0; i < gamesResponse.getGames().size(); ++i) {
