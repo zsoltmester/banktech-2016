@@ -64,7 +64,6 @@ public class AttackerStrategy extends SubmarineStrategy {
                             &&
                             // not shoot anyone else
                             map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE))
-                                    .filter(e -> !e.getOwner().getName().equals(map.OUR_NAME))
                                     .allMatch(e -> {
                                         Integer time = CollissionDetector.entityCollisionWithEntityHistory(torpedo,
                                                 e, 100);
