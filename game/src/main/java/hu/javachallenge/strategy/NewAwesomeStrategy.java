@@ -82,15 +82,15 @@ public class NewAwesomeStrategy implements Strategy {
         maxDistanceToTarget = map.getConfiguration().getSubmarineSize() * 2;
 
         targets = new ArrayDeque<>();
-/*
-        Position p0 = new Position(450, 200);
-        Position p1 = new Position(1275, 600);
+
+        Position p0 = new Position(600, 150);
+        Position p1 = new Position(1125, 650);
         for(int ind = 0; ind < 100; ++ind) {
             Position p = MoveUtil.moveInInfinite(ind, p0, p1, 100);
             targets.push(p);
         }
-*/
 
+/*
         targets.push(new Position(450, 200));
         targets.push(new Position(850, 400));
         targets.push(new Position(1275, 600));
@@ -99,6 +99,7 @@ public class NewAwesomeStrategy implements Strategy {
         targets.push(new Position(850, 400));
         targets.push(new Position(450, 600));
         targets.push(new Position(150, 400));
+        */
 
         Position p = map.getOurSubmarines().get(0).getPosition();
         int minindex = 0;
@@ -143,7 +144,7 @@ public class NewAwesomeStrategy implements Strategy {
             // TODO temporary
             new AttackerStrategy(submarine.getId()).onRound();
         }
-        plus+=5;
+        plus++;
 
         // TODO temporary
     }
