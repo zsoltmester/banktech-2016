@@ -1,7 +1,7 @@
 package hu.javachallenge;
 
-import hu.javachallenge.strategy.IndividualStrategy;
 import hu.javachallenge.strategy.Player;
+import hu.javachallenge.strategy.StackedIndividualStrategy;
 
 import java.util.logging.Logger;
 
@@ -29,6 +29,6 @@ public class App {
             serverAddress = args[0];
         }
 
-        Player.play(new IndividualStrategy());
+        Player.play(new StackedIndividualStrategy());
     }
 }

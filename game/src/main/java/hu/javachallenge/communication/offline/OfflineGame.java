@@ -331,7 +331,7 @@ class OfflineGame implements Runnable {
         configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1000, 700), new Position(1600, 300)));
 
         ///// for testing moving in a group
-        //configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1300, 400)));
+        configuration.setIslandPositions(Arrays.asList(new Position(400, 400), new Position(1300, 400)));
 
         // conn status
         Map<String, Boolean> connectionStatus = new HashMap<>();
