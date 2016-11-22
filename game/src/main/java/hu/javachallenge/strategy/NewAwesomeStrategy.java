@@ -85,8 +85,8 @@ public class NewAwesomeStrategy implements Strategy {
 
         Position p0 = new Position(600, 150);
         Position p1 = new Position(1125, 650);
-        for(int ind = 0; ind < 100; ++ind) {
-            Position p = MoveUtil.moveInInfinite(ind, p0, p1, 100);
+        for(int ind = 0; ind < 16; ++ind) {
+            Position p = MoveUtil.moveInInfinite(ind, p0, p1, 16);
             targets.push(p);
         }
 
@@ -148,7 +148,7 @@ public class NewAwesomeStrategy implements Strategy {
             MoveStrategy moveStrategy = strategy instanceof MoveStrategy ? (MoveStrategy) strategy : null;
             new AttackerStrategy(submarine.getId(), moveStrategy).onRound();
         }
-        plus++;
+        plus += 5;
     }
 
     @Override
