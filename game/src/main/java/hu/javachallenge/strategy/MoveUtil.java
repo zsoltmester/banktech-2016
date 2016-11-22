@@ -19,7 +19,7 @@ public class MoveUtil {
     private static final int MIN_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 19;
     private static final int MAX_DISTANCE_FROM_TORPEDO_WHEN_EVADE = 70;
 
-    private static final int MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 150;
+    public static final int MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 150;
     private static final int MAX_DISTANCE_FROM_SUBMARINE_WHEN_EVADE = 200;
 
     public static final int TORPEDO_SIZE = 5;

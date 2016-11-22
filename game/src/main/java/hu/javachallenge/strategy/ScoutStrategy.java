@@ -21,7 +21,6 @@ public class ScoutStrategy extends MoveStrategy {
 
     private static final int TARGET_REACHED_DISTANCE = 15;
     private static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
-    private static final int EVADE_SUBMARINE_MINIMUM = 100;
 
     private final Deque<Position> targets;
 
@@ -131,7 +130,7 @@ public class ScoutStrategy extends MoveStrategy {
                 }
                 return new StrategySwitcher(this, new ScoutStrategy(getSubmarine().getId(), evadePosition),
                         () -> map.getEntities().stream().noneMatch(entity -> entity.getId().equals(submarine.getId()))
-                                || getSubmarine().getPosition().distance(submarine.getPosition()) > EVADE_SUBMARINE_MINIMUM);
+                                || getSubmarine().getPosition().distance(submarine.getPosition()) > MoveUtil.MIN_DISTANCE_FROM_SUBMARINE_WHEN_EVADE);
             }
         }
 
