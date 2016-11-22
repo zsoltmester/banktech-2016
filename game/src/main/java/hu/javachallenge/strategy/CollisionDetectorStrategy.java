@@ -26,6 +26,7 @@ public abstract class CollisionDetectorStrategy extends MoveStrategy {
 
     @Override
     public Strategy onChangeStrategy() {
+        if(getSubmarine() == null) return null;
 
         for (Position islandPosition : map.getConfiguration().getIslandPositions()) {
             if (CollissionDetector.submarineCollisionWithIsland(this, islandPosition, STEPS_TO_CHECK_FOR_COLLISION) != null) {
