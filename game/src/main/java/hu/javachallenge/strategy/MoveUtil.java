@@ -318,9 +318,39 @@ public class MoveUtil {
 
         return null;
     }
-    
+
     public static Position getPositionToAngle(Position center, double angle, double distance) {
         return new Position(center.getX() + Math.cos(Math.toRadians(angle)) * distance,
                     center.getY() + Math.sin(Math.toRadians(angle)) * distance);
+    }
+
+    private static Position moveInInfiniteG(double t, Position p0, Position p1) {
+        double x = p0.getX() + t * (p1.getX() - p0.getX());
+        double y = (Math.cos(t * Math.PI) / 2 + 0.5) * (p1.getY() - p0.getY()) + p0.getY();
+        return new Position(x, y);
+    }
+
+    private static Position moveInInfiniteH(double t, Position p0, Position p1) {
+        double x = (Math.cos(t * Math.PI) / 2 + 0.5) * (p1.getX() - p0.getX()) + p0.getX();
+        double y = (Math.sin(t * Math.PI) / 2 + 0.5) * (p1.getY() - p0.getY()) + p0.getY();
+        return new Position(x, y);
+    }
+
+    public static Position moveInInfinite(int tickTime, Position p0, Position p1, int loopLength) {
+        double t = tickTime / loopLength;
+
+        if (t < 0.0 || t > 1) {
+            return null;
+        }
+
+        if (t < 0.25) {
+            return moveInInfiniteG(4 * (t - 0.00), p0, p1);
+        } else if (t < 0.5) {
+            return moveInInfiniteH(4 * (t - 0.25), p0, p1);
+        } else if (t < 0.75) {
+            return moveInInfiniteG(4 * (t - 0.50), p1, p0);
+        } else {
+            return moveInInfiniteH(4 * (t - 0.75), p1, p0);
+        }
     }
 }
