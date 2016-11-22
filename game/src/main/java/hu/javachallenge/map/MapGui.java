@@ -151,7 +151,7 @@ class MapGui extends DataMap {
                 getEntities().forEach(entity -> {
                     if (entity.getType().equals(Entity.TORPEDO) && displayWithRadius) {
                         graphics.setColor(Color.ORANGE);
-                        fillCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius());
+                        fillDirectionCircle(graphics, entity.getPosition(), configuration.getTorpedoExplosionRadius(), entity.getAngle());
                     }
                 });
 
@@ -166,13 +166,13 @@ class MapGui extends DataMap {
                                     if(e != null) {
 
                                         graphics.setColor(displayWithTeamColor ? playersColor.get(e.getOwner().getName()).brighter() : Color.RED.brighter());
-                                        fillCircle(graphics, e.getPosition(), configuration.getSubmarineSize());
+                                        fillDirectionCircle(graphics, e.getPosition(), configuration.getSubmarineSize(), e.getAngle());
                                     }
                                 }
                             }
 
                             graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()) : Color.RED);
-                            fillCircle(graphics, entity.getPosition(), configuration.getSubmarineSize());
+                            fillDirectionCircle(graphics, entity.getPosition(), configuration.getSubmarineSize(), entity.getAngle());
                         }
                     } else if (entity.getType().equals(Entity.TORPEDO)) {
 
@@ -183,13 +183,13 @@ class MapGui extends DataMap {
                                 if(e != null) {
 
                                     graphics.setColor(displayWithTeamColor ? playersColor.get(e.getOwner().getName()).brighter() : Color.CYAN.brighter());
-                                    fillCircle(graphics, e.getPosition(), TORPEDO_DISPLAY_SIZE);
+                                    fillDirectionCircle(graphics, e.getPosition(), TORPEDO_DISPLAY_SIZE, e.getAngle());
                                 }
                             }
                         }
 
                         graphics.setColor(displayWithTeamColor ? playersColor.get(entity.getOwner().getName()) : Color.CYAN);
-                        fillCircle(graphics, entity.getPosition(), TORPEDO_DISPLAY_SIZE);
+                        fillDirectionCircle(graphics, entity.getPosition(), TORPEDO_DISPLAY_SIZE, entity.getAngle());
                     }
                 });
             }
@@ -198,7 +198,7 @@ class MapGui extends DataMap {
             if (ourSubmarines != null) {
                 ourSubmarines.forEach(submarine -> {
                     graphics.setColor(displayWithTeamColor ? playersColor.get(submarine.getOwner().getName()) : Color.GREEN);
-                    fillCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize());
+                    fillDirectionCircle(graphics, submarine.getPosition(), configuration.getSubmarineSize(), submarine.getAngle());
                 });
             }
 
@@ -300,6 +300,23 @@ class MapGui extends DataMap {
                     (int) (radius * 2 * SIZE_MULTIPLIER),
                     (int) (radius * 2 * SIZE_MULTIPLIER));
 
+        }
+
+        private void fillDirectionCircle(Graphics graphics, Position position, int radius, double angle) {
+            fillCircle(graphics, position, radius);
+
+            double rad = angle * Math.PI / 180.0;
+
+            int smallRadius = 3;
+            int directionPosition = (int)(0.8 * radius);
+
+            graphics.setColor(Color.WHITE);
+            Position angleUnit = new Position(directionPosition * Math.cos(rad), directionPosition * Math.sin(rad));
+            graphics.fillOval(
+                (int) ((position.getX() + angleUnit.getX() - smallRadius) * SIZE_MULTIPLIER),
+                (int) ((position.getY() + angleUnit.getY() - smallRadius) * SIZE_MULTIPLIER),
+                (int) (smallRadius * 2 * SIZE_MULTIPLIER),
+                (int) (smallRadius * 2 * SIZE_MULTIPLIER));
         }
 
         @Override
