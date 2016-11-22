@@ -330,16 +330,17 @@ public class MoveUtil {
         return new Position(x, y);
     }
 
-    private static Position moveInInfiniteH(double t, Position p0, Position p1) {
-        double x = (Math.cos(t * Math.PI) / 2 + 0.5) * (p1.getX() - p0.getX()) + p0.getX();
-        double y = (Math.sin(t * Math.PI) / 2 + 0.5) * (p1.getY() - p0.getY()) + p0.getY();
+    private static Position moveInInfiniteHalfCircleRight(double t, double x0, double y0, double y1) {
+        double r = (y1 - y0) / 2;
+        double x = Math.cos((t - 0.5) * Math.PI) * r + x0;
+        double y = Math.sin((t - 0.5) * Math.PI) * r + (y1 - y0) / 2 + y0;
         return new Position(x, y);
     }
 
-    private static Position moveInInfiniteHalfCircle(double t, double x0, double y0, double y1) {
+    private static Position moveInInfiniteHalfCircleLeft(double t, double x0, double y0, double y1) {
         double r = (y1 - y0) / 2;
-        double x = Math.cos(t * Math.PI) * r + x0;
-        double y = Math.sin(t * Math.PI) * r + (y1 - y0) / 2 + y0;
+        double x = Math.cos((t + 0.5) * Math.PI) * r + x0;
+        double y = Math.sin((t + 0.5) * Math.PI) * r + (y1 - y0) / 2 + y0;
         return new Position(x, y);
     }
 
@@ -350,14 +351,17 @@ public class MoveUtil {
             return null;
         }
 
+        Position p01 = new Position(p0.getX(), p1.getY());
+        Position p10 = new Position(p1.getX(), p0.getY());
+
         if (t < 0.25) {
             return moveInInfiniteG(4 * (t - 0.00), p0, p1);
         } else if (t < 0.5) {
-            return moveInInfiniteH(4 * (t - 0.25), p0, p1);
+            return moveInInfiniteHalfCircleRight(4 * (t - 0.25), p1.getX(), p0.getY(), p1.getY());
         } else if (t < 0.75) {
-            return moveInInfiniteG(4 * (t - 0.50), p1, p0);
+            return moveInInfiniteG(4 * (t - 0.50), p10, p01);
         } else {
-            return moveInInfiniteH(4 * (t - 0.75), p1, p0);
+            return moveInInfiniteHalfCircleLeft(1 - (4 * (t - 0.75)), p0.getX(), p0.getY(), p1.getY());
         }
     }
 }
