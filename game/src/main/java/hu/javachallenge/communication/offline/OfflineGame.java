@@ -83,7 +83,7 @@ class OfflineGame implements Runnable {
                 /////
                 // moving enemy submarines
                 /////
-                entityList.stream()
+                /*entityList.stream()
                         .filter(entity -> entity.getType().equals(Entity.SUBMARINE) && !entity.getOwner().getName().equals(IMap.OUR_NAME))
                         .forEach(entity -> {
                             // TODO enemy moving strategy
@@ -97,7 +97,7 @@ class OfflineGame implements Runnable {
 
                             new IChangeMovableObject.FixMove(acceleration, (2 * random.nextDouble() - 1) * game.getMapConfiguration().getMaxSteeringPerRound()).moveToNext(submarine);
                             LOGGER.info("Enemy submarine " + submarine.getId() + " position: " + submarine.getPosition());
-                        });
+                        });*/
 
                 /////
                 // destroy submarines which are hit an island or went out from the map
@@ -254,8 +254,9 @@ class OfflineGame implements Runnable {
     }
 
     private Submarine findSubmarineToShoot(Submarine submarine) {
+        return null;
         // there is the enemy shooting strategy
-        List<Submarine> validTargets = entityList.stream()
+        /*List<Submarine> validTargets = entityList.stream()
                 .filter(entity -> entity.getType().equals(Entity.SUBMARINE) && entity.getOwner().getName().equals(IMap.OUR_NAME)) // all againts us
                 // .filter(entity -> entity.getPosition().distance(submarine.getPosition()) < game.getMapConfiguration().getExtendedSonarRange()) // they see us anywhere
                 .map(entity -> (Submarine) entity)
@@ -266,7 +267,7 @@ class OfflineGame implements Runnable {
         }
 
         validTargets.sort((s1, s2) -> (int) s1.getPosition().distance(s2.getPosition()));
-        return validTargets.get(0);
+        return validTargets.get(0);*/
     }
 
     private double getEntityRadius(Entity e) {
@@ -286,9 +287,9 @@ class OfflineGame implements Runnable {
 
         // teams
         teams.add(IMap.OUR_NAME);
-        /*teams.add("rabbit");
+        teams.add("rabbit");
         teams.add("Just five more minutes Mom");
-        teams.add("Thats No Moon");*/
+        teams.add("Thats No Moon");
 
         // map conf
 
@@ -324,7 +325,7 @@ class OfflineGame implements Runnable {
         ///// for move testing
         configuration.setIslandPositions(Collections.EMPTY_LIST);
         configuration.setRounds(1000);
-        configuration.setTeamCount(0);
+        configuration.setTeamCount(teams.size());
         configuration.setRoundLength(150); // faster
 
         ///// for collision testing
@@ -345,8 +346,8 @@ class OfflineGame implements Runnable {
         game.getScores().setScores(scores);
 
         // submarines
-        //int[] i = {1};
-        int[] i = {random.nextInt(4) + 1}; ///// to test move strategy, we should start from a random corner
+        int[] i = {1};
+        //int[] i = {random.nextInt(4) + 1}; ///// to test move strategy, we should start from a random corner
         List<String> randomOrderedTeams = new ArrayList<>(teams);
         randomOrderedTeams.sort((s, t) -> random.nextInt(10) - 5);
         randomOrderedTeams.forEach(team -> {
