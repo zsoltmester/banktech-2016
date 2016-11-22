@@ -38,8 +38,8 @@ public class IndividualStrategy implements Strategy {
             // order the targets to start to scout the (nearest/farthest) point
             int firstTargetIndex = 0;
             for (int j = 1; j < positions.length; ++j) {
-                if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) { // neares
-                    // if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) { // farthest
+                //if (positions[firstTargetIndex].distance(submarine.getPosition()) > positions[j].distance(submarine.getPosition())) { // neare
+                if (positions[firstTargetIndex].distance(submarine.getPosition()) < positions[j].distance(submarine.getPosition())) { // farthest
                     firstTargetIndex = j;
                 }
             }

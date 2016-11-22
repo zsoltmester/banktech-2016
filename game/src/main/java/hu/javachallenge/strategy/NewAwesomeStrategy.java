@@ -138,4 +138,8 @@ public class NewAwesomeStrategy implements Strategy {
         }
         return null;
     }
+
+    public ArrayDeque<Position> getTargets() {
+        return targets;
+    }
 }

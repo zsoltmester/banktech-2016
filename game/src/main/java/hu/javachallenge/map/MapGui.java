@@ -228,8 +228,8 @@ class MapGui extends DataMap {
 
             // paint the targets
             if (displayWithTargets && ourSubmarines != null) {
-                IndividualStrategy individualStrategy = Player.strategy instanceof IndividualStrategy ? (IndividualStrategy) Player.strategy : null;
-                if (individualStrategy != null && individualStrategy.getStrategies() != null && !individualStrategy.getStrategies().isEmpty()) {
+                IndividualStrategy individualStrategy;
+                if ((individualStrategy = Player.strategy instanceof IndividualStrategy ? (IndividualStrategy) Player.strategy : null) != null && individualStrategy.getStrategies() != null && !individualStrategy.getStrategies().isEmpty()) {
                     Map<Long, Strategy> strategies = individualStrategy.getStrategies();
                     ourSubmarines.stream().filter(submarine -> strategies.keySet().contains(submarine.getId())).forEach(submarine ->
                     {
@@ -247,7 +247,14 @@ class MapGui extends DataMap {
                             graphics.setColor(Color.WHITE);
                         });
                     });
-
+                }
+                NewAwesomeStrategy newAwesomeStrategy;
+                if ((newAwesomeStrategy = Player.strategy instanceof NewAwesomeStrategy ? (NewAwesomeStrategy) Player.strategy : null) != null) {
+                    graphics.setColor(Color.BLACK);
+                    newAwesomeStrategy.getTargets().stream().forEachOrdered(target -> {
+                        fillCircle(graphics, target, TARGET_DISPLAY_SIZE);
+                        graphics.setColor(Color.WHITE);
+                    });
                 }
             }
 
