@@ -65,6 +65,8 @@ public class CollissionDetector {
 
     public static <T extends MovableObject> Integer submarineCollision(MoveStrategy strategy,
                                                                        T object, IChangeMovableObject<T> objectMoving, double radius, int step) {
+
+        if(strategy.getSubmarine() == null) return null;
         return collisionWith(strategy.getSubmarine(), strategy, map.getConfiguration().getSubmarineSize(),
                 object, objectMoving, radius, step);
     }

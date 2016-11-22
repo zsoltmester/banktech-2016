@@ -139,13 +139,13 @@ public class NewAwesomeStrategy implements Strategy {
         for(Strategy strategy : strategies.values()) {
             strategy.onRound();
         }
-        plus++;
-
-        if(plus % 2 == 0) {
-            distance += 10;
-        } else {
-            distance -= 10;
+        for (Submarine submarine : map.getOurSubmarines()) {
+            // TODO temporary
+            new AttackerStrategy(submarine.getId()).onRound();
         }
+        plus+=5;
+
+        // TODO temporary
     }
 
     @Override
