@@ -1,0 +1,53 @@
+{
+    game = Game {
+        id = 1842352666,
+        round = 0,
+        scores = Scores {
+            scores = {
+                Infinite Ringbuffer = 0,
+                Java4ever = 0,
+                IGEN.. = 0,
+                Digital Hammer = 0
+            }
+        },
+        connectionStatus = ConnectionStatus {
+            connected = {
+                Infinite Ringbuffer = true,
+                Java4ever = false,
+                IGEN.. = true,
+                Digital Hammer = false
+            }
+        },
+        mapConfiguration = MapConfiguration {
+            width = 1700, height = 800, islandPositions = [Position {
+                x = 450.0, y = 400.0
+            }, Position {
+                x = 1275.0, y = 400.0
+            }],
+			teamCount = 4,
+			submarinesPerTeam = 3,
+			torpedoDamage = 34,
+			torpedoHitScore = 100,
+			torpedoDestroyScore = 50,
+			torpedoHitPenalty = 0,
+			torpedoCooldown = 6,
+			sonarRange = 150,
+			extendedSonarRange = 230,
+			extendedSonarRounds = 10,
+			extendedSonarCooldown = 20,
+			torpedoSpeed = 40.0,
+			torpedoExplosionRadius = 50,
+			roundLength = 2000,
+			islandSize = 100,
+			submarineSize = 15,
+			rounds = 150,
+            maxSteeringPerRound = 20,
+            maxAccelerationPerRound = 5,
+            maxSpeed = 20,
+            torpedoRange = 10,
+            rateLimitedPenalty = 10
+        },
+        status = 'WAITING',
+        createdTime = 'Tue Nov 22 11:03:48 CET 2016'
+    }
+}

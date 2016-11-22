@@ -150,12 +150,6 @@ public class ScoutStrategy extends MoveStrategy {
             }
         }
 
-        for (Entity entity : map.getEntities().stream().filter(e -> e.getType().equals(Entity.SUBMARINE)).collect(Collectors.toList())) {
-            if (CollissionDetector.submarineCollisionWithSubmarine(this, entity, maxSteps) != null) {
-                return true;
-            }
-        }
-
         return false;
     }
 }
