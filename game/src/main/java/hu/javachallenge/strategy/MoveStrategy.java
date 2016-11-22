@@ -9,6 +9,8 @@ import hu.javachallenge.strategy.moving.IChangeMovableObject;
  */
 public abstract class MoveStrategy extends SubmarineStrategy implements IChangeMovableObject<Submarine> {
 
+    protected static final int TARGET_REACHED_DISTANCE = 5;
+
     protected MoveStrategy(Long submarineId) {
         super(submarineId);
     }

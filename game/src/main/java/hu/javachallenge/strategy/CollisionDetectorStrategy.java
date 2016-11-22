@@ -2,80 +2,28 @@ package hu.javachallenge.strategy;
 
 import hu.javachallenge.bean.Entity;
 import hu.javachallenge.bean.Position;
-import hu.javachallenge.bean.Submarine;
 import hu.javachallenge.map.IMap;
-import hu.javachallenge.processor.Processor;
 import hu.javachallenge.strategy.moving.CollissionDetector;
 import hu.javachallenge.strategy.moving.IChangeMovableObject;
 import hu.javachallenge.strategy.moving.MovingIsland;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class ScoutStrategy extends CollisionDetectorStrategy {
-    private static final Logger LOGGER = Logger.getLogger(ScoutStrategy.class.getName());
+public abstract class CollisionDetectorStrategy extends MoveStrategy {
 
-    private final Deque<Position> targets;
+    private static final Logger LOGGER = Logger.getLogger(CollisionDetectorStrategy.class.getName());
 
-    public ScoutStrategy(Long submarineId, List<Position> targets) {
+    protected static final int STEPS_TO_CHECK_FOR_COLLISION = 10;
+
+    protected CollisionDetectorStrategy(Long submarineId) {
         super(submarineId);
-        this.targets = new ArrayDeque<>(targets);
     }
 
-    @Override
-    public void init() {
-    }
+    protected abstract void goToNextTaget();
 
-    @Override
-    public void onRound() {
-        Submarine submarine = getSubmarine();
-
-        changeTargetIfNeed();
-
-        if (targets.peek() != null) {
-            LOGGER.info("Submarine " + submarine.getId() + " next position: " + targets.peek());
-            // moves to the next position
-            super.onRound();
-        } else {
-            LOGGER.info("Submarine " + submarine.getId() + " has no next position");
-            // stay calm
-            Processor.move(submarine.getId(), -1, 0);
-        }
-
-        // TODO temporary
-        new AttackerStrategy(submarine.getId()).onRound();
-    }
-
-    protected void changeTargetIfNeed() {
-        if (targets.peek() != null) {
-            if (getSubmarine().getPosition().distance(targets.peek()) < TARGET_REACHED_DISTANCE) {
-                targets.add(targets.pop());
-            }
-        }
-    }
-
-    public Deque<Position> getTargets() {
-        return targets;
-    }
-
-    @Override
-    public double getNextAcceleration(Submarine submarine) {
-        return MoveUtil.getAccelerationToCloseThereWhenOnRightDirection(submarine, targets.peek());
-    }
-
-    @Override
-    public double getNextSteering(Submarine submarine) {
-        return MoveUtil.getTurnForTargetPosition(submarine, targets.peek());
-    }
-
-    @Override
-    protected void goToNextTaget() {
-        targets.add(targets.pop());
-    }
 
     @Override
     public Strategy onChangeStrategy() {
@@ -90,7 +38,7 @@ public class ScoutStrategy extends CollisionDetectorStrategy {
                     if (getSubmarine().getVelocity() != 0) {
                         evadePosition = Collections.singletonList(getSubmarine().getPosition());
                     } else {
-                        targets.add(targets.pop());
+                        goToNextTaget();
                         break;
                     }
                 } else {
